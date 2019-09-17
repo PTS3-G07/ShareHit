@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">ShareHit</string>
+    <string name="todo" />
+    <string name="recommansez_du_contenu_vos_amis">Recommansez du contenu à vos amis !</string>
 </resources>
