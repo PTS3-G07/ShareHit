@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -29,6 +30,9 @@ public class LoginPage extends AppCompatActivity {
         setContentView(R.layout.activity_login_page);
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
+        final ProgressDialog progress = new ProgressDialog(this);
+        progress.setTitle("Loading");
+        progress.setMessage("Wait while loading...");
 
         mAuth = FirebaseAuth.getInstance();
         emailLog = (EditText) findViewById(R.id.emailLog);
@@ -38,6 +42,7 @@ public class LoginPage extends AppCompatActivity {
         loginButt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                progress.show();
                 String email = emailLog.getText().toString();
                 final String password = passLog.getText().toString();
 
@@ -46,6 +51,7 @@ public class LoginPage extends AppCompatActivity {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                if(!task.isSuccessful()){
+                                   progress.dismiss();
                                    Toast.makeText(LoginPage.this, "Authentication failed." + task.getException(), Toast.LENGTH_LONG).show();
                                }else {
                                    startActivity(new Intent(LoginPage.this, MainActivity.class));

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#00FFFFFF"
+    android:background="#FFFFFF"
     tools:context=".LoginPage">
 
     <ImageView
@@ -78,8 +78,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:text="Mot de passe oublier ?"
-            android:textColor="#606060"
-            />
+            android:textColor="#606060" />
 
     </LinearLayout>
 

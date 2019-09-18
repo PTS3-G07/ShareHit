@@ -1,6 +1,7 @@
 package com.example.sharehit;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -26,7 +27,8 @@ public class SignUp extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
 
-
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
 
 
         email_id = (EditText) findViewById(R.id.email_y);
