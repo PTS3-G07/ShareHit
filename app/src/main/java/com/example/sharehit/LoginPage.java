@@ -29,10 +29,10 @@ public class LoginPage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_page);
         ActionBar actionBar = getSupportActionBar();
-        actionBar.hide();
         final ProgressDialog progress = new ProgressDialog(this);
         progress.setTitle("Loading");
         progress.setMessage("Wait while loading...");
+        actionBar.hide();
 
         mAuth = FirebaseAuth.getInstance();
         emailLog = (EditText) findViewById(R.id.emailLog);
@@ -51,10 +51,12 @@ public class LoginPage extends AppCompatActivity {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                if(!task.isSuccessful()){
-                                   progress.dismiss();
                                    Toast.makeText(LoginPage.this, "Authentication failed." + task.getException(), Toast.LENGTH_LONG).show();
+                                   progress.dismiss();
                                }else {
+
                                    startActivity(new Intent(LoginPage.this, MainActivity.class));
+                                   progress.dismiss();
                                    finish();
                                }
                             }
