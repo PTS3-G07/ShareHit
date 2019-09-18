@@ -56,17 +56,21 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="15dp"
+            android:background="@drawable/rounder_edittext"
             android:ems="10"
             android:hint="Adresse email "
-            android:inputType="textPersonName" />
+            android:inputType="textPersonName"
+            android:padding="10dp" />
 
         <EditText
             android:id="@+id/passwordId"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/rounder_edittext"
             android:ems="10"
             android:hint="*******"
-            android:inputType="textPassword" />
+            android:inputType="textPassword"
+            android:padding="10dp" />
 
         <TextView
             android:id="@+id/textView2"
@@ -74,7 +78,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:text="Mot de passe oublier ?"
-            android:textColor="#606060" />
+            android:textColor="#606060"
+            />
 
     </LinearLayout>
 
