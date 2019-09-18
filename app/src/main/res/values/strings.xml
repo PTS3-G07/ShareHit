@@ -2,4 +2,5 @@
     <string name="app_name">ShareHit</string>
     <string name="todo" />
     <string name="tuto1_recom">Recommandez du contenu à vos amis !</string>
+    <string name="inscription">Inscription</string>
 </resources>
