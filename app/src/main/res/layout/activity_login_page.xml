@@ -42,17 +42,17 @@
         app:layout_constraintTop_toBottomOf="@+id/imageView3">
 
         <TextView
-            android:id="@+id/yazid"
+            android:id="@+id/conxTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="15dp"
-            android:text="Connexion"
+            android:layout_marginBottom="10dp"
+            android:fontFamily="@font/urania_medium"
+            android:text="Connexon"
             android:textColor="#000000"
-            android:textSize="30sp"
-            app:fontFamily="@font/urania_medium" />
+            android:textSize="30sp" />
 
         <EditText
-            android:id="@+id/yazid"
+            android:id="@+id/emailLog"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="15dp"
@@ -63,7 +63,7 @@
             android:padding="10dp" />
 
         <EditText
-            android:id="@+id/passwordId"
+            android:id="@+id/passLog"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/rounder_edittext"
@@ -84,7 +84,7 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/regButt"
+        android:id="@+id/loginButt"
         android:layout_width="262dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="176dp"
