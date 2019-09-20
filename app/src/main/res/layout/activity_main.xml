@@ -38,4 +38,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/gotologin" />
 
+    <Button
+        android:id="@+id/send"
+        android:layout_width="386dp"
+        android:layout_height="73dp"
+        android:layout_marginTop="32dp"
+        android:text="Test db"
+        app:layout_constraintTop_toBottomOf="@+id/gotosign"
+        tools:layout_editor_absoluteX="16dp" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
