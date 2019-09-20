@@ -61,7 +61,7 @@ public class LoginPage extends AppCompatActivity {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if(task.isSuccessful()){
-                                        startActivity(new Intent(LoginPage.this, MainActivity.class));
+                                        startActivity(new Intent(LoginPage.this, FeedPage.class));
                                         FirebaseUser user = mAuth.getCurrentUser();
                                         progress.dismiss();
                                         finish();

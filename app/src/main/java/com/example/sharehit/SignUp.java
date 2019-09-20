@@ -90,7 +90,7 @@ public class SignUp extends AppCompatActivity {
 
                                         myRef.child("users").push().setValue(user);
                                         progress.dismiss();
-                                        Log.d("done", "oui");
+                                        startActivity(new Intent(SignUp.this, LoginPage.class));
                                     }else {
 
                                     }

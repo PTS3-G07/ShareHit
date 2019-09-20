@@ -7,6 +7,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -15,11 +18,26 @@ public class MainActivity extends AppCompatActivity {
 
     private Button gotologin;
     private Button gotosign, send;
+    FirebaseAuth firebaseAuth;
+    FirebaseUser firebaseUser;
+    public void checkUser(){
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseUser = firebaseAuth.getCurrentUser();
+        if(firebaseUser == null){
+
+        }else {
+            startActivity(new Intent(MainActivity.this, FeedPage.class));
+            finish();
+            return;
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        checkUser();
+
 
         gotologin = (Button) findViewById(R.id.gotologin);
         gotologin.setOnClickListener(new View.OnClickListener() {
@@ -44,9 +62,8 @@ public class MainActivity extends AppCompatActivity {
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FirebaseDatabase database = FirebaseDatabase.getInstance();
-                DatabaseReference myRef = database.getReference("message");
-                myRef.setValue(" Alexandre wsh wsh t con ou quoi!");
+                Intent mySignUpPage = new Intent(MainActivity.this, FeedPage.class);
+                startActivity(mySignUpPage);
             }
         });
 
