@@ -1,6 +1,8 @@
 package com.example.sharehit;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -22,6 +24,8 @@ public class FeedPage extends AppCompatActivity {
     SpaceNavigationView navigationView;
     FirebaseAuth firebaseAuth;
 
+
+    /*
     private  void checkUserStatus(){
         firebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser user = firebaseAuth.getCurrentUser();
@@ -32,10 +36,25 @@ public class FeedPage extends AppCompatActivity {
         }
     }
 
+     */
+
+
+    private boolean loadFragement(Fragment fragment){
+        if(fragment != null){
+            getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment)
+                    .commit();
+
+            return true;
+        }
+        return false;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feed_page);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
 
         email = findViewById(R.id.showEmail);
         logout = findViewById(R.id.logout);
@@ -46,7 +65,8 @@ public class FeedPage extends AppCompatActivity {
         navigationView.addSpaceItem(new SpaceItem("", R.drawable.notification));
         navigationView.addSpaceItem(new SpaceItem("", R.drawable.profil));
         navigationView.showIconOnly();
-        checkUserStatus();
+        //checkUserStatus();
+        /*
         logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -55,7 +75,12 @@ public class FeedPage extends AppCompatActivity {
                 checkUserStatus();
             }
         });
+         */
+
+        Fragment fragment = new FeedFragement();
+        loadFragement(fragment);
         navigationView.setSpaceOnClickListener(new SpaceOnClickListener() {
+            Fragment fragment = null;
             @Override
             public void onCentreButtonClick() {
                 Toast.makeText(FeedPage.this,"onCentreButtonClick", Toast.LENGTH_SHORT).show();
@@ -64,12 +89,25 @@ public class FeedPage extends AppCompatActivity {
 
             @Override
             public void onItemClick(int itemIndex, String itemName) {
-                Toast.makeText(FeedPage.this, itemIndex + " " + itemName, Toast.LENGTH_SHORT).show();
+                if(itemIndex == 0){
+                    fragment = new FeedFragement();
+                    loadFragement(fragment);
+                }else if (itemIndex == 1){
+                    fragment = new SearchFragement();
+                    loadFragement(fragment);
+                }else if(itemIndex == 2){
+                    fragment = new NotifFragement();
+                    loadFragement(fragment);
+                }else if(itemIndex == 3){
+                    fragment = new ProfilFragement();
+                    loadFragement(fragment);
+                }
+               // Toast.makeText(FeedPage.this, itemIndex + " " + itemName, Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onItemReselected(int itemIndex, String itemName) {
-                Toast.makeText(FeedPage.this, itemIndex + " " + itemName, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(FeedPage.this, itemIndex + " " + itemName, Toast.LENGTH_SHORT).show();
             }
         });
 
