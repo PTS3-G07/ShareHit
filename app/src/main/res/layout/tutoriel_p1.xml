@@ -17,4 +17,17 @@
         app:srcCompat="@drawable/fond_tuto1"
         android:contentDescription="@string/todo" />
 
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/urania_medium"
+        android:text="@string/tuto1_recom"
+        android:textColor="#005EAA"
+        android:textSize="30sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
