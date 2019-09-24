@@ -10,7 +10,29 @@ public class Recommendation {
     private List<User> likers;
     private List<Comment> comments;
 
+    public Recommendation(Type type, User user, String desc) {
+        this.type = type;
+        this.user = user;
+        this.desc = desc;
+    }
 
+    public Type getType() {
+        return type;
+    }
 
+    public User getUser() {
+        return user;
+    }
 
+    public String getDesc() {
+        return desc;
+    }
+
+    public List<User> getLikers() {
+        return likers;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
 }
