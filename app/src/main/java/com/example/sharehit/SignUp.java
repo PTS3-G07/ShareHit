@@ -25,7 +25,7 @@ import com.google.firebase.database.FirebaseDatabase;
 public class SignUp extends AppCompatActivity {
 
 
-    private EditText email_id, pass_id, nom_y, pren_y, pseudo_y;
+    private EditText email_id, pass_id, pseudo_y;
     private Button regButt;
     private FirebaseAuth mAuth;
     DatabaseReference myRef;
@@ -53,18 +53,10 @@ public class SignUp extends AppCompatActivity {
             public void onClick(View view) {
 
                 final String email = email_id.getText().toString();
-                final String nom = nom_y.getText().toString();
-                final String prenom = pren_y.getText().toString();
                 final String pseudo = pseudo_y.getText().toString();
                 final String password = pass_id.getText().toString();
 
-                if(nom.isEmpty()) {
-                    nom_y.setError("Should not be empty");
-                    nom_y.setFocusable(true);
-                }else if (prenom.isEmpty()){
-                    pren_y.setError("Should not be empty");
-                    pren_y.setFocusable(true);
-                }else if (pseudo.isEmpty()){
+               if (pseudo.isEmpty()){
                     pseudo_y.setError("Should not be empty");
                     pseudo_y.setFocusable(true);
                 }else if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
@@ -80,15 +72,21 @@ public class SignUp extends AppCompatActivity {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if(task.isSuccessful()){
+
                                         mAuth.signInWithEmailAndPassword(email, password)
                                                 .addOnCompleteListener(SignUp.this, new OnCompleteListener<AuthResult>() {
                                                     @Override
                                                     public void onComplete(@NonNull Task<AuthResult> task) {
                                                         if(task.isSuccessful()){
+                                                            User user = new User(
+                                                                    pseudo,
+                                                                    email
+                                                            );
 
-                                                            startActivity(new Intent(SignUp.this, FeedPage.class));
-                                                            FirebaseUser user = mAuth.getCurrentUser();
+                                                            String userUID = mAuth.getCurrentUser().getUid();
+                                                            myRef.child("users").child(userUID).push().setValue(user);
                                                             progress.dismiss();
+                                                            startActivity(new Intent(SignUp.this, FeedPage.class));
                                                             finish();
                                                         }else {
                                                             Toast.makeText(SignUp.this, "Authentication failed." + task.getException(), Toast.LENGTH_LONG).show();
