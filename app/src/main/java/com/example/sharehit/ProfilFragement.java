@@ -16,11 +16,15 @@ import androidx.fragment.app.Fragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class ProfilFragement extends Fragment {
 
     TextView showEmail;
     Button logout;
     FirebaseAuth firebaseAuth;
+    CircleImageView profile_image;
+    final static int Gallery_pick = 1;
 
     @Nullable
     @Override
@@ -28,6 +32,16 @@ public class ProfilFragement extends Fragment {
         ViewGroup root = (ViewGroup) inflater.inflate(R.layout.fragement_profil, null);
         logout = (Button) root.findViewById(R.id.logout);
         showEmail = root.findViewById(R.id.showEmail);
+        profile_image = root.findViewById(R.id.profile_image);
+        profile_image.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent galleryIntent =  new Intent();
+                galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
+                galleryIntent.setType("images/*");
+                startActivityForResult(galleryIntent, Gallery_pick);
+            }
+        });
         firebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser user = firebaseAuth.getCurrentUser();
         if(user != null){
