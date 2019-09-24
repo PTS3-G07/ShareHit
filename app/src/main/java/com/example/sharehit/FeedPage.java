@@ -61,9 +61,9 @@ public class FeedPage extends AppCompatActivity {
         logout = findViewById(R.id.logout);
         navigationView = findViewById(R.id.space);
         navigationView.initWithSaveInstanceState(savedInstanceState);
-        navigationView.addSpaceItem(new SpaceItem("", R.drawable.home));
+        navigationView.addSpaceItem(new SpaceItem("", R.drawable.time_icon));
         navigationView.addSpaceItem(new SpaceItem("", R.drawable.search));
-        navigationView.addSpaceItem(new SpaceItem("", R.drawable.notification));
+        navigationView.addSpaceItem(new SpaceItem("", R.drawable.star_icon));
         navigationView.addSpaceItem(new SpaceItem("", R.drawable.profil));
         navigationView.showIconOnly();
         //checkUserStatus();
