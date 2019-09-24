@@ -42,8 +42,6 @@ public class SignUp extends AppCompatActivity {
         actionBar.hide();
         email_id = (EditText) findViewById(R.id.email_y);
         pass_id = (EditText) findViewById(R.id.pass_y);
-        nom_y = (EditText) findViewById(R.id.nom_y);
-        pren_y = (EditText) findViewById(R.id.pren_y);
         regButt = (Button) findViewById(R.id.regButt);
         pseudo_y = (EditText) findViewById(R.id.pseudo);
         mAuth = FirebaseAuth.getInstance();
@@ -58,7 +56,7 @@ public class SignUp extends AppCompatActivity {
                 final String nom = nom_y.getText().toString();
                 final String prenom = pren_y.getText().toString();
                 final String pseudo = pseudo_y.getText().toString();
-                String password = pass_id.getText().toString();
+                final String password = pass_id.getText().toString();
 
                 if(nom.isEmpty()) {
                     nom_y.setError("Should not be empty");
@@ -82,15 +80,23 @@ public class SignUp extends AppCompatActivity {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if(task.isSuccessful()){
-                                        User user = new User(
-                                                nom,
-                                                prenom,
-                                                email
-                                        );
+                                        mAuth.signInWithEmailAndPassword(email, password)
+                                                .addOnCompleteListener(SignUp.this, new OnCompleteListener<AuthResult>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<AuthResult> task) {
+                                                        if(task.isSuccessful()){
 
-                                        myRef.child("users").push().setValue(user);
-                                        progress.dismiss();
-                                        startActivity(new Intent(SignUp.this, LoginPage.class));
+                                                            startActivity(new Intent(SignUp.this, FeedPage.class));
+                                                            FirebaseUser user = mAuth.getCurrentUser();
+                                                            progress.dismiss();
+                                                            finish();
+                                                        }else {
+                                                            Toast.makeText(SignUp.this, "Authentication failed." + task.getException(), Toast.LENGTH_LONG).show();
+                                                            progress.dismiss();
+
+                                                        }
+                                                    }
+                                                });
                                     }else {
 
                                     }
