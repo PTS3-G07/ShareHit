@@ -12,7 +12,6 @@ public class MainActivity extends AppCompatActivity {
 
     private Button gotologin;
     private Button gotosign;
-    private Button gototutoriel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,26 +36,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        gototutoriel = findViewById(R.id.gototutroriel);
-        gototutoriel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                configureViewPager();
-            }
-        });
-
-
     }
 
-
-    private void configureViewPager(){
-        setContentView(R.layout.tutoriel);
-        // 1 - Get ViewPager from layout
-        ViewPager pager = (ViewPager)findViewById(R.id.activity_main_viewpager);
-        // 2 - Set Adapter PageAdapter and glue it together
-        pager.setAdapter(new PageAdapter(getSupportFragmentManager(), getResources().getIntArray(R.array.colorPagesViewPager)) {
-        });
-        setContentView(R.layout.tutoriel);
-
-    }
 }

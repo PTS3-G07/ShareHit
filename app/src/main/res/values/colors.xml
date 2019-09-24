@@ -3,7 +3,9 @@
     <color name="colorPrimary">#005EAA</color>
     <color name="colorPrimaryDark">#005EAA</color>
     <color name="colorAccent">#005EAA</color>
-
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="barColor">#0C0608</color>
     <array name="colorPagesViewPager">
         <item>#EDD9CF</item>
         <item>#BED4D6</item>
