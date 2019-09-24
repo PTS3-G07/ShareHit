@@ -4,4 +4,5 @@ public enum Type {
 
     Morceau, Album, Artiste, JeuVideo, Film, Serie
 
+
 }

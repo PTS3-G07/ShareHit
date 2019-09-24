@@ -39,5 +39,21 @@ public class User {
     public void setPdp(String pdp) {
         this.pdp = pdp;
     }
+
+    public void setBookmarked(Recommendation bookmark) {
+        bookmarks.add(bookmark);
+    }
+
+    public void likeRecommendation(Recommendation recommendation){
+        recommendation.getLikers().add(this);
+    }
+
+    public void commentRecommendation(Recommendation recommendation, String comment){
+        recommendation.getComments().add(new Comment(this, comment));
+    }
+
+    public void follow(User user){
+        this.followed.add(user);
+    }
 }
 
