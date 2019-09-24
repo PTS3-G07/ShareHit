@@ -1,8 +1,8 @@
 package com.example.sharehit.Model;
 
-public enum Type {
+public class Type {
 
-    Morceau, Album, Artiste, JeuVideo, Film, Serie
+    public Type(){
 
-
+    }
 }
