@@ -24,19 +24,20 @@ public class FeedPage extends AppCompatActivity {
     SpaceNavigationView navigationView;
     FirebaseAuth firebaseAuth;
 
-
-    /*
-    private  void checkUserStatus(){
+    @Override
+    protected void onStart() {
+        super.onStart();
         firebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser user = firebaseAuth.getCurrentUser();
-        if(user != null){
-            email.setText(user.getEmail());
-        }else {
+        if(user == null){
             startActivity(new Intent(FeedPage.this, MainActivity.class));
+        }else {
+
         }
     }
 
-     */
+
+
 
 
     private boolean loadFragement(Fragment fragment){

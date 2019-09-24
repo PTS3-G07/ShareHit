@@ -51,36 +51,6 @@
             android:textSize="30sp"
             app:fontFamily="@font/urania_medium" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginBottom="10dp"
-            android:orientation="horizontal">
-
-            <EditText
-                android:id="@+id/nom_y"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
-                android:layout_weight="1"
-                android:background="@drawable/rounder_edittext"
-                android:ems="10"
-                android:hint="Nom"
-                android:inputType="textPersonName"
-                android:padding="10dp" />
-
-            <EditText
-                android:id="@+id/pren_y"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:ems="10"
-                android:padding="10dp"
-                android:background="@drawable/rounder_edittext"
-                android:hint="Prénom"
-                android:inputType="textPersonName" />
-        </LinearLayout>
-
         <EditText
             android:id="@+id/pseudo"
             android:layout_width="match_parent"
