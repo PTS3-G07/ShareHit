@@ -6,6 +6,7 @@
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
     <color name="barColor">#0C0608</color>
+    <color name="gris">#EFEFEFEF</color>
     <array name="colorPagesViewPager">
         <item>#EDD9CF</item>
         <item>#BED4D6</item>

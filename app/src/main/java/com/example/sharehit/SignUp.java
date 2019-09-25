@@ -76,7 +76,6 @@ public class SignUp extends AppCompatActivity {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if(task.isSuccessful()){
-
                                         mAuth.signInWithEmailAndPassword(email, password)
                                                 .addOnCompleteListener(SignUp.this, new OnCompleteListener<AuthResult>() {
                                                     @Override
@@ -100,8 +99,6 @@ public class SignUp extends AppCompatActivity {
                                                                     }
                                                                 }
                                                             });
-                                                           //myRef.child("users").child(userUID).push().setValue(user);
-
                                                         }else {
                                                             Toast.makeText(SignUp.this, "Authentication failed." + task.getException(), Toast.LENGTH_LONG).show();
                                                             progress.dismiss();

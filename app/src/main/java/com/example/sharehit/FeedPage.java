@@ -58,7 +58,6 @@ public class FeedPage extends AppCompatActivity {
         actionBar.hide();
 
         email = findViewById(R.id.showEmail);
-        logout = findViewById(R.id.logout);
         navigationView = findViewById(R.id.space);
         navigationView.initWithSaveInstanceState(savedInstanceState);
         navigationView.addSpaceItem(new SpaceItem("", R.drawable.time_icon));
