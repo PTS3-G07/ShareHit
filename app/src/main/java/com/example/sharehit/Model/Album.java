@@ -17,4 +17,8 @@ public class Album extends Type {
     public String getTitre() {
         return titre;
     }
+
+    public String toString(){
+        return "l'album "+titre+" de "+artiste;
+    }
 }

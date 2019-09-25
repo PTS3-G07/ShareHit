@@ -1,5 +1,6 @@
 package com.example.sharehit.Model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Recommendation {
@@ -14,6 +15,8 @@ public class Recommendation {
         this.type = type;
         this.user = user;
         this.desc = desc;
+        this.likers=new ArrayList<>();
+        this.comments = new ArrayList<>();
     }
 
     public Type getType() {
@@ -34,5 +37,9 @@ public class Recommendation {
 
     public List<Comment> getComments() {
         return comments;
+    }
+
+    public String toString(){
+        return this.user.getPseudo()+" a recommandé "+type.toString();
     }
 }

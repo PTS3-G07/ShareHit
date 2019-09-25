@@ -11,4 +11,8 @@ public class JeuVideo extends Type {
     public String getTitre() {
         return titre;
     }
+
+    public String toString(){
+        return "le jeu vidéo "+titre;
+    }
 }

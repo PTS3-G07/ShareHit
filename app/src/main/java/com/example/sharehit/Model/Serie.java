@@ -11,4 +11,8 @@ public class Serie extends Type {
     public String getTitre() {
         return titre;
     }
+
+    public String toString(){
+        return "la série "+titre;
+    }
 }

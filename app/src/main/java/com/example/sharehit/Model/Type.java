@@ -5,4 +5,8 @@ public class Type {
     public Type(){
 
     }
+
+    public String toString(){
+        return "";
+    }
 }

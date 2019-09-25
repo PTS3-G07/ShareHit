@@ -1,6 +1,13 @@
 package com.example.sharehit.Model;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 public class User {
 
@@ -8,14 +15,15 @@ public class User {
     public String email;
     public String pdp;
     public List<Recommendation> bookmarks;
-    public List<User> followed;
 
+    public List<User> followed;
 
     public User(String pseudo, String email) {
         this.pseudo = pseudo;
         this.email = email;
+        this.bookmarks = new ArrayList<>();
+        this.followed = new ArrayList<>();
     }
-
     public String getPseudo() {
         return pseudo;
     }
@@ -54,6 +62,14 @@ public class User {
 
     public void follow(User user){
         this.followed.add(user);
+    }
+
+    public List<Recommendation> getBookmarks() {
+        return bookmarks;
+    }
+
+    public List<User> getFollowed() {
+        return followed;
     }
 }
 

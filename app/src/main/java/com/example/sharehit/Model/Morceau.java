@@ -17,4 +17,8 @@ public class Morceau extends Type {
     public String getArtiste() {
         return artiste;
     }
+
+    public String toString(){
+        return "le morceau "+titre+" de "+artiste;
+    }
 }

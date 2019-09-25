@@ -11,4 +11,8 @@ public class Film extends Type {
     public String getTitre() {
         return titre;
     }
+
+    public String toString(){
+        return "le film "+titre;
+    }
 }

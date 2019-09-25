@@ -11,4 +11,8 @@ public class Artiste extends Type {
     public String getArtiste() {
         return artiste;
     }
+
+    public String toString(){
+        return "l'artiste "+artiste;
+    }
 }
