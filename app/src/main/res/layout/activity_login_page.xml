@@ -21,7 +21,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/logo_sharehit"
+        app:srcCompat="@drawable/banniree_sharehit"
         tools:srcCompat="@drawable/banniree_sharehit" />
 
     <LinearLayout
@@ -118,10 +118,12 @@
             android:id="@+id/imageButton2"
             android:layout_width="147dp"
             android:layout_height="123dp"
+            android:layout_marginEnd="28dp"
+            android:layout_marginRight="28dp"
             android:layout_weight="1"
             android:background="#00FFFFFF"
+            app:layout_constraintEnd_toEndOf="parent"
             app:srcCompat="@drawable/logo_google"
-            tools:layout_editor_absoluteX="246dp"
             tools:layout_editor_absoluteY="-25dp" />
 
         <TextView
