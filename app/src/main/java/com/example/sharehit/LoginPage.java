@@ -12,6 +12,7 @@ import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -25,6 +26,8 @@ public class LoginPage extends AppCompatActivity {
     private EditText emailLog, passLog;
     private Button loginButt;
     private FirebaseAuth mAuth;
+    private TextView textView5;
+    private TextView textView2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +42,22 @@ public class LoginPage extends AppCompatActivity {
         emailLog = (EditText) findViewById(R.id.emailLog);
         passLog = (EditText) findViewById(R.id.passLog);
         loginButt = (Button) findViewById(R.id.loginButt);
+        textView5 = (TextView) findViewById(R.id.textView5);
+        textView2 = (TextView) findViewById(R.id.textView2);
+
+        textView5.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                startActivity(new Intent(LoginPage.this, SignUp.class));
+            }
+        });
+
+        textView2.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                startActivity(new Intent(LoginPage.this, PasswordForget.class));
+            }
+        });
 
         loginButt.setOnClickListener(new View.OnClickListener() {
             @Override
