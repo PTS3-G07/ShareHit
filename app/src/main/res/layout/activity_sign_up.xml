@@ -72,7 +72,7 @@
             android:padding="10dp"
             android:background="@drawable/rounder_edittext"
             android:hint="email@contact.com"
-            android:inputType="textPersonName" />
+            android:inputType="textEmailAddress" />
 
         <EditText
             android:id="@+id/pass_y"

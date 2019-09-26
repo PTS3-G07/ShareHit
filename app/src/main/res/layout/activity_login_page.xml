@@ -60,10 +60,11 @@
             android:background="@drawable/rounder_edittext"
             android:ems="10"
             android:hint="Adresse email "
-            android:inputType="textPersonName"
+            android:inputType="textEmailAddress"
             android:padding="10dp" />
 
         <EditText
+
             android:id="@+id/passLog"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
