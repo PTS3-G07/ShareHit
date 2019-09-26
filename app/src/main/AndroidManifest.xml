@@ -21,9 +21,9 @@
         <activity android:name=".Uploadpdp"></activity>
         <activity android:name=".FeedPage" />
         <activity android:name=".SignUp" />
-        <activity android:name=".LoginPage" />
+        <activity android:name=".MainActivity" />
         <activity android:name=".PasswordForget" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".LoginPage">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
