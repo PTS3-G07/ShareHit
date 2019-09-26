@@ -4,9 +4,15 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import android.app.Dialog;
+import android.app.WallpaperManager;
 import android.content.Intent;
+import android.icu.text.MeasureFormat;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,6 +29,7 @@ public class FeedPage extends AppCompatActivity {
     Button logout;
     SpaceNavigationView navigationView;
     FirebaseAuth firebaseAuth;
+    Dialog myDialog;
 
     @Override
     protected void onStart() {
@@ -77,14 +84,36 @@ public class FeedPage extends AppCompatActivity {
         });
          */
 
+
+
+        myDialog=new Dialog(this, R.style.DialogTheme);
+        Window window = myDialog.getWindow();
+        WindowManager.LayoutParams wlp = window.getAttributes();
+        wlp.gravity = Gravity.BOTTOM;
+        /*wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+        wlp.width = WindowManager.LayoutParams.MATCH_PARENT;*/
+
+
+
+        //window.setAttributes(wlp);
+
         Fragment fragment = new FeedFragement();
         loadFragement(fragment);
         navigationView.setSpaceOnClickListener(new SpaceOnClickListener() {
             Fragment fragment = null;
             @Override
             public void onCentreButtonClick() {
-                Toast.makeText(FeedPage.this,"onCentreButtonClick", Toast.LENGTH_SHORT).show();
-                navigationView.setCentreButtonSelectable(true);
+
+                int width = getResources().getDisplayMetrics().widthPixels;
+                //int height = (int)(getResources().getDisplayMetrics().heightPixels*0.4);
+
+
+                myDialog.setContentView(R.layout.new_recommendation);
+                //Toast.makeText(FeedPage.this,"onCentreButtonClick", Toast.LENGTH_SHORT).show();
+                myDialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT,WindowManager.LayoutParams.WRAP_CONTENT);
+                myDialog.show();
+                /*fragment = new NewRecommendationFragment();
+                loadFragement(fragment);*/
             }
 
             @Override
