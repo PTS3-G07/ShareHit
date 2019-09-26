@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Patterns;
 import android.view.View;
@@ -32,6 +34,9 @@ public class PasswordForget extends AppCompatActivity {
         sendButt = (Button) findViewById(R.id.sendButt);
         mAuth = FirebaseAuth.getInstance();
 
+        final ProgressDialog progress = new ProgressDialog(this);
+        progress.setMessage("Envoie en cours");
+
         sendButt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -42,12 +47,16 @@ public class PasswordForget extends AppCompatActivity {
                     emailLog.setError("Invalid email");
                     emailLog.setFocusable(true);
                 } else {
+                    progress.show();
                     mAuth.sendPasswordResetEmail(emailLog.getText().toString()).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
+                                progress.dismiss();
                                 Toast.makeText(PasswordForget.this, "Email envoyé", Toast.LENGTH_LONG).show();
+                                startActivity(new Intent(PasswordForget.this, LoginPage.class));
                             } else {
+                                progress.dismiss();
                                 Toast.makeText(PasswordForget.this, task.getException().getMessage(), Toast.LENGTH_LONG).show();
                             }
                         }

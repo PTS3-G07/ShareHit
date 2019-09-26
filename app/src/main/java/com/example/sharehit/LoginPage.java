@@ -35,7 +35,7 @@ public class LoginPage extends AppCompatActivity {
         setContentView(R.layout.activity_login_page);
         ActionBar actionBar = getSupportActionBar();
         final ProgressDialog progress = new ProgressDialog(this);
-        progress.setMessage("Wait while loading...");
+        progress.setMessage("Chargement en cours");
         actionBar.hide();
 
         mAuth = FirebaseAuth.getInstance();
