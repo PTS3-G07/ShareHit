@@ -18,7 +18,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Uploadpdp"></activity>
+        <activity android:name=".SearchFragment"></activity>
+        <activity android:name=".Uploadpdp" />
         <activity android:name=".FeedPage" />
         <activity android:name=".SignUp" />
         <activity android:name=".MainActivity" />
