@@ -23,7 +23,7 @@
                 android:id="@+id/upload"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="upload" />
+                android:text="logout" />
         </RelativeLayout>
 
 
@@ -39,9 +39,7 @@
                 android:layout_height="120dp"
                 android:layout_marginStart="20dp"
                 android:layout_marginLeft="20dp"
-                android:background="@color/black"
-                android:padding="5dp"
-                android:src="@drawable/ic_add_image"></ImageView>
+                android:background="#FFC107"></ImageView>
 
             <TextView
                 android:id="@+id/pseudo"
