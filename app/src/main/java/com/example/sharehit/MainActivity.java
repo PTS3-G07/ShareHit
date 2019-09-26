@@ -1,17 +1,20 @@
 package com.example.sharehit;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
 
     private Button gotologin;
-    private Button gotosign;
+    private Button gotosign, send;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +39,16 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        send = findViewById(R.id.send);
+        send.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent uploadpdp = new Intent(MainActivity.this, Uploadpdp.class);
+                startActivity(uploadpdp);
+            }
+        });
+
     }
+
 
 }

@@ -89,16 +89,10 @@ public class SignUp extends AppCompatActivity {
                                                             HashMap usersMap = new HashMap();
                                                             DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("Users");
                                                             usersMap.put(userUID, user);
-                                                            usersRef.updateChildren(usersMap).addOnCompleteListener(new OnCompleteListener() {
-                                                                @Override
-                                                                public void onComplete(@NonNull Task task) {
-                                                                    if(task.isSuccessful()){
-                                                                        progress.dismiss();
-                                                                        startActivity(new Intent(SignUp.this, FeedPage.class));
-                                                                        finish();
-                                                                    }
-                                                                }
-                                                            });
+                                                            usersRef.updateChildren(usersMap);
+                                                            progress.dismiss();
+                                                            startActivity(new Intent(SignUp.this, FeedPage.class));
+                                                            finish();
                                                         }else {
                                                             Toast.makeText(SignUp.this, "Authentication failed." + task.getException(), Toast.LENGTH_LONG).show();
                                                             progress.dismiss();
@@ -107,7 +101,8 @@ public class SignUp extends AppCompatActivity {
                                                     }
                                                 });
                                     }else {
-
+                                        progress.dismiss();
+                                        Toast.makeText(SignUp.this, "Authentication failed." + task.getException(), Toast.LENGTH_LONG).show();
                                     }
                                 }
                             });

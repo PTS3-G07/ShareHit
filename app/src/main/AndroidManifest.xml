@@ -7,6 +7,10 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
 
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/icon_ok"
@@ -14,10 +18,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".PasswordForget"></activity>
+        <activity android:name=".Uploadpdp"></activity>
         <activity android:name=".FeedPage" />
         <activity android:name=".SignUp" />
         <activity android:name=".LoginPage" />
+        <activity android:name=".PasswordForget" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
