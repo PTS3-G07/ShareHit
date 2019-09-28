@@ -13,7 +13,7 @@ import android.widget.SearchView;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class SearchFragment extends AppCompatActivity {
+public class SearchList extends AppCompatActivity {
 
     ListView search_recommendation;
     ArrayAdapter<String> adapter;
@@ -29,7 +29,7 @@ public class SearchFragment extends AppCompatActivity {
         arrayFood.addAll(Arrays.asList(getResources().getStringArray(R.array.my_foods)));
 
         adapter = new ArrayAdapter<String>(
-                SearchFragment.this,
+                SearchList.this,
                 android.R.layout.simple_list_item_1,
                 arrayFood
         );

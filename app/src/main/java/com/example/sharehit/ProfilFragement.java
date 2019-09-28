@@ -13,13 +13,16 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.content.ContentResolver;
@@ -183,6 +186,7 @@ public class ProfilFragement extends Fragment {
                     }
                 }else if (which == 1){
                     pd.setMessage("Edit pseudo");
+                    showNameUpdateDialog("name");
                 }else if(which == 2){
                     pd.setMessage("Edit password");
                 }
@@ -192,6 +196,40 @@ public class ProfilFragement extends Fragment {
 
     }
 
+    private void showNameUpdateDialog(String name) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Update pseudo");
+        LinearLayout linearLayout = new LinearLayout(getActivity());
+        linearLayout.setPadding(10,10,10,10);
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+        final EditText editText = new EditText(getActivity());
+        editText.setHint("Enter new pseudo");
+        linearLayout.addView(editText);
+        builder.setView(linearLayout);
+        builder.setPositiveButton("Update", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+              String value = editText.getText().toString().trim();
+              if(!TextUtils.isEmpty(value)){
+                 //  pd.show();
+                 HashMap reslt = new HashMap();
+                  reslt.put("pseudo", value);
+                  DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("Users").child(user.getUid());
+                  usersRef.updateChildren(reslt);
+              }else {
+                  editText.setError("Enter pseudo");
+              }
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+
+        builder.create().show();
+    }
 
 
     @Override

@@ -23,6 +23,8 @@ import com.luseen.spacenavigation.SpaceItem;
 import com.luseen.spacenavigation.SpaceNavigationView;
 import com.luseen.spacenavigation.SpaceOnClickListener;
 
+import static com.example.sharehit.R.*;
+
 public class FeedPage extends AppCompatActivity {
 
     TextView email;
@@ -49,7 +51,7 @@ public class FeedPage extends AppCompatActivity {
 
     private boolean loadFragement(Fragment fragment){
         if(fragment != null){
-            getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment)
+            getSupportFragmentManager().beginTransaction().replace(id.container, fragment)
                     .commit();
 
             return true;
@@ -60,17 +62,17 @@ public class FeedPage extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_feed_page);
+        setContentView(layout.activity_feed_page);
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
 
-        email = findViewById(R.id.showEmail);
-        navigationView = findViewById(R.id.space);
+        email = findViewById(id.showEmail);
+        navigationView = findViewById(id.space);
         navigationView.initWithSaveInstanceState(savedInstanceState);
-        navigationView.addSpaceItem(new SpaceItem("", R.drawable.time_icon));
-        navigationView.addSpaceItem(new SpaceItem("", R.drawable.search));
-        navigationView.addSpaceItem(new SpaceItem("", R.drawable.star_icon));
-        navigationView.addSpaceItem(new SpaceItem("", R.drawable.profil));
+        navigationView.addSpaceItem(new SpaceItem("", drawable.time_icon));
+        navigationView.addSpaceItem(new SpaceItem("", drawable.search));
+        navigationView.addSpaceItem(new SpaceItem("", drawable.star_icon));
+        navigationView.addSpaceItem(new SpaceItem("", drawable.profil));
         navigationView.showIconOnly();
         //checkUserStatus();
         /*
@@ -85,14 +87,22 @@ public class FeedPage extends AppCompatActivity {
          */
 
 
-
-        myDialog=new Dialog(this, R.style.DialogTheme);
+/*
+        myDialog=new Dialog(this, style.DialogTheme);
         Window window = myDialog.getWindow();
         WindowManager.LayoutParams wlp = window.getAttributes();
         wlp.gravity = Gravity.BOTTOM;
         /*wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
         wlp.width = WindowManager.LayoutParams.MATCH_PARENT;*/
 
+        final Dialog d = new Dialog(this, R.style.DialogTheme);
+        d.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        d.setContentView(R.layout.new_recommendation);
+        Window window = d.getWindow();
+        WindowManager.LayoutParams wlp = window.getAttributes();
+        wlp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        wlp.gravity = Gravity.BOTTOM;
+        window.setAttributes(wlp);
 
 
         //window.setAttributes(wlp);
@@ -105,13 +115,17 @@ public class FeedPage extends AppCompatActivity {
             public void onCentreButtonClick() {
 
                 int width = getResources().getDisplayMetrics().widthPixels;
+
+                d.show();
                 //int height = (int)(getResources().getDisplayMetrics().heightPixels*0.4);
 
-
+                /*
                 myDialog.setContentView(R.layout.new_recommendation);
                 //Toast.makeText(FeedPage.this,"onCentreButtonClick", Toast.LENGTH_SHORT).show();
                 myDialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT,WindowManager.LayoutParams.WRAP_CONTENT);
                 myDialog.show();
+
+                 */
                 /*fragment = new NewRecommendationFragment();
                 loadFragement(fragment);*/
             }
