@@ -15,7 +15,7 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="180dp"
+            android:layout_height="100dp"
             android:background="@color/colorPrimary">
 
 
@@ -23,15 +23,19 @@
                 android:id="@+id/upload"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="upload" />
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:text="logout" />
         </RelativeLayout>
 
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="120dp"
-            android:orientation="horizontal"
-            android:layout_marginTop="120dp">
+            android:layout_marginTop="60dp"
+            android:orientation="horizontal">
 
             <ImageView
                 android:id="@+id/pdp"
@@ -39,16 +43,14 @@
                 android:layout_height="120dp"
                 android:layout_marginStart="20dp"
                 android:layout_marginLeft="20dp"
-                android:background="@color/black"
-                android:padding="5dp"
-                android:src="@drawable/ic_add_image"></ImageView>
+                android:background="#FFC107"></ImageView>
 
             <TextView
                 android:id="@+id/pseudo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
-                android:layout_marginTop="65dp"
+                android:layout_marginTop="50dp"
                 android:layout_weight="1"
                 android:textColor="@color/black"
                 android:textSize="24sp" />

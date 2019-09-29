@@ -13,13 +13,16 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.content.ContentResolver;
@@ -98,14 +101,18 @@ public class ProfilFragement extends Fragment {
         mStorageRef = FirebaseStorage.getInstance().getReference();
         pd = new ProgressDialog(getActivity());
         mStorageRef = FirebaseStorage.getInstance().getReference();
-
+        Picasso.with(getContext()).load("http://i.imgur.com/DvpvklR.png").into(pdp);
         Query query = myRef.orderByChild("email").equalTo(user.getEmail());
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot ds : dataSnapshot.getChildren()){
                     String pseudoData = ""+ ds.child("pseudo").getValue();
+                    String pdpUrl = ""+ ds.child("pdpUrl").getValue();
                     pseudo.setText(pseudoData);
+                    Picasso.with(getContext())
+                            .load(pdpUrl).resize(180, 180)
+                            .into(pdp);
                 }
             }
 
@@ -115,30 +122,23 @@ public class ProfilFragement extends Fragment {
             }
         });
 
+
+
         fb.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showEditProfileDialog();
             }
         });
-
         upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                        if(imguri == null){
-
-                        }else {
-                            StorageReference image_path = mStorageRef.child("Camera Photos").child(imguri.getLastPathSegment());
-                            image_path.putFile(imguri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                                @Override
-                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                    Toast.makeText(getActivity(), "Image Uploaded", Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                        }
+                firebaseAuth.signOut();
+                startActivity(new Intent(getActivity(), LoginPage.class));
 
             }
         });
+
 
         return root;
     }
@@ -179,9 +179,14 @@ public class ProfilFragement extends Fragment {
             public void onClick(DialogInterface dialog, int which) {
                 if(which == 0){
                     pd.setMessage("Updating profile picture");
-                    showImagePicDialog();
+                    if(!checkStoragePermission()){
+                        requestStoragePermission();
+                    }else {
+                        pickFromGallery();
+                    }
                 }else if (which == 1){
                     pd.setMessage("Edit pseudo");
+                    showNameUpdateDialog("name");
                 }else if(which == 2){
                     pd.setMessage("Edit password");
                 }
@@ -191,31 +196,39 @@ public class ProfilFragement extends Fragment {
 
     }
 
-    private void showImagePicDialog() {
-
-        String options[] = {"Camera", "Gallery"};
+    private void showNameUpdateDialog(String name) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Pick image from ");
-        builder.setItems(options, new DialogInterface.OnClickListener() {
+        builder.setTitle("Update pseudo");
+        LinearLayout linearLayout = new LinearLayout(getActivity());
+        linearLayout.setPadding(10,10,10,10);
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+        final EditText editText = new EditText(getActivity());
+        editText.setHint("Enter new pseudo");
+        linearLayout.addView(editText);
+        builder.setView(linearLayout);
+        builder.setPositiveButton("Update", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                if(which == 0){
-                       if(!checkCameraPermission()){
-                           requestCameraPermission();
-                       }else {
-                           pickFromCamera();
-                       }
-                }else if (which == 1) {
-                    if(!checkStoragePermission()){
-                        requestStoragePermission();
-                    }else {
-                        pickFromGallery();
-                    }
-                }
+              String value = editText.getText().toString().trim();
+              if(!TextUtils.isEmpty(value)){
+                 //  pd.show();
+                 HashMap reslt = new HashMap();
+                  reslt.put("pseudo", value);
+                  DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("Users").child(user.getUid());
+                  usersRef.updateChildren(reslt);
+              }else {
+                  editText.setError("Enter pseudo");
+              }
             }
         });
-        builder.create().show();
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
 
+            }
+        });
+
+        builder.create().show();
     }
 
 
@@ -223,20 +236,6 @@ public class ProfilFragement extends Fragment {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 
         switch (requestCode){
-            case CAMERA_REQUEST_CODE:{
-
-                if(grantResults.length >0){
-                    boolean cameraAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
-                    boolean writeStorageAccepted = grantResults[1] == PackageManager.PERMISSION_GRANTED;
-                    if(cameraAccepted && writeStorageAccepted){
-                        pickFromCamera();
-                    }else {
-                        Toast.makeText(getActivity(), "Please enable camera permission", Toast.LENGTH_SHORT);
-
-                    }
-                }
-
-            }
             case STORAGE_REQUEST_CODE:{
 
 
@@ -269,14 +268,6 @@ public class ProfilFragement extends Fragment {
 
     }
 
-    private void pickFromCamera() {
-
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(intent,
-                CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
-
-    }
-
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -284,17 +275,35 @@ public class ProfilFragement extends Fragment {
 
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null && data.getData() != null) {
             imguri = data.getData();
-            pdp.setImageURI(imguri);
-            StorageReference filepath = mStorageRef.child("Pdp").child(imguri.getLastPathSegment());
+            final StorageReference filepath = mStorageRef.child("Pdp").child(user.getUid());
             filepath.putFile(imguri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                    Toast.makeText(getActivity(), "Upload done", Toast.LENGTH_SHORT);
-                }
-            });
-            //filepath.putFile(imguri);
-        }
-    }
+                    //Picasso.with(getContext()).load(imguri).resize(180, 180).into(pdp);
+                    filepath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            HashMap usersMap = new HashMap();
+                            DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("Users").child(user.getUid());
+                            usersMap.put("pdpUrl", String.valueOf(uri));
+                            usersRef.updateChildren(usersMap);
+                        }
+                    });
 
-}
+                }
+
+            });
+
+        }
+
+
+        }
+
+
+        }
+
+
+
+
+
 

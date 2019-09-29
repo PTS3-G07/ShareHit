@@ -39,14 +39,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        send = findViewById(R.id.send);
-        send.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent uploadpdp = new Intent(MainActivity.this, Uploadpdp.class);
-                startActivity(uploadpdp);
-            }
-        });
 
     }
 
