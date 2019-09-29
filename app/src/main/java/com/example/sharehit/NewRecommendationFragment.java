@@ -25,7 +25,7 @@ public class NewRecommendationFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Log.d("xlick", "clicked");
-                startActivity(new Intent(getActivity(), SearchList.class));
+
             }
         });
         return root;
