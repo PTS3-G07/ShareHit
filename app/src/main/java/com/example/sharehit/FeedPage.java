@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,6 +33,8 @@ public class FeedPage extends AppCompatActivity {
     SpaceNavigationView navigationView;
     FirebaseAuth firebaseAuth;
     Dialog myDialog;
+    ImageButton artiste;
+    ImageButton album;
 
     @Override
     protected void onStart() {
@@ -114,9 +117,21 @@ public class FeedPage extends AppCompatActivity {
             @Override
             public void onCentreButtonClick() {
 
-                int width = getResources().getDisplayMetrics().widthPixels;
-
                 d.show();
+                artiste = d.findViewById(R.id.artiste);
+                artiste.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+                        startActivity(new Intent(FeedPage.this, DezerApi.class));                    }
+                });
+                album = d.findViewById(id.album);
+                album.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+                        startActivity(new Intent(FeedPage.this, DezerApiAlbum.class));                    }
+                });
                 //int height = (int)(getResources().getDisplayMetrics().heightPixels*0.4);
 
                 /*

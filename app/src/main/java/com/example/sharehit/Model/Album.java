@@ -4,11 +4,18 @@ public class Album extends Type {
 
     private String artiste;
     private String titre;
+    private String imgUrl;
 
-    public Album(String artiste, String titre) {
-        this.artiste = artiste;
+    public Album(/*String artiste*/ String titre, String imgUrl) {
+        //this.artiste = artiste;
         this.titre = titre;
+        this.imgUrl = imgUrl;
     }
+
+    public String getImgUrl() {
+        return imgUrl;
+    }
+
 
     public String getArtiste() {
         return artiste;

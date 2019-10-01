@@ -1,13 +1,13 @@
 package com.example.sharehit;
 
+import android.content.Context;
+import android.os.Bundle;
+import android.widget.SearchView;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.content.Context;
-import android.os.Bundle;
-import android.text.TextUtils;
-import android.widget.SearchView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -16,6 +16,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.sharehit.Model.Album;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,11 +25,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DezerApi extends AppCompatActivity {
+public class DezerApiAlbum extends AppCompatActivity {
 
     private RecyclerView mRecyclerView;
-    private ArtistAdapter mExampleAdapter;
-    private ArrayList<Artist> mExampleList;
+    private AlbumAdapter mExampleAdapter;
+    private ArrayList<Album> mExampleList;
     private RequestQueue mRequestQueue;
     Context c;
     private SearchView search;
@@ -44,7 +45,7 @@ public class DezerApi extends AppCompatActivity {
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        mExampleList = new ArrayList<Artist>();
+        mExampleList = new ArrayList<>();
         mRequestQueue = Volley.newRequestQueue(this);
 
         search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -55,18 +56,9 @@ public class DezerApi extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                /*
-                if (TextUtils.isEmpty(newText)) {
-                    mExampleList.clear();
-                } else {
-                    parseJSON(newText);
-                }
-*/
 
                 mExampleList.clear();
                 parseJSON(newText);
-
-                // Toast.makeText(DezerApi.this, "Result: "+newText, Toast.LENGTH_LONG).show();
                 return false;
             }
         });
@@ -74,19 +66,18 @@ public class DezerApi extends AppCompatActivity {
 
     }
 
-    private Map<String, String> parseJSON(String artistName) {
+    private Map<String, String> parseJSON(String albumName) {
 
-        String url = "https://deezerdevs-deezer.p.rapidapi.com/artist/" + artistName;
+        String url = "https://deezerdevs-deezer.p.rapidapi.com/album/" + albumName;
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
                     String name = response.getString("name");
-                    String nbFan = response.getString("nb_fan");
                     String imgUrl = response.getString("picture");
                     //Log.d("img", imgUrl);
-                    mExampleList.add(new Artist(name, nbFan, imgUrl));
-                    mExampleAdapter = new ArtistAdapter(DezerApi.this, mExampleList);
+                    mExampleList.add(new Album(name, imgUrl));
+                    mExampleAdapter = new AlbumAdapter(DezerApiAlbum.this, mExampleList);
                     mRecyclerView.setAdapter(mExampleAdapter);
 
                 } catch (JSONException e) {
@@ -115,5 +106,5 @@ public class DezerApi extends AppCompatActivity {
         return null;
     }
 
-
+    
 }

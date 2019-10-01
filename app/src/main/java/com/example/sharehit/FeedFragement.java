@@ -19,7 +19,7 @@ import com.luseen.spacenavigation.SpaceNavigationView;
 public class FeedFragement extends Fragment {
 
     FirebaseAuth firebaseAuth;
-    Button gotoSearch, deezer;
+    Button deezer;
 
     @Nullable
     @Override
