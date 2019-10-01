@@ -1,7 +1,6 @@
-package com.example.sharehit;
+package com.example.sharehit.Adapter;
 
 import android.content.Context;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,15 +10,26 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.sharehit.Model.Artist;
+import com.example.sharehit.R;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ArtistViewHolder> {
 
     private Context mContext;
     private ArrayList<Artist> mArtistList;
+    private OnItemclickListener mListener;
+
+
+    public interface OnItemclickListener {
+        void onItemClick(int position);
+    }
+
+    public void setOnItemClickListener(OnItemclickListener listener){
+        mListener = listener;
+    }
 
     public ArtistAdapter(Context context, ArrayList<Artist> matistList) {
         mContext = context;
@@ -65,7 +75,17 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ArtistView
             name_ar = itemView.findViewById(R.id.name_ar);
             nbFan = itemView.findViewById(R.id.nbFan);
 
-
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(mListener != null){
+                        int position = getAdapterPosition();
+                        if(position != RecyclerView.NO_POSITION){
+                            mListener.onItemClick(position);
+                        }
+                    }
+                }
+            });
         }
     }
 }

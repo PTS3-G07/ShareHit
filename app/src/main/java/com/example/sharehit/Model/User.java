@@ -18,12 +18,17 @@ public class User {
 
     public List<User> followed;
 
+
+
     public User(String pseudo, String email) {
         this.pseudo = pseudo;
         this.email = email;
         this.bookmarks = new ArrayList<>();
         this.followed = new ArrayList<>();
     }
+
+
+
     public String getPseudo() {
         return pseudo;
     }

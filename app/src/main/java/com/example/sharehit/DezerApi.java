@@ -16,6 +16,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.sharehit.Adapter.ArtistAdapter;
+import com.example.sharehit.Model.Artist;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,7 +26,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DezerApi extends AppCompatActivity {
+
+public class DezerApi extends AppCompatActivity implements ArtistAdapter.OnItemclickListener {
+
+    public static final String EXTRA_URL = "imgUrl";
+    public static final String EXTRA_NAME = "name";
+    public static final String EXTRA_FAN = "nbFan";
 
     private RecyclerView mRecyclerView;
     private ArtistAdapter mExampleAdapter;
@@ -115,5 +122,13 @@ public class DezerApi extends AppCompatActivity {
         return null;
     }
 
-
+    @Override
+    public void onItemClick(int position) {
+        Intent postRec = new Intent(this, PostRec.class);
+        Artist clickedItem = mExampleList.get(position);
+        postRec.putExtra(EXTRA_URL, clickedItem.getImgUrl());
+        postRec.putExtra(EXTRA_NAME, clickedItem.getName());
+        postRec.putExtra(EXTRA_FAN, clickedItem.getNbFans());
+        startActivity(postRec);
+    }
 }

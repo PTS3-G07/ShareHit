@@ -18,7 +18,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".DezerApi"></activity>
+        <activity android:name=".PostRec"></activity>
+        <activity android:name=".DezerApi" />
         <activity android:name=".Uploadpdp" />
         <activity android:name=".FeedPage" />
         <activity android:name=".SignUp" />

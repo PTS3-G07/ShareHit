@@ -6,20 +6,34 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.sharehit.Adapter.AdapterRecs;
+import com.example.sharehit.Model.Recommendation;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.luseen.spacenavigation.SpaceNavigationView;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class FeedFragement extends Fragment {
 
     FirebaseAuth firebaseAuth;
-    Button deezer;
+    Button gotoSearch, deezer;
+    RecyclerView recyclerView;
+    List<Recommendation> recList;
+    AdapterRecs adapterRecs;
+
 
     @Nullable
     @Override
@@ -34,6 +48,21 @@ public class FeedFragement extends Fragment {
                 startActivity(new Intent(getActivity(), DezerApi.class));
             }
         });
+
+
+
+        firebaseAuth = FirebaseAuth.getInstance();
+
+        recyclerView = root.findViewById(R.id.postRecyclerView);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        layoutManager.setStackFromEnd(true);
+        layoutManager.setReverseLayout(true);
+        recyclerView.setLayoutManager(layoutManager);
+
+        recList = new ArrayList<Recommendation>();
+
+        loadPosts();
+
         return root;
     }
 
