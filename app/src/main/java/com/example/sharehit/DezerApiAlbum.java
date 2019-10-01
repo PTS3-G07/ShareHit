@@ -3,7 +3,6 @@ package com.example.sharehit;
 import android.content.Context;
 import android.os.Bundle;
 import android.widget.SearchView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -16,6 +15,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.sharehit.Adapter.AlbumAdapter;
+import com.example.sharehit.Adapter.ArtistAdapter;
 import com.example.sharehit.Model.Album;
 
 import org.json.JSONException;
@@ -25,7 +26,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DezerApiAlbum extends AppCompatActivity {
+public class DezerApiAlbum extends AppCompatActivity{
 
     private RecyclerView mRecyclerView;
     private AlbumAdapter mExampleAdapter;

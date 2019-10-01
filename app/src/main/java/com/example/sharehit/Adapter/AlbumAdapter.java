@@ -1,4 +1,4 @@
-package com.example.sharehit;
+package com.example.sharehit.Adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sharehit.Model.Album;
+import com.example.sharehit.R;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -19,6 +20,10 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ArtistViewHo
 
     private Context mContext;
     private ArrayList<Album> mArtistList;
+
+    public interface OnItemclickListener {
+        void onItemClick(int position);
+    }
 
     public AlbumAdapter(Context context, ArrayList<Album> matistList) {
         mContext = context;

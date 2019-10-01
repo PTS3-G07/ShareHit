@@ -61,7 +61,7 @@ public class FeedFragement extends Fragment {
 
         recList = new ArrayList<Recommendation>();
 
-        loadPosts();
+        //loadPosts();
 
         return root;
     }
