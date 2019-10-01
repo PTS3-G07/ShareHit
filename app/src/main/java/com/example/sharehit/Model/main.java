@@ -7,11 +7,11 @@ public class main {
         User user2 = new User("Thomas","thomas@sousmerde.com");
 
         Album album = new Album("John Cena","pompolopom pompomlopom");
-        Recommendation recommendation = new Recommendation(album, user,"du blabla");
+        //Recommendation recommendation = new Recommendation(album, user,"du blabla");
 
-        System.out.println(recommendation.toString());
+        //System.out.println(recommendation.toString());
 
-        user2.setBookmarked(recommendation);
+       // user2.setBookmarked(recommendation);
 
         System.out.println(user2.getBookmarks().toString());
     }

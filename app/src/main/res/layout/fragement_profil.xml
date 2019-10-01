@@ -6,7 +6,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
 
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -28,6 +27,7 @@
                 android:layout_marginEnd="8dp"
                 android:layout_marginRight="8dp"
                 android:text="logout" />
+
         </RelativeLayout>
 
 
@@ -56,6 +56,15 @@
                 android:textSize="24sp" />
 
         </LinearLayout>
+
+        <ProgressBar
+            android:id="@+id/progressBar3"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="363dp"
+            android:layout_marginRight="363dp"
+            android:layout_marginBottom="132dp" />
 
     </RelativeLayout>
 

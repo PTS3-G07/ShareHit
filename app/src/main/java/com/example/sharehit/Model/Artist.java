@@ -1,4 +1,4 @@
-package com.example.sharehit;
+package com.example.sharehit.Model;
 
 public class Artist {
 

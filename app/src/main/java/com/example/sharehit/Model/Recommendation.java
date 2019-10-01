@@ -1,25 +1,25 @@
 package com.example.sharehit.Model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Recommendation {
 
-    private Type type;
+    private String type;
     private User user;
     private String desc;
+    private String name;
+    private String img;
     private List<User> likers;
     private List<Comment> comments;
 
-    public Recommendation(Type type, User user, String desc) {
+    public Recommendation(String type, User user,  String name, String img) {
         this.type = type;
         this.user = user;
-        this.desc = desc;
-        this.likers=new ArrayList<>();
-        this.comments = new ArrayList<>();
+        this.name = name;
+        this.img = img;
     }
 
-    public Type getType() {
+    public String getType() {
         return type;
     }
 
@@ -41,5 +41,21 @@ public class Recommendation {
 
     public String toString(){
         return this.user.getPseudo()+" a recommandé "+type.toString();
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getImg() {
+        return img;
+    }
+
+    public void setImg(String img) {
+        this.img = img;
     }
 }
