@@ -50,7 +50,7 @@
             app:srcCompat="@drawable/album" />
 
         <ImageButton
-            android:id="@+id/imageButton5"
+            android:id="@+id/morceau"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@color/space_transparent"
@@ -66,7 +66,7 @@
         tools:layout_editor_absoluteY="189dp">
 
         <ImageButton
-            android:id="@+id/imageButton7"
+            android:id="@+id/jeuVideo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="10dp"
@@ -76,7 +76,7 @@
             app:srcCompat="@drawable/jeu_video" />
 
         <ImageButton
-            android:id="@+id/imageButton6"
+            android:id="@+id/film"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="10dp"
@@ -86,7 +86,7 @@
             app:srcCompat="@drawable/film" />
 
         <ImageButton
-            android:id="@+id/imageButton8"
+            android:id="@+id/serie"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@color/space_transparent"
