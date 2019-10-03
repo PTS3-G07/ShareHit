@@ -84,7 +84,7 @@ public class DezerApi extends AppCompatActivity implements ArtistAdapter.OnItemc
 
     private Map<String, String> parseJSON(String artistName) {
 
-        String url = "https://deezerdevs-deezer.p.rapidapi.com/artist/" + artistName;
+        String url = "http://api.deezer.com/2.0/search/artist/?q="+artistName+"&index=0&nb_items=20&output=json";
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {

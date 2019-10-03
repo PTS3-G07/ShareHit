@@ -20,9 +20,13 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ArtistViewHo
 
     private Context mContext;
     private ArrayList<Album> mArtistList;
+    private OnItemclickListener mListener;
 
     public interface OnItemclickListener {
         void onItemClick(int position);
+    }
+    public void setOnItemClickListener(OnItemclickListener listener){
+        mListener = listener;
     }
 
     public AlbumAdapter(Context context, ArrayList<Album> matistList) {
@@ -45,7 +49,7 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ArtistViewHo
         //String nbFan = currentItem.getNbFans();
 
         holder.name_ar.setText(name);
-        //holder.nbFan.setText("Nombre de fan: " +nbFan);
+        holder.nbFan.setText("12");
        Picasso.with(mContext).load(imageUrl).fit().centerInside().into(holder.img_ar);
         //holder.img_ar.setImageURI(Uri.parse("https://e-cdns-images.dzcdn.net/images/artist/0707267475580b1b82f4da20a1b295c6/120x120-000000-80-0-0.jpg"));
     }
