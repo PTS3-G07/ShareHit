@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.widget.SearchView;
 
 import com.android.volley.AuthFailureError;
@@ -94,102 +93,27 @@ public class DezerApi extends AppCompatActivity implements ArtistAdapter.OnItemc
     }
 
     private Map<String, String> parseJSONartist(String artistName) {
+
         String url = "http://api.deezer.com/2.0/search/artist/?q="+artistName+"&index=0&nb_items=20&output=json";
-        Log.e("abcde", "tamere");
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    String name = response.getString("name");
-                    String nbFan = response.getString("nb_fan");
-                    String imgUrl = response.getString("picture");
-                    //Log.d("img", imgUrl);
-                    mExampleList.add(new Artist(name, nbFan, imgUrl));
+                    JSONArray jsonArray = response.getJSONArray("data");
+                    for(int i = 0 ; jsonArray.length() > i; i++){
+                        JSONObject data = jsonArray.getJSONObject(i);
+                        String name = data.getString("name");
+                        String nbFan = data.getString("nb_fan");
+                        String imgUrl = data.getString("picture");
+                        mExampleList.add(new Artist(name, nbFan, imgUrl));
+                    }
+
                     mExampleAdapter = new ArtistAdapter(DezerApi.this, mExampleList);
                     mRecyclerView.setAdapter(mExampleAdapter);
+                    mExampleAdapter.setOnItemClickListener(DezerApi.this);
 
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
-            }
-        }
 
-        ) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("x-rapidapi-host", "deezerdevs-deezer.p.rapidapi.com");
-                params.put("x-rapidapi-key", "e057a6cddamshcf40c6b8e5a6046p1233eajsnf273df986993");
-
-                return params;
-            }
-        };
-
-        mRequestQueue.add(request);
-        return null;
-    }
-
-    private Map<String, String> parseJSONalbum(String albumName) {
-
-        String url = "http://api.deezer.com/2.0/search/album/?q="+albumName+"&index=0&nb_items=20&output=json";
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                try {
-                    String name = response.getString("title");
-                    String nbFan = response.getString("nb_tracks");
-                    String imgUrl = response.getString("cover");
-                    //Log.d("img", imgUrl);
-                    mExampleList.add(new Artist(name, nbFan, imgUrl));
-                    mExampleAdapter = new ArtistAdapter(DezerApi.this, mExampleList);
-                    mRecyclerView.setAdapter(mExampleAdapter);
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
-            }
-        }
-
-        ) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("x-rapidapi-host", "deezerdevs-deezer.p.rapidapi.com");
-                params.put("x-rapidapi-key", "e057a6cddamshcf40c6b8e5a6046p1233eajsnf273df986993");
-
-                return params;
-            }
-        };
-
-        mRequestQueue.add(request);
-        return null;
-    }
-
-    private Map<String, String> parseJSONtrack(String trackName) {
-
-        String url = "http://api.deezer.com/2.0/search/track/?q="+trackName+"&index=0&nb_items=20&output=json";
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                try {
-                    String name = response.getString("title");
-                    String nbFan = response.getString("title_short");
-                    String imgUrl = response.getString("picture");
-                    //Log.d("img", imgUrl);
-                    mExampleList.add(new Artist(name, nbFan, imgUrl));
-                    mExampleAdapter = new ArtistAdapter(DezerApi.this, mExampleList);
-                    mRecyclerView.setAdapter(mExampleAdapter);
-
+                     */
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
