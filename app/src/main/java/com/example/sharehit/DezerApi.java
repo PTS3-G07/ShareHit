@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.widget.SearchView;
 
 import com.android.volley.AuthFailureError;
@@ -40,11 +41,16 @@ public class DezerApi extends AppCompatActivity implements ArtistAdapter.OnItemc
     private RequestQueue mRequestQueue;
     Context c;
     private SearchView search;
+    public int type;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dezer_api);
+
+        Bundle b = getIntent().getExtras();
+        if(b != null)
+            type = b.getInt("key");
 
         search = (SearchView) findViewById(R.id.searchv);
 
@@ -103,6 +109,7 @@ public class DezerApi extends AppCompatActivity implements ArtistAdapter.OnItemc
                     mExampleAdapter.setOnItemClickListener(DezerApi.this);
 
 
+                     */
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

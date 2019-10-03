@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DezerApiAlbum extends AppCompatActivity{
+public class DezerApiAlbum extends AppCompatActivity implements AlbumAdapter.OnItemclickListener{
 
     private RecyclerView mRecyclerView;
     private AlbumAdapter mExampleAdapter;
@@ -107,5 +107,9 @@ public class DezerApiAlbum extends AppCompatActivity{
         return null;
     }
 
-    
+
+    @Override
+    public void onItemClick(int position) {
+
+    }
 }

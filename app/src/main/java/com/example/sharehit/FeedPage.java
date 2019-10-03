@@ -35,6 +35,11 @@ public class FeedPage extends AppCompatActivity {
     Dialog myDialog;
     ImageButton artiste;
     ImageButton album;
+    ImageButton morceau;
+    ImageButton jeuVideo;
+    ImageButton serie;
+    ImageButton film;
+    public int idSearch;
 
     @Override
     protected void onStart() {
@@ -115,13 +120,20 @@ public class FeedPage extends AppCompatActivity {
             @Override
             public void onCentreButtonClick() {
 
+                final Intent intent = new Intent(FeedPage.this, DezerApi.class);
+                final Bundle b = new Bundle();
                 d.show();
                 artiste = d.findViewById(R.id.artiste);
                 artiste.setOnClickListener(new View.OnClickListener() {
 
                     @Override
                     public void onClick(View v) {
-                        startActivity(new Intent(FeedPage.this, DezerApi.class));                    }
+
+                        b.putInt("key", 1); //Your id
+                        intent.putExtras(b); //Put your id to your next Intent
+                        startActivity(intent);
+                        finish();
+                    }
                 });
                 album = d.findViewById(id.album);
                 album.setOnClickListener(new View.OnClickListener() {
@@ -129,6 +141,18 @@ public class FeedPage extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         startActivity(new Intent(FeedPage.this, DezerApiAlbum.class));                    }
+                });
+
+                morceau = d.findViewById(id.morceau);
+                morceau.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+                        b.putInt("idSearch", 3);
+                        intent.putExtras(b);
+                        startActivity(intent);
+                        finish();
+                    }
                 });
                 //int height = (int)(getResources().getDisplayMetrics().heightPixels*0.4);
 

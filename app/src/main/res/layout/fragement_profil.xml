@@ -32,7 +32,6 @@
 
 
         <LinearLayout
-            android:id="@+id/ln"
             android:layout_width="match_parent"
             android:layout_height="120dp"
             android:layout_marginTop="60dp"
@@ -44,8 +43,7 @@
                 android:layout_height="120dp"
                 android:layout_marginStart="20dp"
                 android:layout_marginLeft="20dp"
-
-                android:background="#FFFFFF"></ImageView>
+                android:background="#FFC107"></ImageView>
 
             <TextView
                 android:id="@+id/pseudo"
@@ -60,20 +58,13 @@
         </LinearLayout>
 
         <ProgressBar
-            android:id="@+id/loading"
+            android:id="@+id/progressBar3"
             style="?android:attr/progressBarStyle"
-            android:layout_width="69dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/ln"
-            android:layout_alignStart="@+id/ln"
-            android:layout_alignLeft="@+id/ln"
-            android:layout_centerHorizontal="true"
-            android:layout_marginStart="185dp"
-            android:layout_marginLeft="185dp"
-            android:layout_marginTop="209dp"
             android:layout_marginEnd="363dp"
-            android:layout_marginRight="320dp"
-            android:layout_marginBottom="288dp" />
+            android:layout_marginRight="363dp"
+            android:layout_marginBottom="132dp" />
 
     </RelativeLayout>
 

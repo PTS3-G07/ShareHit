@@ -53,7 +53,7 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ArtistView
         holder.name_ar.setText(name);
         holder.nbFan.setText("Nombre de fan: " +nbFan);
        Picasso.with(mContext).load(imageUrl).fit().centerInside().into(holder.img_ar);
-
+        //holder.img_ar.setImageURI(Uri.parse("https://e-cdns-images.dzcdn.net/images/artist/0707267475580b1b82f4da20a1b295c6/120x120-000000-80-0-0.jpg"));
     }
 
     @Override

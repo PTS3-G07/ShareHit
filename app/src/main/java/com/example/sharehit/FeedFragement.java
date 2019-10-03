@@ -61,36 +61,13 @@ public class FeedFragement extends Fragment {
 
         recList = new ArrayList<Recommendation>();
 
-        loadPosts();
+        //loadPosts();
 
         return root;
     }
 
-    private void loadPosts() {
-
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Recommendations");
-        ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                recList.clear();
-                for (DataSnapshot ds: dataSnapshot.getChildren()){
-                    Recommendation recommendation = ds.getValue(Recommendation.class);
-                    recList.add(recommendation);
-                    adapterRecs = new AdapterRecs(getActivity(), recList);
-                    recyclerView.setAdapter(adapterRecs);
 
 
-
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Toast.makeText(getActivity(), "Error", Toast.LENGTH_SHORT);
-            }
-        });
-
-    }
 
 
 }
