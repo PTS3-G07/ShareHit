@@ -115,14 +115,15 @@ public class FeedPage extends AppCompatActivity {
             @Override
             public void onCentreButtonClick() {
 
+                final Intent intent = new Intent(FeedPage.this, DezerApi.class);
+                final Bundle b = new Bundle();
                 d.show();
                 artiste = d.findViewById(R.id.artiste);
                 artiste.setOnClickListener(new View.OnClickListener() {
 
                     @Override
                     public void onClick(View v) {
-                        Intent intent = new Intent(FeedPage.this, DezerApi.class);
-                        Bundle b = new Bundle();
+
                         b.putInt("key", 1); //Your id
                         intent.putExtras(b); //Put your id to your next Intent
                         startActivity(intent);
