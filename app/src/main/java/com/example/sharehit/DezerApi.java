@@ -20,6 +20,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.sharehit.Adapter.ArtistAdapter;
 import com.example.sharehit.Model.Artist;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -77,7 +78,6 @@ public class DezerApi extends AppCompatActivity implements ArtistAdapter.OnItemc
 */
 
                 mExampleList.clear();
-                Log.e("type", Integer.toString(type));
                 if(type == 1) parseJSONartist(newText);
                 if(type == 2) parseJSONalbum(newText);
                 if(type == 3) parseJSONtrack(newText);
@@ -112,8 +112,97 @@ public class DezerApi extends AppCompatActivity implements ArtistAdapter.OnItemc
                     mRecyclerView.setAdapter(mExampleAdapter);
                     mExampleAdapter.setOnItemClickListener(DezerApi.this);
 
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+            }
+        }
 
-                     */
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("x-rapidapi-host", "deezerdevs-deezer.p.rapidapi.com");
+                params.put("x-rapidapi-key", "e057a6cddamshcf40c6b8e5a6046p1233eajsnf273df986993");
+
+                return params;
+            }
+        };
+
+        mRequestQueue.add(request);
+        return null;
+    }
+    private Map<String, String> parseJSONalbum(String albumName) {
+
+        String url = "http://api.deezer.com/2.0/search/album/?q="+albumName+"&index=0&nb_items=20&output=json";
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    JSONArray jsonArray = response.getJSONArray("data");
+                    for(int i = 0 ; jsonArray.length() > i; i++){
+                        JSONObject data = jsonArray.getJSONObject(i);
+                        String name = data.getString("title");
+                        String nbFan = data.getString("nb_tracks");
+                        String imgUrl = data.getString("cover");
+                        mExampleList.add(new Artist(name, nbFan, imgUrl));
+                    }
+
+                    mExampleAdapter = new ArtistAdapter(DezerApi.this, mExampleList);
+                    mRecyclerView.setAdapter(mExampleAdapter);
+                    mExampleAdapter.setOnItemClickListener(DezerApi.this);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+            }
+        }
+
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("x-rapidapi-host", "deezerdevs-deezer.p.rapidapi.com");
+                params.put("x-rapidapi-key", "e057a6cddamshcf40c6b8e5a6046p1233eajsnf273df986993");
+
+                return params;
+            }
+        };
+
+        mRequestQueue.add(request);
+        return null;
+    }
+
+    private Map<String, String> parseJSONtrack(String trackName) {
+
+        String url = "http://api.deezer.com/2.0/search/track    /?q="+trackName+"&index=0&nb_items=20&output=json";
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    JSONArray jsonArray = response.getJSONArray("data");
+                    for(int i = 0 ; jsonArray.length() > i; i++){
+                        JSONObject data = jsonArray.getJSONObject(i);
+                        String name = data.getString("title");
+                        String nbFan = data.getString("rank");
+                        String imgUrl = data.getString("picture");
+                        mExampleList.add(new Artist(name, nbFan, imgUrl));
+                    }
+
+                    mExampleAdapter = new ArtistAdapter(DezerApi.this, mExampleList);
+                    mRecyclerView.setAdapter(mExampleAdapter);
+                    mExampleAdapter.setOnItemClickListener(DezerApi.this);
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
