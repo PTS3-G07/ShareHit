@@ -104,7 +104,7 @@ public class DezerApi extends AppCompatActivity implements ArtistAdapter.OnItemc
                         JSONObject data = jsonArray.getJSONObject(i);
                         String name = data.getString("name");
                         String nbFan = data.getString("nb_fan");
-                        String imgUrl = data.getString("picture");
+                        String imgUrl = data.getString("picture_medium");
                         mExampleList.add(new Artist(name, nbFan, imgUrl));
                     }
 
@@ -147,14 +147,14 @@ public class DezerApi extends AppCompatActivity implements ArtistAdapter.OnItemc
                     JSONArray jsonArray = response.getJSONArray("data");
                     for(int i = 0 ; jsonArray.length() > i; i++){
                         JSONObject data = jsonArray.getJSONObject(i);
-                        JSONObject genre = data.getJSONObject("genre");
                         String name = data.getString("title");
-                        String nbFan = genre.getString("name");
-                        String imgUrl = data.getString("cover");
-                        mExampleList.add(new Artist(name, nbFan, imgUrl));
+                        JSONObject artiste = data.getJSONObject("artist");
+                        String artistName = artiste.getString("name");
+                        String imgUrl = data.getString("cover_medium");
+                        mExampleList.add(new Artist(name, artistName, imgUrl));
                     }
 
-                    mExampleAdapter = new ArtistAdapter(DezerApi.this, mExampleList, "Genre:");
+                    mExampleAdapter = new ArtistAdapter(DezerApi.this, mExampleList, "Artiste: ");
                     mRecyclerView.setAdapter(mExampleAdapter);
                     mExampleAdapter.setOnItemClickListener(DezerApi.this);
 
@@ -196,10 +196,10 @@ public class DezerApi extends AppCompatActivity implements ArtistAdapter.OnItemc
                         JSONObject data = jsonArray.getJSONObject(i);
                         JSONObject artist = data.getJSONObject("artist");
                         JSONObject album = data.getJSONObject("album");
-                        String name = data.getString("title");
-                        String nbFan = album.getString("title");
+                        String title = data.getString("title");
+                        String albumTitle = album.getString("title");
                         String imgUrl = artist.getString("picture_medium");
-                        mExampleList.add(new Artist(name, nbFan, imgUrl));
+                        mExampleList.add(new Artist(title, albumTitle, imgUrl));
                     }
 
                     mExampleAdapter = new ArtistAdapter(DezerApi.this, mExampleList,"Album: ");
