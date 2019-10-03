@@ -43,8 +43,6 @@ public class FeedPage extends AppCompatActivity {
         FirebaseUser user = firebaseAuth.getCurrentUser();
         if(user == null){
             startActivity(new Intent(FeedPage.this, MainActivity.class));
-        }else {
-
         }
     }
 
@@ -123,26 +121,21 @@ public class FeedPage extends AppCompatActivity {
 
                     @Override
                     public void onClick(View v) {
-                        startActivity(new Intent(FeedPage.this, DezerApi.class));                    }
+                        Intent intent = new Intent(FeedPage.this, DezerApi.class);
+                        Bundle b = new Bundle();
+                        b.putInt("key", 1); //Your id
+                        intent.putExtras(b); //Put your id to your next Intent
+                        startActivity(intent);
+                        finish();
+                    }
                 });
                 album = d.findViewById(id.album);
                 album.setOnClickListener(new View.OnClickListener() {
 
                     @Override
                     public void onClick(View v) {
-                        startActivity(new Intent(FeedPage.this, DezerApiAlbum.class));                    }
+                        startActivity(new Intent(FeedPage.this, DezerApi.class));                    }
                 });
-                //int height = (int)(getResources().getDisplayMetrics().heightPixels*0.4);
-
-                /*
-                myDialog.setContentView(R.layout.new_recommendation);
-                //Toast.makeText(FeedPage.this,"onCentreButtonClick", Toast.LENGTH_SHORT).show();
-                myDialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT,WindowManager.LayoutParams.WRAP_CONTENT);
-                myDialog.show();
-
-                 */
-                /*fragment = new NewRecommendationFragment();
-                loadFragement(fragment);*/
             }
 
             @Override
