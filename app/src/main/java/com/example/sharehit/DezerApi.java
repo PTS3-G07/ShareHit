@@ -20,6 +20,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.sharehit.Adapter.ArtistAdapter;
 import com.example.sharehit.Model.Artist;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -77,19 +78,25 @@ public class DezerApi extends AppCompatActivity implements ArtistAdapter.OnItemc
 
     }
 
-    private Map<String, String> parseJSON(String artistName) {
+    private Map<String, String> parseJSONartist(String artistName) {
 
         String url = "http://api.deezer.com/2.0/search/artist/?q="+artistName+"&index=0&nb_items=20&output=json";
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    String name = response.getString("name");
-                    String nbFan = response.getString("nb_fan");
-                    String imgUrl = response.getString("picture");
-                    mExampleList.add(new Artist(name, nbFan, imgUrl));
+                    JSONArray jsonArray = response.getJSONArray("data");
+                    for(int i = 0 ; jsonArray.length() > i; i++){
+                        JSONObject data = jsonArray.getJSONObject(i);
+                        String name = data.getString("name");
+                        String nbFan = data.getString("nb_fan");
+                        String imgUrl = data.getString("picture");
+                        mExampleList.add(new Artist(name, nbFan, imgUrl));
+                    }
+
                     mExampleAdapter = new ArtistAdapter(DezerApi.this, mExampleList);
                     mRecyclerView.setAdapter(mExampleAdapter);
+                    mExampleAdapter.setOnItemClickListener(DezerApi.this);
 
                 } catch (JSONException e) {
                     e.printStackTrace();
