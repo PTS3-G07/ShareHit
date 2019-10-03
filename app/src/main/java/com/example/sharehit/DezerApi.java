@@ -102,17 +102,7 @@ public class DezerApi extends AppCompatActivity implements ArtistAdapter.OnItemc
                     mRecyclerView.setAdapter(mExampleAdapter);
                     mExampleAdapter.setOnItemClickListener(DezerApi.this);
 
-                    /*
-                    String name = response.getString("name");
-                    String nbFan = response.getString("nb_fan");
-                    String imgUrl = response.getString("picture");
-                    //Log.d("img", imgUrl);
-                    mExampleList.add(new Artist(name, nbFan, imgUrl));
-                    mExampleAdapter = new ArtistAdapter(DezerApi.this, mExampleList);
-                    mRecyclerView.setAdapter(mExampleAdapter);
-                    mExampleAdapter.setOnItemClickListener(DezerApi.this);
 
-                     */
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
