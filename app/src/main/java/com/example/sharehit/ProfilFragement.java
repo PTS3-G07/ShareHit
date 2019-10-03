@@ -16,6 +16,8 @@ import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -23,6 +25,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.content.ContentResolver;
@@ -82,7 +85,14 @@ public class ProfilFragement extends Fragment {
     private static final int PICK_IMAGE_REQUEST = 111;
     String cameraPermissions[];
     String storagePermissions[];
+    ProgressBar loading;
 
+
+
+    public boolean OnCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.singout_menu, menu);
+        return true;
+    }
 
     @Nullable
     @Override
@@ -96,12 +106,23 @@ public class ProfilFragement extends Fragment {
         pseudo= root.findViewById(R.id.pseudo);
         upload= root.findViewById(R.id.upload);
         fb = root.findViewById(R.id.fb);
+        loading = root.findViewById(R.id.loading);
+        loading.setVisibility(View.INVISIBLE);
+        if (pseudo.getText().length() < 0) {
+            loading.setVisibility(View.VISIBLE);
+        } else {
+
+        }
+        final String userUID = firebaseAuth.getCurrentUser().getUid();
+
         cameraPermissions = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
         storagePermissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
         mStorageRef = FirebaseStorage.getInstance().getReference();
         pd = new ProgressDialog(getActivity());
         mStorageRef = FirebaseStorage.getInstance().getReference();
-        Picasso.with(getContext()).load("http://i.imgur.com/DvpvklR.png").into(pdp);
+        Picasso.with(getContext())
+                .load("https://firebasestorage.googleapis.com/v0/b/share-hit-52071.appspot.com/o/Pdp%"+ userUID +"?alt=media").placeholder( R.drawable.progress_animation ).fit()
+                .into(pdp);
         Query query = myRef.orderByChild("email").equalTo(user.getEmail());
         query.addValueEventListener(new ValueEventListener() {
             @Override
@@ -109,10 +130,13 @@ public class ProfilFragement extends Fragment {
                 for(DataSnapshot ds : dataSnapshot.getChildren()){
                     String pseudoData = ""+ ds.child("pseudo").getValue();
                     String pdpUrl = ""+ ds.child("pdpUrl").getValue();
+/*
+                        Picasso.with(getContext())
+                                .load(pdpUrl).placeholder( R.drawable.progress_animation ).fit()
+                                .into(pdp);
+*/
                     pseudo.setText(pseudoData);
-                    Picasso.with(getContext())
-                            .load(pdpUrl).resize(180, 180)
-                            .into(pdp);
+
                 }
             }
 
@@ -121,6 +145,7 @@ public class ProfilFragement extends Fragment {
 
             }
         });
+
 
 
 
@@ -171,7 +196,7 @@ public class ProfilFragement extends Fragment {
 
     private void showEditProfileDialog() {
 
-        String options[] = {"Edit profile picture", "Edit pseudo","Edit Password"};
+        String options[] = {"Edit profile picture", "Edit pseudo"};
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Chose action");
         builder.setItems(options, new DialogInterface.OnClickListener() {
@@ -187,8 +212,6 @@ public class ProfilFragement extends Fragment {
                 }else if (which == 1){
                     pd.setMessage("Edit pseudo");
                     showNameUpdateDialog("name");
-                }else if(which == 2){
-                    pd.setMessage("Edit password");
                 }
             }
         });
