@@ -148,11 +148,11 @@ public class FeedPage extends AppCompatActivity {
 
                     @Override
                     public void onClick(View v) {
-                        Intent intent = new Intent(FeedPage.this, DezerApi.class);
-                        Bundle bundle = new Bundle();
-                        bundle.putInt("idSearch", 3);
-                        intent.putExtras(bundle);
-                        startActivity(intent); }
+                        b.putInt("idSearch", 3);
+                        intent.putExtras(b);
+                        startActivity(intent);
+                        finish();
+                    }
                 });
                 //int height = (int)(getResources().getDisplayMetrics().heightPixels*0.4);
 

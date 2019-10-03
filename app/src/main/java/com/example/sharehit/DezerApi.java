@@ -77,7 +77,7 @@ public class DezerApi extends AppCompatActivity implements ArtistAdapter.OnItemc
 */
 
                 mExampleList.clear();
-                parseJSON(newText);
+                parseJSONartist(newText);
 
                 // Toast.makeText(DezerApi.this, "Result: "+newText, Toast.LENGTH_LONG).show();
                 return false;
@@ -87,7 +87,7 @@ public class DezerApi extends AppCompatActivity implements ArtistAdapter.OnItemc
 
     }
 
-    private Map<String, String> parseJSON(String artistName) {
+    private Map<String, String> parseJSONartist(String artistName) {
 
         String url = "http://api.deezer.com/2.0/search/artist/?q="+artistName+"&index=0&nb_items=20&output=json";
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
