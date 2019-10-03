@@ -21,6 +21,7 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ArtistView
     private Context mContext;
     private ArrayList<Artist> mArtistList;
     private OnItemclickListener mListener;
+    private String nom;
 
 
     public interface OnItemclickListener {
@@ -31,9 +32,10 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ArtistView
         mListener = listener;
     }
 
-    public ArtistAdapter(Context context, ArrayList<Artist> matistList) {
+    public ArtistAdapter(Context context, ArrayList<Artist> matistList, String nom) {
         mContext = context;
         mArtistList = matistList;
+        this.nom = nom;
     }
 
     @NonNull
@@ -51,7 +53,7 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ArtistView
         String nbFan = currentItem.getNbFans();
 
         holder.name_ar.setText(name);
-        holder.nbFan.setText("Nombre de fan: " +nbFan);
+        holder.nbFan.setText(nom +nbFan);
        Picasso.with(mContext).load(imageUrl).fit().centerInside().into(holder.img_ar);
 
     }

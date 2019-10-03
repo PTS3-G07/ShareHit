@@ -108,7 +108,7 @@ public class DezerApi extends AppCompatActivity implements ArtistAdapter.OnItemc
                         mExampleList.add(new Artist(name, nbFan, imgUrl));
                     }
 
-                    mExampleAdapter = new ArtistAdapter(DezerApi.this, mExampleList);
+                    mExampleAdapter = new ArtistAdapter(DezerApi.this, mExampleList, "Nombre de fan: ");
                     mRecyclerView.setAdapter(mExampleAdapter);
                     mExampleAdapter.setOnItemClickListener(DezerApi.this);
 
@@ -147,13 +147,14 @@ public class DezerApi extends AppCompatActivity implements ArtistAdapter.OnItemc
                     JSONArray jsonArray = response.getJSONArray("data");
                     for(int i = 0 ; jsonArray.length() > i; i++){
                         JSONObject data = jsonArray.getJSONObject(i);
+                        JSONObject genre = data.getJSONObject("genre");
                         String name = data.getString("title");
-                        String nbFan = data.getString("nb_tracks");
+                        String nbFan = genre.getString("name");
                         String imgUrl = data.getString("cover");
                         mExampleList.add(new Artist(name, nbFan, imgUrl));
                     }
 
-                    mExampleAdapter = new ArtistAdapter(DezerApi.this, mExampleList);
+                    mExampleAdapter = new ArtistAdapter(DezerApi.this, mExampleList, "Genre:");
                     mRecyclerView.setAdapter(mExampleAdapter);
                     mExampleAdapter.setOnItemClickListener(DezerApi.this);
 
@@ -185,7 +186,7 @@ public class DezerApi extends AppCompatActivity implements ArtistAdapter.OnItemc
 
     private Map<String, String> parseJSONtrack(String trackName) {
 
-        String url = "http://api.deezer.com/2.0/search/track    /?q="+trackName+"&index=0&nb_items=20&output=json";
+        String url = "http://api.deezer.com/2.0/search/track/?q="+trackName+"&index=0&nb_items=20&output=json";
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -193,13 +194,15 @@ public class DezerApi extends AppCompatActivity implements ArtistAdapter.OnItemc
                     JSONArray jsonArray = response.getJSONArray("data");
                     for(int i = 0 ; jsonArray.length() > i; i++){
                         JSONObject data = jsonArray.getJSONObject(i);
+                        JSONObject artist = data.getJSONObject("artist");
+                        JSONObject album = data.getJSONObject("album");
                         String name = data.getString("title");
-                        String nbFan = data.getString("rank");
-                        String imgUrl = data.getString("picture");
+                        String nbFan = album.getString("title");
+                        String imgUrl = artist.getString("picture_medium");
                         mExampleList.add(new Artist(name, nbFan, imgUrl));
                     }
 
-                    mExampleAdapter = new ArtistAdapter(DezerApi.this, mExampleList);
+                    mExampleAdapter = new ArtistAdapter(DezerApi.this, mExampleList,"Album: ");
                     mRecyclerView.setAdapter(mExampleAdapter);
                     mExampleAdapter.setOnItemClickListener(DezerApi.this);
 
