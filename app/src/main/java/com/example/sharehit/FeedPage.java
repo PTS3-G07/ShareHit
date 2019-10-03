@@ -43,8 +43,6 @@ public class FeedPage extends AppCompatActivity {
         FirebaseUser user = firebaseAuth.getCurrentUser();
         if(user == null){
             startActivity(new Intent(FeedPage.this, MainActivity.class));
-        }else {
-
         }
     }
 
