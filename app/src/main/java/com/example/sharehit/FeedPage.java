@@ -132,7 +132,7 @@ public class FeedPage extends AppCompatActivity {
                         b.putInt("key", 1); //Your id
                         intent.putExtras(b); //Put your id to your next Intent
                         startActivity(intent);
-                        finish();
+                        //finish();
                     }
                 });
                 album = d.findViewById(id.album);
@@ -140,7 +140,11 @@ public class FeedPage extends AppCompatActivity {
 
                     @Override
                     public void onClick(View v) {
-                        startActivity(new Intent(FeedPage.this, DezerApiAlbum.class));                    }
+                        b.putInt("key", 2); //Your id
+                        intent.putExtras(b); //Put your id to your next Intent
+                        startActivity(intent);
+                        //finish();
+                        }
                 });
 
                 morceau = d.findViewById(id.morceau);
@@ -148,10 +152,10 @@ public class FeedPage extends AppCompatActivity {
 
                     @Override
                     public void onClick(View v) {
-                        b.putInt("idSearch", 3);
+                        b.putInt("key", 3);
                         intent.putExtras(b);
                         startActivity(intent);
-                        finish();
+                        //finish();
                     }
                 });
                 //int height = (int)(getResources().getDisplayMetrics().heightPixels*0.4);
