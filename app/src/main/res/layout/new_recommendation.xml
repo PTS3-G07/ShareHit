@@ -67,6 +67,15 @@
         app:layout_constraintTop_toBottomOf="@+id/linearLayout4">
 
         <ImageButton
+            android:id="@+id/jeuVideo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+
+            android:background="@color/space_transparent"
+            app:srcCompat="@drawable/jeu_video" />
+
+        <ImageButton
             android:id="@+id/serie"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -74,15 +83,6 @@
 
             android:background="@color/space_transparent"
             app:srcCompat="@drawable/serie" />
-
-        <ImageButton
-            android:id="@+id/jeu_video"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-
-            android:background="@color/space_transparent"
-            app:srcCompat="@drawable/jeu_video" />
 
         <ImageButton
             android:id="@+id/film"

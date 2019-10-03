@@ -35,6 +35,11 @@ public class FeedPage extends AppCompatActivity {
     Dialog myDialog;
     ImageButton artiste;
     ImageButton album;
+    ImageButton morceau;
+    ImageButton jeuVideo;
+    ImageButton serie;
+    ImageButton film;
+    public int idSearch;
 
     @Override
     protected void onStart() {
@@ -135,8 +140,31 @@ public class FeedPage extends AppCompatActivity {
 
                     @Override
                     public void onClick(View v) {
-                        startActivity(new Intent(FeedPage.this, DezerApi.class));                    }
+                        startActivity(new Intent(FeedPage.this, DezerApiAlbum.class));                    }
                 });
+
+                morceau = d.findViewById(id.morceau);
+                morceau.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+                        b.putInt("idSearch", 3);
+                        intent.putExtras(b);
+                        startActivity(intent);
+                        finish();
+                    }
+                });
+                //int height = (int)(getResources().getDisplayMetrics().heightPixels*0.4);
+
+                /*
+                myDialog.setContentView(R.layout.new_recommendation);
+                //Toast.makeText(FeedPage.this,"onCentreButtonClick", Toast.LENGTH_SHORT).show();
+                myDialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT,WindowManager.LayoutParams.WRAP_CONTENT);
+                myDialog.show();
+
+                 */
+                /*fragment = new NewRecommendationFragment();
+                loadFragement(fragment);*/
             }
 
             @Override
