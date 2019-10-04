@@ -1,18 +1,12 @@
 package com.example.sharehit.Model;
 
-public class JeuVideo extends Type {
+public class JeuVideo extends Video {
 
-    private String titre;
-
-    public JeuVideo(String titre) {
-        this.titre = titre;
-    }
-
-    public String getTitre() {
-        return titre;
+    public JeuVideo(String titre, String year, String imgUrl) {
+        super(titre, year, imgUrl);
     }
 
     public String toString(){
-        return "le jeu vidéo "+titre;
+        return "le jeu vidéo "+getTitre();
     }
 }

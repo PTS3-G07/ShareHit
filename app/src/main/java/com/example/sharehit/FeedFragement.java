@@ -45,7 +45,7 @@ public class FeedFragement extends Fragment {
         deezer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getActivity(), DezerApi.class));
+                startActivity(new Intent(getActivity(), ApiManager.class));
             }
         });
 

@@ -5,10 +5,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
-import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 import android.widget.SearchView;
 
@@ -34,7 +32,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class DezerApi extends AppCompatActivity implements ArtistAdapter.OnItemclickListener {
+public class ApiManager extends AppCompatActivity implements ArtistAdapter.OnItemclickListener {
 
     public static final String EXTRA_URL = "imgUrl";
     public static final String EXTRA_NAME = "name";
@@ -92,7 +90,7 @@ public class DezerApi extends AppCompatActivity implements ArtistAdapter.OnItemc
 
 
 
-                // Toast.makeText(DezerApi.this, "Result: "+newText, Toast.LENGTH_LONG).show();
+                // Toast.makeText(ApiManager.this, "Result: "+newText, Toast.LENGTH_LONG).show();
                 return false;
             }
         });
@@ -116,9 +114,9 @@ public class DezerApi extends AppCompatActivity implements ArtistAdapter.OnItemc
                         mExampleList.add(new Artist(name, nbFan, imgUrl));
                     }
 
-                    mExampleAdapter = new ArtistAdapter(DezerApi.this, mExampleList, "Nombre de fan: ");
+                    mExampleAdapter = new ArtistAdapter(ApiManager.this, mExampleList, "Nombre de fan: ");
                     mRecyclerView.setAdapter(mExampleAdapter);
-                    mExampleAdapter.setOnItemClickListener(DezerApi.this);
+                    mExampleAdapter.setOnItemClickListener(ApiManager.this);
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -162,9 +160,9 @@ public class DezerApi extends AppCompatActivity implements ArtistAdapter.OnItemc
                         mExampleList.add(new Artist(name, artistName, imgUrl));
                     }
 
-                    mExampleAdapter = new ArtistAdapter(DezerApi.this, mExampleList, "Artiste: ");
+                    mExampleAdapter = new ArtistAdapter(ApiManager.this, mExampleList, "Artiste: ");
                     mRecyclerView.setAdapter(mExampleAdapter);
-                    mExampleAdapter.setOnItemClickListener(DezerApi.this);
+                    mExampleAdapter.setOnItemClickListener(ApiManager.this);
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -212,9 +210,9 @@ public class DezerApi extends AppCompatActivity implements ArtistAdapter.OnItemc
                         mExampleList.add(m);
                     }
 
-                    mExampleAdapter = new ArtistAdapter(DezerApi.this, mExampleList,"Artiste: ");
+                    mExampleAdapter = new ArtistAdapter(ApiManager.this, mExampleList,"Artiste: ");
                     mRecyclerView.setAdapter(mExampleAdapter);
-                    mExampleAdapter.setOnItemClickListener(DezerApi.this);
+                    mExampleAdapter.setOnItemClickListener(ApiManager.this);
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -258,9 +256,9 @@ public class DezerApi extends AppCompatActivity implements ArtistAdapter.OnItemc
                         mExampleList.add(new Artist(title, year, imgUrl));
                     }
 
-                    mExampleAdapter = new ArtistAdapter(DezerApi.this, mExampleList,"Année de sortie: ");
+                    mExampleAdapter = new ArtistAdapter(ApiManager.this, mExampleList,"Année de sortie: ");
                     mRecyclerView.setAdapter(mExampleAdapter);
-                    mExampleAdapter.setOnItemClickListener(DezerApi.this);
+                    mExampleAdapter.setOnItemClickListener(ApiManager.this);
 
                 } catch (JSONException e) {
                     e.printStackTrace();

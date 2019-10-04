@@ -5,9 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.app.Dialog;
-import android.app.WallpaperManager;
 import android.content.Intent;
-import android.icu.text.MeasureFormat;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
@@ -16,7 +14,6 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -120,7 +117,7 @@ public class FeedPage extends AppCompatActivity {
             @Override
             public void onCentreButtonClick() {
 
-                final Intent intent = new Intent(FeedPage.this, DezerApi.class);
+                final Intent intent = new Intent(FeedPage.this, ApiManager.class);
                 final Bundle b = new Bundle();
                 d.show();
                 artiste = d.findViewById(R.id.artiste);

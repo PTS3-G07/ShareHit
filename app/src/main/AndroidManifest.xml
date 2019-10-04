@@ -20,7 +20,7 @@
         android:usesCleartextTraffic="true"
         android:theme="@style/AppTheme">
         <activity android:name=".PostRec"></activity>
-        <activity android:name=".DezerApi" />
+        <activity android:name=".ApiManager" />
         <activity android:name=".Uploadpdp" />
         <activity android:name=".FeedPage" />
         <activity android:name=".SignUp" />

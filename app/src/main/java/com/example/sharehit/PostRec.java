@@ -3,7 +3,6 @@ package com.example.sharehit;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -21,13 +20,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
-import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
 
-import static com.example.sharehit.DezerApi.EXTRA_FAN;
-import static com.example.sharehit.DezerApi.EXTRA_NAME;
-import static com.example.sharehit.DezerApi.EXTRA_URL;
+import static com.example.sharehit.ApiManager.EXTRA_FAN;
+import static com.example.sharehit.ApiManager.EXTRA_NAME;
+import static com.example.sharehit.ApiManager.EXTRA_URL;
 
 public class PostRec extends AppCompatActivity {
 
