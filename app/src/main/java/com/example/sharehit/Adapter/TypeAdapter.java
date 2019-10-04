@@ -2,6 +2,7 @@ package com.example.sharehit.Adapter;
 
 import android.content.Context;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.sharehit.ApiManager;
+import com.example.sharehit.Model.Morceau;
 import com.example.sharehit.Model.Type;
 import com.example.sharehit.R;
 import com.squareup.picasso.Picasso;
@@ -26,6 +29,8 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.TypeViewHolder
 
     public MediaPlayer mediaPlayer;
 
+    String songUrl;
+
 
     public interface OnItemclickListener {
         void onItemClick(int position);
@@ -35,10 +40,9 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.TypeViewHolder
         this.listener = listener;
     }
 
-    public TypeAdapter(Context context, ArrayList<Type> matistList, MediaPlayer mp) {
+    public TypeAdapter(Context context, ArrayList<Type> matistList) {
         this.context = context;
         types = matistList;
-        mediaPlayer = mp;
     }
 
     @NonNull
@@ -54,6 +58,10 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.TypeViewHolder
         String imageUrl = currentItem.getImgUrl();
         String name = currentItem.getName();
         String spec = currentItem.getSpec();
+        if(currentItem instanceof Morceau){
+            songUrl = ((Morceau) currentItem).getSongUrl();
+            mediaPlayer = MediaPlayer.create(context, Uri.parse(songUrl));
+        }
 
         holder.name_ar.setText(name);
         holder.spec.setText(currentItem.getConstNommage() + spec);
@@ -75,9 +83,13 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.TypeViewHolder
         public TypeViewHolder(@NonNull View itemView) {
             super(itemView);
 
+
+
             img_ar = itemView.findViewById(R.id.img_ar);
             name_ar = itemView.findViewById(R.id.name_ar);
             spec = itemView.findViewById(R.id.spec);
+
+
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -94,7 +106,11 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.TypeViewHolder
             img_ar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v){
-                    mediaPlayer.start();
+                    if(mediaPlayer != null){
+                        mediaPlayer.start();
+                    }
+
+
 
                 }
             });
