@@ -15,9 +15,33 @@
             android:layout_height="match_parent"
             android:orientation="horizontal">
 
-            <ImageView
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/pdp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"></de.hdodenhof.circleimageview.CircleImageView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="TextView" />
+
+                <TextView
+                    android:id="@+id/desc"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="TextView" />
+            </LinearLayout>
+
+            <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/imageView5"
-                android:layout_width="1dp"
+                android:layout_width="109dp"
                 android:layout_height="50dp"
                 android:layout_weight="1"
                 tools:srcCompat="@mipmap/ic_launcher" />
@@ -59,7 +83,7 @@
             android:background="?android:attr/listDivider" />
 
         <ImageView
-            android:id="@+id/img_ar"
+            android:id="@+id/recImg"
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:src="@mipmap/ic_launcher" />
@@ -105,7 +129,7 @@
         </LinearLayout>
 
         <TextView
-            android:id="@+id/name_ar"
+            android:id="@+id/nbrLike"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Like:"
@@ -113,7 +137,7 @@
             android:textSize="20sp" />
 
         <TextView
-            android:id="@+id/nbFan"
+            android:id="@+id/nbrComment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Comment:" />

@@ -88,9 +88,9 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ArtistView
         public ArtistViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            img_ar = itemView.findViewById(R.id.img_ar);
-            name_ar = itemView.findViewById(R.id.name_ar);
-            nbFan = itemView.findViewById(R.id.nbFan);
+            img_ar = itemView.findViewById(R.id.recImg);
+            name_ar = itemView.findViewById(R.id.nbrLike);
+            nbFan = itemView.findViewById(R.id.nbrComment);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
