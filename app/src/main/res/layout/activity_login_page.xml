@@ -79,7 +79,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:text="Mot de passe oublier ?"
+            android:text="Mot de passe oublié ?"
             android:textColor="#606060" />
 
     </LinearLayout>
