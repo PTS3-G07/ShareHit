@@ -1,9 +1,11 @@
 package com.example.sharehit.Adapter;
 
 import android.content.Context;
+import android.media.MediaPlayer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -22,6 +24,8 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.TypeViewHolder
     private ArrayList<Type> types;
     private OnItemclickListener listener;
 
+    public MediaPlayer mediaPlayer;
+
 
     public interface OnItemclickListener {
         void onItemClick(int position);
@@ -31,9 +35,10 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.TypeViewHolder
         this.listener = listener;
     }
 
-    public TypeAdapter(Context context, ArrayList<Type> matistList) {
+    public TypeAdapter(Context context, ArrayList<Type> matistList, MediaPlayer mp) {
         this.context = context;
         types = matistList;
+        mediaPlayer = mp;
     }
 
     @NonNull
@@ -62,7 +67,7 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.TypeViewHolder
 
     public class TypeViewHolder extends RecyclerView.ViewHolder {
 
-        public ImageView img_ar;
+        public ImageButton img_ar;
         public TextView name_ar;
         public TextView spec;
 
@@ -83,6 +88,14 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.TypeViewHolder
                             listener.onItemClick(position);
                         }
                     }
+                }
+            });
+
+            img_ar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v){
+                    mediaPlayer.start();
+
                 }
             });
         }

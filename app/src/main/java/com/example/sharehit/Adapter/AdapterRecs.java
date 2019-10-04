@@ -70,12 +70,12 @@ public class AdapterRecs extends RecyclerView.Adapter<AdapterRecs.MyHolder> {
         public MyHolder(@NonNull View itemView) {
             super(itemView);
 
-            recImg = itemView.findViewById(R.id.recImg);
+            /*recImg = itemView.findViewById(R.id.recImg);
             pdp = itemView.findViewById(R.id.pdp);
             name = itemView.findViewById(R.id.name);
             desc = itemView.findViewById(R.id.desc);
             nbrLike = itemView.findViewById(R.id.nbrLike);
-            nbrComment = itemView.findViewById(R.id.nbrComment);
+            nbrComment = itemView.findViewById(R.id.nbrComment);*/
             likeButton = itemView.findViewById(R.id.likeButton);
             commentButton = itemView.findViewById(R.id.commentButton);
             bookButton = itemView.findViewById(R.id.bookButton);

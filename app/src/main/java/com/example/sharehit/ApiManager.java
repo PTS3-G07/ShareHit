@@ -5,8 +5,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
+import android.content.Intent;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.SearchView;
 
@@ -45,6 +48,8 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
     Context c;
     private SearchView search;
     public int type;
+
+    public MediaPlayer mediaPlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,7 +95,7 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
 
 
 
-                // Toast.makeText(ApiManager.this, "Result: "+newText, Toast.LENGTH_LONG).show();
+                // Toast.makeText(DezerApi.this, "Result: "+newText, Toast.LENGTH_LONG).show();
                 return false;
             }
         });
@@ -114,7 +119,7 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
                         mExampleList.add(new Artist(name, nbFan, imgUrl));
                     }
 
-                    mExampleAdapter = new TypeAdapter(ApiManager.this, mExampleList);
+                    mExampleAdapter = new TypeAdapter(ApiManager.this, mExampleList, null);
                     mRecyclerView.setAdapter(mExampleAdapter);
                     mExampleAdapter.setOnItemClickListener(ApiManager.this);
 
@@ -160,7 +165,7 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
                         mExampleList.add(new Artist(name, artistName, imgUrl));
                     }
 
-                    mExampleAdapter = new TypeAdapter(ApiManager.this, mExampleList);
+                    mExampleAdapter = new TypeAdapter(ApiManager.this, mExampleList, null);
                     mRecyclerView.setAdapter(mExampleAdapter);
                     mExampleAdapter.setOnItemClickListener(ApiManager.this);
 
@@ -197,6 +202,7 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
             @Override
             public void onResponse(JSONObject response) {
                 try {
+                    Morceau m = null;
                     JSONArray jsonArray = response.getJSONArray("data");
                     for(int i = 0 ; jsonArray.length() > i; i++){
                         JSONObject data = jsonArray.getJSONObject(i);
@@ -206,11 +212,12 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
                         String imgUrl = artist.getString("picture_medium");
                         String previewUrl = data.getString("preview");
                         Log.e("abcde", title+previewUrl);
-                        Morceau m = new Morceau(title, albumTitle, imgUrl,previewUrl);
+                        m = new Morceau(title, albumTitle, imgUrl,previewUrl);
                         mExampleList.add(m);
                     }
 
-                    mExampleAdapter = new TypeAdapter(ApiManager.this, mExampleList);
+                    mediaPlayer = MediaPlayer.create(ApiManager.this, Uri.parse(m.getSongUrl()));
+                    mExampleAdapter = new TypeAdapter(ApiManager.this, mExampleList, mediaPlayer);
                     mRecyclerView.setAdapter(mExampleAdapter);
                     mExampleAdapter.setOnItemClickListener(ApiManager.this);
 
@@ -256,7 +263,7 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
                         mExampleList.add(new Artist(title, year, imgUrl));
                     }
 
-                    mExampleAdapter = new TypeAdapter(ApiManager.this, mExampleList);
+                    mExampleAdapter = new TypeAdapter(ApiManager.this, mExampleList, null);
                     mRecyclerView.setAdapter(mExampleAdapter);
                     mExampleAdapter.setOnItemClickListener(ApiManager.this);
 
