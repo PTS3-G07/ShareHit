@@ -29,7 +29,6 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.TypeViewHolder
 
     public MediaPlayer mediaPlayer;
 
-    String songUrl;
 
 
     public interface OnItemclickListener {
@@ -59,7 +58,7 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.TypeViewHolder
         String name = currentItem.getName();
         String spec = currentItem.getSpec();
         if(currentItem instanceof Morceau){
-            songUrl = ((Morceau) currentItem).getSongUrl();
+            String songUrl = ((Morceau) currentItem).getSongUrl();
             mediaPlayer = MediaPlayer.create(context, Uri.parse(songUrl));
         }
 
@@ -107,13 +106,19 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.TypeViewHolder
                 @Override
                 public void onClick(View v){
                     if(mediaPlayer != null){
-                        mediaPlayer.start();
+                        if(mediaPlayer.isPlaying() == false){
+                            mediaPlayer.start();
+                        } else {
+                            mediaPlayer.pause();
+                        }
+
                     }
 
 
 
                 }
             });
+
         }
     }
 }

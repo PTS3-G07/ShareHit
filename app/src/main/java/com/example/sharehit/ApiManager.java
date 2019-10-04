@@ -292,27 +292,12 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
         return null;
     }
 
+
     @Override
     public void onItemClick(int position) {
-        //Intent postRec = new Intent(this, PostRec.class);
-        boolean isPLAYING = false;
-        if(mExampleList.get(position) instanceof Morceau){
-            Morceau clickedItem = (Morceau) mExampleList.get(position);
-            MediaPlayer mp = new MediaPlayer();
-            try {
-                mp.setDataSource(clickedItem.getSongUrl());
-                mp.prepareAsync();
-                mp.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                    @Override
-                    public void onPrepared(MediaPlayer mp) {
-                        mp.start();
-                    }
-                });
-            } catch (IOException e) {
-                Log.e("pa2chance", "prepare() failed");
-            }
 
-        }
+
+
     }
 
         /*postRec.putExtra(EXTRA_URL, clickedItem.getImgUrl());
