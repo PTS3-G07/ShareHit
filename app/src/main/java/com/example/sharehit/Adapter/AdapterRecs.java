@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -32,7 +33,7 @@ public class AdapterRecs extends RecyclerView.Adapter<AdapterRecs.MyHolder> {
     @Override
     public MyHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-        View view = LayoutInflater.from(context).inflate(R.layout.row_recom, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.recommandation_item, parent, false);
 
 
 
@@ -62,7 +63,8 @@ public class AdapterRecs extends RecyclerView.Adapter<AdapterRecs.MyHolder> {
     class MyHolder extends RecyclerView.ViewHolder {
 
         ImageView recImg, pdp;
-        TextView name,desc;
+        TextView name,desc, nbrLike, nbrComment;
+        Button likeButton, commentButton, bookButton;
 
 
         public MyHolder(@NonNull View itemView) {
@@ -72,6 +74,12 @@ public class AdapterRecs extends RecyclerView.Adapter<AdapterRecs.MyHolder> {
             pdp = itemView.findViewById(R.id.pdp);
             name = itemView.findViewById(R.id.name);
             desc = itemView.findViewById(R.id.desc);
+            nbrLike = itemView.findViewById(R.id.nbrLike);
+            nbrComment = itemView.findViewById(R.id.nbrComment);
+            likeButton = itemView.findViewById(R.id.likeButton);
+            commentButton = itemView.findViewById(R.id.commentButton);
+            bookButton = itemView.findViewById(R.id.bookButton);
+
 
 
         }
