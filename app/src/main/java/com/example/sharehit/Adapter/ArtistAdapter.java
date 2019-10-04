@@ -11,6 +11,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sharehit.Model.Artist;
+import com.example.sharehit.Model.Morceau;
+import com.example.sharehit.Model.Type;
 import com.example.sharehit.R;
 import com.squareup.picasso.Picasso;
 
@@ -19,7 +21,7 @@ import java.util.ArrayList;
 public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ArtistViewHolder> {
 
     private Context mContext;
-    private ArrayList<Artist> mArtistList;
+    private ArrayList<Type> mArtistList;
     private OnItemclickListener mListener;
     private String nom;
 
@@ -32,7 +34,7 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ArtistView
         mListener = listener;
     }
 
-    public ArtistAdapter(Context context, ArrayList<Artist> matistList, String nom) {
+    public ArtistAdapter(Context context, ArrayList<Type> matistList, String nom) {
         mContext = context;
         mArtistList = matistList;
         this.nom = nom;
@@ -47,14 +49,27 @@ public class ArtistAdapter extends RecyclerView.Adapter<ArtistAdapter.ArtistView
 
     @Override
     public void onBindViewHolder(@NonNull ArtistViewHolder holder, int position) {
-        Artist currentItem = mArtistList.get(position);
-        String imageUrl = currentItem.getImgUrl();
-        String name= currentItem.getName();
-        String nbFan = currentItem.getNbFans();
+        if (mArtistList.get(position) instanceof Artist) {
+            Artist currentItem = (Artist) mArtistList.get(position);
+            String imageUrl = currentItem.getImgUrl();
+            String name = currentItem.getName();
+            String nbFan = currentItem.getNbFans();
 
-        holder.name_ar.setText(name);
-        holder.nbFan.setText(nom +nbFan);
-       Picasso.with(mContext).load(imageUrl).fit().centerInside().into(holder.img_ar);
+            holder.name_ar.setText(name);
+            holder.nbFan.setText(nom + nbFan);
+            Picasso.with(mContext).load(imageUrl).fit().centerInside().into(holder.img_ar);
+        }
+        if (mArtistList.get(position) instanceof Morceau) {
+            Morceau currentItem = (Morceau) mArtistList.get(position);
+            String imageUrl = currentItem.getImgUrl();
+            String name = currentItem.getTitre();
+            String nbFan = currentItem.getArtiste();
+            String songUrl = currentItem.getSongUrl();
+
+            holder.name_ar.setText(name);
+            holder.nbFan.setText(nom + nbFan);
+            Picasso.with(mContext).load(imageUrl).fit().centerInside().into(holder.img_ar);
+        }
 
     }
 

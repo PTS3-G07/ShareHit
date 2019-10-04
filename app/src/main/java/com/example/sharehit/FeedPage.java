@@ -158,6 +158,42 @@ public class FeedPage extends AppCompatActivity {
                         //finish();
                     }
                 });
+
+                film = d.findViewById(id.film);
+                film.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+                        b.putInt("key", 4);
+                        intent.putExtras(b);
+                        startActivity(intent);
+                        //finish();
+                    }
+                });
+
+                jeuVideo = d.findViewById(id.jeuVideo);
+                jeuVideo.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+                        b.putInt("key", 6);
+                        intent.putExtras(b);
+                        startActivity(intent);
+                        //finish();
+                    }
+                });
+
+                serie = d.findViewById(id.serie);
+                serie.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+                        b.putInt("key", 5);
+                        intent.putExtras(b);
+                        startActivity(intent);
+                        //finish();
+                    }
+                });
                 //int height = (int)(getResources().getDisplayMetrics().heightPixels*0.4);
 
                 /*

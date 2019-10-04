@@ -1,6 +1,6 @@
 package com.example.sharehit.Model;
 
-public class Artist {
+public class Artist extends Type {
 
     private int id;
     private String name;

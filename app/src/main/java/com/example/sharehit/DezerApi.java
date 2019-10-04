@@ -6,8 +6,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.SearchView;
 
 import com.android.volley.AuthFailureError;
@@ -19,11 +21,14 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.sharehit.Adapter.ArtistAdapter;
 import com.example.sharehit.Model.Artist;
+import com.example.sharehit.Model.Morceau;
+import com.example.sharehit.Model.Type;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -37,7 +42,7 @@ public class DezerApi extends AppCompatActivity implements ArtistAdapter.OnItemc
 
     private RecyclerView mRecyclerView;
     private ArtistAdapter mExampleAdapter;
-    private ArrayList<Artist> mExampleList;
+    private ArrayList<Type> mExampleList;
     private RequestQueue mRequestQueue;
     Context c;
     private SearchView search;
@@ -58,7 +63,7 @@ public class DezerApi extends AppCompatActivity implements ArtistAdapter.OnItemc
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        mExampleList = new ArrayList<Artist>();
+        mExampleList = new ArrayList<Type>();
         mRequestQueue = Volley.newRequestQueue(this);
 
         search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -81,6 +86,9 @@ public class DezerApi extends AppCompatActivity implements ArtistAdapter.OnItemc
                 if(type == 1) parseJSONartist(newText);
                 if(type == 2) parseJSONalbum(newText);
                 if(type == 3) parseJSONtrack(newText);
+                if(type == 4) parseJSONomdb(newText, "movie");
+                if(type == 5) parseJSONomdb(newText, "series");
+                if(type == 6) parseJSONomdb(newText,"game");
 
 
 
@@ -195,14 +203,16 @@ public class DezerApi extends AppCompatActivity implements ArtistAdapter.OnItemc
                     for(int i = 0 ; jsonArray.length() > i; i++){
                         JSONObject data = jsonArray.getJSONObject(i);
                         JSONObject artist = data.getJSONObject("artist");
-                        JSONObject album = data.getJSONObject("album");
                         String title = data.getString("title");
-                        String albumTitle = album.getString("title");
+                        String albumTitle = artist.getString("name");
                         String imgUrl = artist.getString("picture_medium");
-                        mExampleList.add(new Artist(title, albumTitle, imgUrl));
+                        int id_track = data.getInt("id");
+                        Morceau m = new Morceau(title, albumTitle, imgUrl,"");
+                        findUrlSong(id_track, m);
+                        mExampleList.add(m);
                     }
 
-                    mExampleAdapter = new ArtistAdapter(DezerApi.this, mExampleList,"Album: ");
+                    mExampleAdapter = new ArtistAdapter(DezerApi.this, mExampleList,"Artiste: ");
                     mRecyclerView.setAdapter(mExampleAdapter);
                     mExampleAdapter.setOnItemClickListener(DezerApi.this);
 
@@ -232,13 +242,101 @@ public class DezerApi extends AppCompatActivity implements ArtistAdapter.OnItemc
         return null;
     }
 
+    private Map<String, String> parseJSONomdb(String search, final String type) {
+
+        String url = "http://www.omdbapi.com/?s="+search+"&type="+type+"&apikey=a20c2297";
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    JSONArray jsonArray = response.getJSONArray("Search");
+                    for(int i = 0 ; jsonArray.length() > i; i++){
+                        JSONObject data = jsonArray.getJSONObject(i);
+                        String title = data.getString("Title");
+                        String year = data.getString("Year");
+                        String imgUrl = data.getString("Poster");
+                        mExampleList.add(new Artist(title, year, imgUrl));
+                    }
+
+                    mExampleAdapter = new ArtistAdapter(DezerApi.this, mExampleList,"Année de sortie: ");
+                    mRecyclerView.setAdapter(mExampleAdapter);
+                    mExampleAdapter.setOnItemClickListener(DezerApi.this);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        },new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+            }
+        }
+
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("x-rapidapi-host", "deezerdevs-deezer.p.rapidapi.com");
+                params.put("x-rapidapi-key", "e057a6cddamshcf40c6b8e5a6046p1233eajsnf273df986993");
+
+                return params;
+            }
+        };
+
+        mRequestQueue.add(request);
+        return null;
+    }
+
     @Override
     public void onItemClick(int position) {
-        Intent postRec = new Intent(this, PostRec.class);
-        Artist clickedItem = mExampleList.get(position);
-        postRec.putExtra(EXTRA_URL, clickedItem.getImgUrl());
+        //Intent postRec = new Intent(this, PostRec.class);
+        boolean isPLAYING = false;
+        if(mExampleList.get(position) instanceof Morceau){
+            Morceau clickedItem = (Morceau) mExampleList.get(position);
+            MediaPlayer mp = new MediaPlayer();
+            try {
+                mp.setDataSource(clickedItem.getSongUrl());
+                mp.prepareAsync();
+                mp.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                    @Override
+                    public void onPrepared(MediaPlayer mp) {
+                        mp.start();
+                    }
+                });
+            } catch (IOException e) {
+                Log.e("pa2chance", "prepare() failed");
+            }
+
+        }
+    }
+
+        /*postRec.putExtra(EXTRA_URL, clickedItem.getImgUrl());
         postRec.putExtra(EXTRA_NAME, clickedItem.getName());
         postRec.putExtra(EXTRA_FAN, clickedItem.getNbFans());
-        startActivity(postRec);
-    }
+        startActivity(postRec);*/
+        public void findUrlSong(int id_track, final Morceau morceau) {
+
+            String urlForSong = "http://api.deezer.com/2.0/track/"+id_track;
+            JsonObjectRequest requestSong = new JsonObjectRequest(Request.Method.GET, urlForSong, null, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    try {
+                        JSONObject data = response.getJSONObject("data");
+                        String urlSong = data.getString("preview");
+                        morceau.setSongUrl(urlSong);
+                    }
+                    catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    error.printStackTrace();
+                }
+            }
+            );
+        }
+
 }
