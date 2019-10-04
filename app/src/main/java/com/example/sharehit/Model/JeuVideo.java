@@ -7,6 +7,6 @@ public class JeuVideo extends Video {
     }
 
     public String toString(){
-        return "le jeu vidéo "+getTitre();
+        return "le jeu vidéo "+getName();
     }
 }

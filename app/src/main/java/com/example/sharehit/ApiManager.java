@@ -17,7 +17,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.sharehit.Adapter.ArtistAdapter;
+import com.example.sharehit.Adapter.TypeAdapter;
 import com.example.sharehit.Model.Artist;
 import com.example.sharehit.Model.Morceau;
 import com.example.sharehit.Model.Type;
@@ -32,14 +32,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class ApiManager extends AppCompatActivity implements ArtistAdapter.OnItemclickListener {
+public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemclickListener {
 
     public static final String EXTRA_URL = "imgUrl";
     public static final String EXTRA_NAME = "name";
     public static final String EXTRA_FAN = "nbFan";
 
     private RecyclerView mRecyclerView;
-    private ArtistAdapter mExampleAdapter;
+    private TypeAdapter mExampleAdapter;
     private ArrayList<Type> mExampleList;
     private RequestQueue mRequestQueue;
     Context c;
@@ -114,7 +114,7 @@ public class ApiManager extends AppCompatActivity implements ArtistAdapter.OnIte
                         mExampleList.add(new Artist(name, nbFan, imgUrl));
                     }
 
-                    mExampleAdapter = new ArtistAdapter(ApiManager.this, mExampleList, "Nombre de fan: ");
+                    mExampleAdapter = new TypeAdapter(ApiManager.this, mExampleList);
                     mRecyclerView.setAdapter(mExampleAdapter);
                     mExampleAdapter.setOnItemClickListener(ApiManager.this);
 
@@ -160,7 +160,7 @@ public class ApiManager extends AppCompatActivity implements ArtistAdapter.OnIte
                         mExampleList.add(new Artist(name, artistName, imgUrl));
                     }
 
-                    mExampleAdapter = new ArtistAdapter(ApiManager.this, mExampleList, "Artiste: ");
+                    mExampleAdapter = new TypeAdapter(ApiManager.this, mExampleList);
                     mRecyclerView.setAdapter(mExampleAdapter);
                     mExampleAdapter.setOnItemClickListener(ApiManager.this);
 
@@ -204,13 +204,13 @@ public class ApiManager extends AppCompatActivity implements ArtistAdapter.OnIte
                         String title = data.getString("title");
                         String albumTitle = artist.getString("name");
                         String imgUrl = artist.getString("picture_medium");
-                        int id_track = data.getInt("id");
-                        Morceau m = new Morceau(title, albumTitle, imgUrl,"");
-                        findUrlSong(id_track, m);
+                        String previewUrl = data.getString("preview");
+                        Log.e("abcde", title+previewUrl);
+                        Morceau m = new Morceau(title, albumTitle, imgUrl,previewUrl);
                         mExampleList.add(m);
                     }
 
-                    mExampleAdapter = new ArtistAdapter(ApiManager.this, mExampleList,"Artiste: ");
+                    mExampleAdapter = new TypeAdapter(ApiManager.this, mExampleList);
                     mRecyclerView.setAdapter(mExampleAdapter);
                     mExampleAdapter.setOnItemClickListener(ApiManager.this);
 
@@ -256,7 +256,7 @@ public class ApiManager extends AppCompatActivity implements ArtistAdapter.OnIte
                         mExampleList.add(new Artist(title, year, imgUrl));
                     }
 
-                    mExampleAdapter = new ArtistAdapter(ApiManager.this, mExampleList,"Année de sortie: ");
+                    mExampleAdapter = new TypeAdapter(ApiManager.this, mExampleList);
                     mRecyclerView.setAdapter(mExampleAdapter);
                     mExampleAdapter.setOnItemClickListener(ApiManager.this);
 
@@ -313,28 +313,5 @@ public class ApiManager extends AppCompatActivity implements ArtistAdapter.OnIte
         postRec.putExtra(EXTRA_NAME, clickedItem.getName());
         postRec.putExtra(EXTRA_FAN, clickedItem.getNbFans());
         startActivity(postRec);*/
-        public void findUrlSong(int id_track, final Morceau morceau) {
-
-            String urlForSong = "http://api.deezer.com/2.0/track/"+id_track;
-            JsonObjectRequest requestSong = new JsonObjectRequest(Request.Method.GET, urlForSong, null, new Response.Listener<JSONObject>() {
-                @Override
-                public void onResponse(JSONObject response) {
-                    try {
-                        JSONObject data = response.getJSONObject("data");
-                        String urlSong = data.getString("preview");
-                        morceau.setSongUrl(urlSong);
-                    }
-                    catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    error.printStackTrace();
-                }
-            }
-            );
-        }
 
 }

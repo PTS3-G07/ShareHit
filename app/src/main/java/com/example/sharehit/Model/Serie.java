@@ -7,6 +7,6 @@ public class Serie extends Video {
     }
 
     public String toString(){
-        return "la série "+getTitre();
+        return "la série "+getName();
     }
 }
