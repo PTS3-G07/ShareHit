@@ -294,7 +294,7 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
 
     @Override
     public void onItemClick(int position) {
-        //Intent postRec = new Intent(this, PostRec.class);
+        Intent postRec = new Intent(this, PostRec.class);
         boolean isPLAYING = false;
         if(mExampleList.get(position) instanceof Morceau){
             Morceau clickedItem = (Morceau) mExampleList.get(position);
@@ -312,6 +312,13 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
                 Log.e("pa2chance", "prepare() failed");
             }
 
+        }
+        else{
+            Type clickedItem = mExampleList.get(position);
+            postRec.putExtra(EXTRA_URL, clickedItem.getImgUrl());
+            postRec.putExtra(EXTRA_NAME, clickedItem.getName());
+            postRec.putExtra(EXTRA_FAN, clickedItem.getSpec());
+            startActivity(postRec);
         }
     }
 

@@ -26,8 +26,8 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.TypeViewHolder
     private Context context;
     private ArrayList<Type> types;
     private OnItemclickListener listener;
-
     public MediaPlayer mediaPlayer;
+    private MediaPlayer mediaPlaying;
 
     String songUrl;
 
@@ -60,9 +60,10 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.TypeViewHolder
         String spec = currentItem.getSpec();
         if(currentItem instanceof Morceau){
             songUrl = ((Morceau) currentItem).getSongUrl();
-            mediaPlayer = MediaPlayer.create(context, Uri.parse(songUrl));
+            mediaPlayer = MediaPlayer.create(context, Uri.parse(((Morceau) currentItem).getSongUrl()));
         }
 
+        holder.mediaPlayer  = this.mediaPlayer;
         holder.name_ar.setText(name);
         holder.spec.setText(currentItem.getConstNommage() + spec);
         Picasso.with(context).load(imageUrl).fit().centerInside().into(holder.img_ar);
@@ -78,12 +79,10 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.TypeViewHolder
         public ImageButton img_ar;
         public TextView name_ar;
         public TextView spec;
-
+        public MediaPlayer mediaPlayer;
 
         public TypeViewHolder(@NonNull View itemView) {
             super(itemView);
-
-
 
             img_ar = itemView.findViewById(R.id.img_ar);
             name_ar = itemView.findViewById(R.id.name_ar);
@@ -103,17 +102,23 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.TypeViewHolder
                 }
             });
 
-            img_ar.setOnClickListener(new View.OnClickListener() {
+            /*img_ar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v){
+                    /*if(mediaPlaying != null){
+                        if(mediaPlaying.isPlaying()){
+                            mediaPlaying.pause();
+                        }
+
+                    }
                     if(mediaPlayer != null){
-                        mediaPlayer.start();
+                        mediaPlaying=mediaPlayer;
+                        mediaPlaying.start();
                     }
 
 
-
                 }
-            });
+            });*/
         }
     }
 }

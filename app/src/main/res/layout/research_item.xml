@@ -17,7 +17,8 @@
             android:id="@+id/img_ar"
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:src="@mipmap/ic_launcher" />
+            android:src="@mipmap/ic_launcher"
+            android:background="@color/space_transparent"/>
 
         <TextView
             android:id="@+id/name_ar"
