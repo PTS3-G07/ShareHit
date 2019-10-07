@@ -26,6 +26,7 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.TypeViewHolder
     private Context context;
     private ArrayList<Type> types;
     private OnItemclickListener listener;
+
     public MediaPlayer mediaPlayer;
     private MediaPlayer mediaPlaying;
 
@@ -83,6 +84,8 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.TypeViewHolder
 
         public TypeViewHolder(@NonNull View itemView) {
             super(itemView);
+
+
 
             img_ar = itemView.findViewById(R.id.img_ar);
             name_ar = itemView.findViewById(R.id.name_ar);
