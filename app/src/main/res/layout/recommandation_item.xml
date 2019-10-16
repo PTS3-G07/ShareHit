@@ -70,31 +70,36 @@
             android:layout_height="41dp"
             android:orientation="horizontal">
 
-            <Button
+            <ImageButton
                 android:id="@+id/likeButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/heart"
                 android:text="LIKE" />
 
-            <Button
+            <ImageButton
                 android:id="@+id/commentButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="30dp"
+                android:layout_height="50dp"
                 android:layout_weight="1"
-                android:text="COMM" />
+                android:background="@android:color/transparent"
+                android:text="COMM"
+                android:src="@drawable/comment" />
 
             <Space
                 android:layout_width="200dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1" />
 
-            <Button
+            <ImageButton
                 android:id="@+id/bookButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_weight="1"
-                android:text="Bookmark" />
+                android:background="@android:color/transparent"
+                android:text="Bookmark"
+                android:src="@drawable/bookmark" />
         </LinearLayout>
 
         <TextView
