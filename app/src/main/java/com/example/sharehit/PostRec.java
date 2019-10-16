@@ -87,9 +87,10 @@ public class PostRec extends AppCompatActivity {
                 );
 
                             HashMap usersMap = new HashMap();
-                            DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("Users").child(userUID).child("Recommendations");
-                            usersMap.put("Recom"+timeStamp, recommendation);
-                            usersRef.updateChildren(usersMap);
+                            DatabaseReference recomRef = FirebaseDatabase.getInstance().getReference().child("recos");
+                            String key = recomRef.push().getKey();
+                            usersMap.put(/*"Recom"+timeStamp*/key, recommendation);
+                            recomRef.updateChildren(usersMap);
 
 
                         }
