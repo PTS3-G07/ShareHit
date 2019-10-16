@@ -71,6 +71,7 @@ public class FeedFragement extends Fragment {
         return root;
     }
 
+
     private void displayAllRecos() {
 
         FirebaseRecyclerAdapter<Recommendation, RecosViewHolder> fireBaseRecyclerAdapter = new FirebaseRecyclerAdapter<Recommendation, RecosViewHolder>
