@@ -4,13 +4,17 @@ import java.util.List;
 
 public class Recommendation {
 
-    private String type;
-    private String userRecoUid;
-    private String desc;
-    private String name;
-    private String img;
-    private List<User> likers;
     private List<Comment> comments;
+    private String album;
+    private String artist;
+    private List<String> likeUserUid;
+    private String timeStamp;
+    private String track;
+    private String type;
+    private String name;
+    private String urlImage;
+    private String urlPreview;
+    private String userRecoUid;
 
     public Recommendation(){
 
@@ -20,20 +24,15 @@ public class Recommendation {
         this.type = type;
         this.userRecoUid = user;
         this.name = name;
-        this.img = img;
+        this.urlImage = img;
     }
 
     public String getType() {
         return type;
     }
 
-
-    public String getDesc() {
-        return desc;
-    }
-
-    public List<User> getLikers() {
-        return likers;
+    public List<String> getLikers() {
+        return likeUserUid;
     }
 
     public List<Comment> getComments() {
@@ -49,11 +48,11 @@ public class Recommendation {
     }
 
     public String getImg() {
-        return img;
+        return urlImage;
     }
 
     public void setImg(String img) {
-        this.img = img;
+        this.urlImage = img;
     }
 
     public String getUserRecoUid() {
