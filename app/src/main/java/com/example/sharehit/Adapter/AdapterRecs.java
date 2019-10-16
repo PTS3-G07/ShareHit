@@ -59,8 +59,6 @@ public class AdapterRecs extends RecyclerView.Adapter<AdapterRecs.MyHolder> {
         String name = postRec.get(i).getName();
         String imageUrl = postRec.get(i).getImg() ;
         String type = postRec.get(i).getType();
-        User user = postRec.get(i).getUser();
-        String userName = user.getPseudo();
 
         holder.name.setText(name);
         holder.desc.setText(type);

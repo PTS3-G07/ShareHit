@@ -2,10 +2,13 @@ package com.example.sharehit;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -23,13 +26,13 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class FeedFragement extends Fragment {
 
-    Button deezer;
     RecyclerView recyclerView;
     private DatabaseReference recosRef, usersRef;
     private FirebaseAuth mAuth;
@@ -41,14 +44,6 @@ public class FeedFragement extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ViewGroup root = (ViewGroup) inflater.inflate(R.layout.fragement_feed, null);
 
-
-        deezer = root.findViewById(R.id.deezer);
-        deezer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getActivity(), ApiManager.class));
-            }
-        });
 
 
         mAuth = FirebaseAuth.getInstance();
@@ -78,11 +73,19 @@ public class FeedFragement extends Fragment {
                 ) {
 
             @Override
-            protected void populateViewHolder(RecosViewHolder recosViewHolder, Recommendation recommendation, int i) {
+            protected void populateViewHolder(RecosViewHolder recosViewHolder, Recommendation model, int i) {
+
+                Picasso.with(getContext()).load(model.getImg()).fit().centerInside().into(recosViewHolder.getImg());
+
+                recosViewHolder.setDesc(model.getName());
+                recosViewHolder.setTitre("machin recommande un " + model.getType());
+
+
 
 
             }
         };
+        recyclerView.setAdapter(fireBaseRecyclerAdapter);
 
 
 
@@ -95,6 +98,32 @@ public class FeedFragement extends Fragment {
         public RecosViewHolder(View itemView) {
             super(itemView);
             this.mView = itemView;
+        }
+
+        public void setDesc(String desc){
+            TextView descR = (TextView) mView.findViewById(R.id.desc);
+            descR.setText(desc);
+        }
+
+        public void setTitre(String text){
+            TextView nameR = (TextView) mView.findViewById(R.id.name);
+            nameR.setText(text);
+
+
+        }
+
+        public ImageView getImg() {
+            ImageView imgR = (ImageView) mView.findViewById(R.id.img_ar);
+            return imgR;
+        }
+
+        public void setmView(View mView) {
+            this.mView = mView;
+        }
+
+        public ImageView getImgProfil(){
+            ImageView imgProfil = (ImageView) mView.findViewById(R.id.imgProfil);
+            return imgProfil;
         }
     }
 

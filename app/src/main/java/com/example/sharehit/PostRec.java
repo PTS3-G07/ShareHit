@@ -81,7 +81,7 @@ public class PostRec extends AppCompatActivity {
 
                 Recommendation recommendation = new Recommendation(
                   "Artist",
-                        user,
+                        userUID,
                         name,
                         imageUrl
                 );

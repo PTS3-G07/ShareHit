@@ -5,26 +5,26 @@ import java.util.List;
 public class Recommendation {
 
     private String type;
-    private User user;
+    private String userRecoUid;
     private String desc;
     private String name;
     private String img;
     private List<User> likers;
     private List<Comment> comments;
 
-    public Recommendation(String type, User user,  String name, String img) {
+    public Recommendation(){
+
+    }
+
+    public Recommendation(String type, String user,  String name, String img) {
         this.type = type;
-        this.user = user;
+        this.userRecoUid = user;
         this.name = name;
         this.img = img;
     }
 
     public String getType() {
         return type;
-    }
-
-    public User getUser() {
-        return user;
     }
 
     public String getDesc() {
@@ -37,10 +37,6 @@ public class Recommendation {
 
     public List<Comment> getComments() {
         return comments;
-    }
-
-    public String toString(){
-        return this.user.getPseudo()+" a recommandé "+type.toString();
     }
 
     public String getName() {
