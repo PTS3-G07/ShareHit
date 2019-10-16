@@ -97,6 +97,9 @@ public class PostRec extends AppCompatActivity {
                             usersMap.put(/*"Recom"+timeStamp*/key, recommendation);
                             recomRef.updateChildren(usersMap);
 
+                            startActivity(new Intent(PostRec.this, FeedPage.class));
+                            finish();
+
 
                         }
                     });
