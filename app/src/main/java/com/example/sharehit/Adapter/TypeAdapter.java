@@ -1,25 +1,31 @@
 package com.example.sharehit.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sharehit.ApiManager;
+import com.example.sharehit.FeedPage;
 import com.example.sharehit.Model.Morceau;
 import com.example.sharehit.Model.Type;
+import com.example.sharehit.PostRec;
 import com.example.sharehit.R;
+import com.example.sharehit.SignUp;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+
+import static com.example.sharehit.ApiManager.EXTRA_NAME;
+import static com.example.sharehit.ApiManager.EXTRA_URL;
 
 public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.TypeViewHolder> {
 
@@ -28,6 +34,8 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.TypeViewHolder
     private OnItemclickListener listener;
 
     public MediaPlayer mediaPlayer;
+
+    final Intent intent = new Intent(context, PostRec.class);
 
 
 
@@ -85,8 +93,8 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.TypeViewHolder
 
 
             img_ar = itemView.findViewById(R.id.img_ar);
-            name_ar = itemView.findViewById(R.id.name_ar);
-            spec = itemView.findViewById(R.id.spec);
+            name_ar = itemView.findViewById(R.id.nbrLike);
+            spec = itemView.findViewById(R.id.nbrComment);
 
 
 
@@ -105,6 +113,7 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.TypeViewHolder
             img_ar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v){
+                    /*
                     if(mediaPlayer != null){
                         if(mediaPlayer.isPlaying() == false){
                             mediaPlayer.start();
@@ -113,6 +122,9 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.TypeViewHolder
                         }
 
                     }
+
+                     */
+
 
 
 

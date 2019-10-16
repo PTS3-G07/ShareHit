@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
 
 import com.example.sharehit.Adapter.AdapterRecs;
 import com.example.sharehit.Model.Recommendation;
@@ -28,11 +29,11 @@ import java.util.List;
 
 public class FeedFragement extends Fragment {
 
-    FirebaseAuth firebaseAuth;
-    Button gotoSearch, deezer;
+    Button deezer;
     RecyclerView recyclerView;
-    List<Recommendation> recList;
-    AdapterRecs adapterRecs;
+    private DatabaseReference recosRef, usersRef;
+    private FirebaseAuth mAuth;
+    private String current_user_id;
 
 
     @Nullable
@@ -50,8 +51,10 @@ public class FeedFragement extends Fragment {
         });
 
 
-
-        firebaseAuth = FirebaseAuth.getInstance();
+        mAuth = FirebaseAuth.getInstance();
+        current_user_id = mAuth.getCurrentUser().getUid();
+        recosRef = FirebaseDatabase.getInstance().getReference().child("recos");
+        usersRef = FirebaseDatabase.getInstance().getReference().child("Users");
 
         recyclerView = root.findViewById(R.id.postRecyclerView);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
@@ -59,37 +62,40 @@ public class FeedFragement extends Fragment {
         layoutManager.setReverseLayout(true);
         recyclerView.setLayoutManager(layoutManager);
 
-        recList = new ArrayList<Recommendation>();
-
-        loadPosts();
+        displayAllRecos();
 
         return root;
     }
 
-    private void loadPosts() {
+    private void displayAllRecos() {
 
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Recommendations");
-        ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                recList.clear();
-                for (DataSnapshot ds: dataSnapshot.getChildren()){
-                    Recommendation recommendation = ds.getValue(Recommendation.class);
-                    recList.add(recommendation);
-                    adapterRecs = new AdapterRecs(getActivity(), recList);
-                    recyclerView.setAdapter(adapterRecs);
-
-
-
-                }
-            }
+        FirebaseRecyclerAdapter<Recommendation, RecosViewHolder> fireBaseRecyclerAdapter = new FirebaseRecyclerAdapter<Recommendation, RecosViewHolder>
+                (
+                        Recommendation.class,
+                        R.layout.recommandation_item,
+                        RecosViewHolder.class,
+                        recosRef
+                ) {
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Toast.makeText(getActivity(), "Error", Toast.LENGTH_SHORT);
-            }
-        });
+            protected void populateViewHolder(RecosViewHolder recosViewHolder, Recommendation recommendation, int i) {
 
+
+            }
+        };
+
+
+
+    }
+
+    public static class RecosViewHolder extends RecyclerView.ViewHolder{
+
+        View mView;
+
+        public RecosViewHolder(View itemView) {
+            super(itemView);
+            this.mView = itemView;
+        }
     }
 
 
