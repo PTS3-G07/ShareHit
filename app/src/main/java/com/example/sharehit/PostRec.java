@@ -80,8 +80,8 @@ public class PostRec extends AppCompatActivity {
                         public void onClick(View v) {
 
                 Recommendation recommendation = new Recommendation(
-                  "Artist",
-                        firebaseAuth.getCurrentUser().getUid(),
+                        "Artist",
+                        userUID,
                         name,
                         imageUrl
                 );
@@ -89,7 +89,7 @@ public class PostRec extends AppCompatActivity {
                             HashMap usersMap = new HashMap();
                             DatabaseReference recomRef = FirebaseDatabase.getInstance().getReference().child("recos");
                             String key = recomRef.push().getKey();
-                            usersMap.put(/*"Recom"+timeStamp*/key, recommendation);
+                            usersMap.put(key, recommendation);
                             recomRef.updateChildren(usersMap);
 
 

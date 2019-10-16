@@ -5,6 +5,15 @@ import java.util.List;
 public class Recommendation {
 
     private String type;
+
+    public String getUserRecoUid() {
+        return userRecoUid;
+    }
+
+    public void setUserRecoUid(String userRecoUid) {
+        this.userRecoUid = userRecoUid;
+    }
+
     private String userRecoUid;
     private String desc;
     private String name;
@@ -23,10 +32,6 @@ public class Recommendation {
         return type;
     }
 
-    public User getUser() {
-        return user;
-    }
-
     public String getDesc() {
         return desc;
     }
@@ -39,9 +44,9 @@ public class Recommendation {
         return comments;
     }
 
-    public String toString(){
+    /*public String toString(){
         return this.user.getPseudo()+" a recommandé "+type.toString();
-    }
+    }*/
 
     public String getName() {
         return name;
