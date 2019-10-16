@@ -23,9 +23,9 @@ import com.google.firebase.storage.StorageReference;
 
 import java.util.HashMap;
 
-import static com.example.sharehit.ApiManager.EXTRA_FAN;
 import static com.example.sharehit.ApiManager.EXTRA_ID;
 import static com.example.sharehit.ApiManager.EXTRA_NAME;
+import static com.example.sharehit.ApiManager.EXTRA_TYPE;
 import static com.example.sharehit.ApiManager.EXTRA_URL;
 
 public class PostRec extends AppCompatActivity {
@@ -54,7 +54,8 @@ public class PostRec extends AppCompatActivity {
         final String imageUrl = intent.getStringExtra(EXTRA_URL);
         final String name = intent.getStringExtra(EXTRA_NAME);
         final String userUID = intent.getStringExtra(EXTRA_ID);
-        String nbFan = intent.getStringExtra(EXTRA_FAN);
+        final String type = intent.getStringExtra(EXTRA_TYPE);
+        //String nbFan = intent.getStringExtra(EXTRA_FAN);
 
         postRec = findViewById(R.id.postRec);
         nameAr = findViewById(R.id.nameAr);
@@ -81,7 +82,7 @@ public class PostRec extends AppCompatActivity {
                         public void onClick(View v) {
 
                     Recommendation recommendation = new Recommendation(
-                      "Artist",
+                            type,
                             userUID,
                             name,
                             imageUrl

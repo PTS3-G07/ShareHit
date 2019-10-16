@@ -40,7 +40,7 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
 
     public static final String EXTRA_URL = "imgUrl";
     public static final String EXTRA_NAME = "name";
-    public static final String EXTRA_FAN = "nbFan";
+    public static final String EXTRA_TYPE = "type";
     public static final String EXTRA_ID = "userRecoUid";
 
     private RecyclerView mRecyclerView;
@@ -50,6 +50,7 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
     Context c;
     private SearchView search;
     public int type;
+    private String typeRecom;
 
     public MediaPlayer mediaPlayer;
 
@@ -88,12 +89,30 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
 */
 
                 mExampleList.clear();
-                if(type == 1) parseJSONartist(newText);
-                if(type == 2) parseJSONalbum(newText);
-                if(type == 3) parseJSONtrack(newText);
-                if(type == 4) parseJSONomdb(newText, "movie");
-                if(type == 5) parseJSONomdb(newText, "series");
-                if(type == 6) parseJSONomdb(newText,"game");
+                if(type == 1){
+                    parseJSONartist(newText);
+                    typeRecom="un artiste";
+                }
+                if(type == 2) {
+                    parseJSONalbum(newText);
+                    typeRecom="un album";
+                }
+                if(type == 3) {
+                    parseJSONtrack(newText);
+                    typeRecom="un morceau";
+                }
+                if(type == 4) {
+                    parseJSONomdb(newText, "movie");
+                    typeRecom="un film";
+                }
+                if(type == 5) {
+                    parseJSONomdb(newText, "series");
+                    typeRecom="une série";
+                }
+                if(type == 6) {
+                    parseJSONomdb(newText,"game");
+                    typeRecom="un jeu vidéo";
+                }
 
 
 
@@ -319,7 +338,7 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
             Type clickedItem = mExampleList.get(position);
             postRec.putExtra(EXTRA_URL, clickedItem.getImgUrl());
             postRec.putExtra(EXTRA_NAME, clickedItem.getName());
-            postRec.putExtra(EXTRA_FAN, clickedItem.getSpec());
+            postRec.putExtra(EXTRA_TYPE, typeRecom);
             postRec.putExtra(EXTRA_ID, FirebaseAuth.getInstance().getCurrentUser().getUid());
             startActivity(postRec);
         }

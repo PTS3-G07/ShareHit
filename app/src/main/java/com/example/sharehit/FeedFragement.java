@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sharehit.Adapter.AdapterRecs;
 import com.example.sharehit.Model.Recommendation;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -85,7 +86,7 @@ public class FeedFragement extends Fragment {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         final String pseudo = dataSnapshot.child("pseudo").getValue().toString();
-                        recosViewHolder.setTitre(pseudo + " a recommandé un " + model.getType());
+                        recosViewHolder.setTitre(pseudo + " a recommandé " + model.getType());
                         if(dataSnapshot.child("pdpUrl").exists()){
                             Picasso.with(getContext()).load(dataSnapshot.child("pdpUrl").getValue().toString()).fit().centerInside().into(recosViewHolder.getImgProfil());
                         }
