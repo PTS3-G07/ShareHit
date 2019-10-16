@@ -106,7 +106,7 @@ public class FeedFragement extends Fragment {
                 recosRef.child(idReco).child("likeUsersUid").child(mAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if(dataSnapshot.exists()) recosViewHolder.getLikeButton().setColorFilter(Color.BLACK);
+                        if(dataSnapshot.exists()) recosViewHolder.getLikeButton().setImageResource(R.drawable.like);
                     }
                     @Override public void onCancelled(@NonNull DatabaseError databaseError) { }
                 });
@@ -118,11 +118,11 @@ public class FeedFragement extends Fragment {
                     public void onClick(View v) {
                         if(CURRENT_LIKE == false){
                             getRef(i).child("likeUsersUid").child(mAuth.getCurrentUser().getUid()).child("like_done").setValue("yes");
-                            recosViewHolder.getLikeButton().setColorFilter(R.color.likeblue);
+                            recosViewHolder.getLikeButton().setImageResource(R.drawable.heart);
                             CURRENT_LIKE=true;
                         } else if(CURRENT_LIKE == true){
                             getRef(i).child("likeUsersUid").child(mAuth.getCurrentUser().getUid()).removeValue();
-                            recosViewHolder.getLikeButton().setColorFilter(Color.BLACK);
+                            recosViewHolder.getLikeButton().setImageResource(R.drawable.like);
                             CURRENT_LIKE=false;
                         }
 
