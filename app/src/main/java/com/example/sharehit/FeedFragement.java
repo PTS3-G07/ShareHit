@@ -45,7 +45,7 @@ public class FeedFragement extends Fragment {
     private FirebaseAuth mAuth;
     private String current_user_id;
     private boolean CURRENT_LIKE=false, test=false;
-    private MediaPlayer mp = new MediaPlayer();
+    private final static MediaPlayer mp = new MediaPlayer();
 
 
     @Nullable
@@ -94,14 +94,14 @@ public class FeedFragement extends Fragment {
                 recosRef.child(idReco).child("likeUsersUid").child(mAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if(dataSnapshot.exists()){
+                        /*if(dataSnapshot.exists()){
                             recosViewHolder.getLikeButton().setImageResource(R.drawable.like);
                             if(test==false){
                                 CURRENT_LIKE=true;
                                 test = true;
                             }
 
-                        }
+                        }*/
                     }
 
                     @Override
@@ -116,11 +116,11 @@ public class FeedFragement extends Fragment {
                     public void onClick(View v) {
                         if(CURRENT_LIKE == false){
                             getRef(i).child("likeUsersUid").child(mAuth.getCurrentUser().getUid()).child("like_done").setValue("yes");
-                            recosViewHolder.getLikeButton().setImageResource(R.drawable.like);
+                            recosViewHolder.getLikeButton().setImageResource(R.drawable.heart);
                             CURRENT_LIKE=true;
                         } else if(CURRENT_LIKE == true){
                             getRef(i).child("likeUsersUid").child(mAuth.getCurrentUser().getUid()).removeValue();
-                            recosViewHolder.getLikeButton().setImageResource(R.drawable.heart);
+                            recosViewHolder.getLikeButton().setImageResource(R.drawable.like);
                             CURRENT_LIKE=false;
                         }
 
