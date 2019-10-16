@@ -57,9 +57,12 @@ public class User {
         bookmarks.add(bookmark);
     }
 
-    /*public void likeRecommendation(Recommendation recommendation){
+    /*
+    public void likeRecommendation(Recommendation recommendation){
         recommendation.getLikers().add(this);
-    }*/
+    }
+
+     */
 
     public void commentRecommendation(Recommendation recommendation, String comment){
         recommendation.getComments().add(new Comment(this, comment));
