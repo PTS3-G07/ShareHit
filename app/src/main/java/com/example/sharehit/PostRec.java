@@ -4,9 +4,13 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.sharehit.Model.Recommendation;
@@ -20,7 +24,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 import static com.example.sharehit.ApiManager.EXTRA_ID;
@@ -41,10 +47,20 @@ public class PostRec extends AppCompatActivity {
     Button postRec;
     String pseudoData;
 
+    private TextView nomPost, descPost;
+    private ImageView imgProfilPost;
+    private ImageButton imgPost;
+    private final static MediaPlayer mp = new MediaPlayer();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_rec);
+
+        nomPost = (TextView) findViewById(R.id.namePost);
+        descPost = (TextView) findViewById(R.id.descPost);
+        imgProfilPost = (ImageView) findViewById(R.id.imgProfilPost);
+        imgPost = (ImageButton) findViewById(R.id.img_arPost);
 
         firebaseAuth = FirebaseAuth.getInstance();
         user = firebaseAuth.getCurrentUser();
@@ -59,9 +75,48 @@ public class PostRec extends AppCompatActivity {
         final String urlPreview = intent.getStringExtra(EXTRA_PREVIEW);
         //String nbFan = intent.getStringExtra(EXTRA_FAN);
 
+        Picasso.with(getApplicationContext()).load(imageUrl).fit().centerInside().into(imgPost);
+        descPost.setText(name);
+
+        myRef.child(userUID).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                nomPost.setText(dataSnapshot.child("pseudo").getValue().toString() + " a recommandé " + type);
+                Picasso.with(getApplicationContext()).load(dataSnapshot.child("pdpUrl").getValue().toString()).fit().centerInside().into(imgProfilPost);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        imgPost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (urlPreview!=null) {
+                    try {
+                        if (mp.isPlaying()){
+                            mp.pause();
+                            mp.reset();
+                        }else {
+                            mp.setDataSource(urlPreview);
+                            mp.prepareAsync();
+                            mp.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                                @Override
+                                public void onPrepared(MediaPlayer mp) {
+                                    mp.start();
+                                }
+                            });
+                        }
+                    } catch (IOException e) {
+                        Log.e("pa2chance", "prepare() failed");
+                    }
+                }
+            }
+        });
+
         postRec = findViewById(R.id.postRec);
-        nameAr = findViewById(R.id.nameAr);
-        nameAr.setText(pseudoData);
 
 
 

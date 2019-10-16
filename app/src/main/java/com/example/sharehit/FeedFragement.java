@@ -130,8 +130,6 @@ public class FeedFragement extends Fragment {
                 recosViewHolder.getImg().setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
-
                         if (model.getUrlPreview()!=null) {
                             try {
                                 if (mp.isPlaying()){
