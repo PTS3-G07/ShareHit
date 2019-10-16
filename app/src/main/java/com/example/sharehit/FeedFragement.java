@@ -92,24 +92,24 @@ public class FeedFragement extends Fragment {
 
 
 
+
+
+                recosRef.child(idReco).child("likeUsersUid").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        recosViewHolder.setNbrLike(Long.toString(dataSnapshot.getChildrenCount()) + " like");
+                    }
+                    @Override public void onCancelled(@NonNull DatabaseError databaseError) { }
+                });
+
                 recosRef.child(idReco).child("likeUsersUid").child(mAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        /*if(dataSnapshot.exists()){
-                            recosViewHolder.getLikeButton().setImageResource(R.drawable.like);
-                            if(test==false){
-                                CURRENT_LIKE=true;
-                                test = true;
-                            }
-
-                        }*/
+                        if(dataSnapshot.exists()) recosViewHolder.getLikeButton().setImageResource(R.drawable.like);
                     }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
+                    @Override public void onCancelled(@NonNull DatabaseError databaseError) { }
                 });
+
 
 
                 recosViewHolder.getLikeButton().setOnClickListener(new View.OnClickListener() {
@@ -224,7 +224,13 @@ public class FeedFragement extends Fragment {
             ImageButton imgButton = (ImageButton) mView.findViewById(R.id.likeButton);
             return imgButton;
         }
+
+        public void setNbrLike(String text){
+            TextView nbrlike = (TextView) mView.findViewById(R.id.nbrLike);
+            nbrlike.setText(text);
+        }
     }
+
 
 
 }
