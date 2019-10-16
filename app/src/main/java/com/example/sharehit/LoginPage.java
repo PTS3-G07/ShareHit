@@ -97,7 +97,7 @@ public class LoginPage extends AppCompatActivity {
                                         finish();
                                     }else {
                                         Toast.makeText(LoginPage.this, "Authentication failed." + task.getException(), Toast.LENGTH_LONG).show();
-                                        progress.dismiss();
+                                          progress.dismiss();
 
                                     }
                                 }

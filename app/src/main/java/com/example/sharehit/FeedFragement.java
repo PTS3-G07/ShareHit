@@ -2,10 +2,13 @@ package com.example.sharehit;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -13,6 +16,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
 
 import com.example.sharehit.Adapter.AdapterRecs;
 import com.example.sharehit.Model.Recommendation;
@@ -22,17 +26,19 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class FeedFragement extends Fragment {
 
-    FirebaseAuth firebaseAuth;
-    Button gotoSearch, deezer;
     RecyclerView recyclerView;
-    List<Recommendation> recList;
-    AdapterRecs adapterRecs;
+    private DatabaseReference recosRef, usersRef;
+    private FirebaseAuth mAuth;
+    private String current_user_id;
 
 
     @Nullable
@@ -41,17 +47,11 @@ public class FeedFragement extends Fragment {
         ViewGroup root = (ViewGroup) inflater.inflate(R.layout.fragement_feed, null);
 
 
-        deezer = root.findViewById(R.id.deezer);
-        deezer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getActivity(), ApiManager.class));
-            }
-        });
 
-
-
-        firebaseAuth = FirebaseAuth.getInstance();
+        mAuth = FirebaseAuth.getInstance();
+        current_user_id = mAuth.getCurrentUser().getUid();
+        recosRef = FirebaseDatabase.getInstance().getReference().child("recos");
+        usersRef = FirebaseDatabase.getInstance().getReference().child("Users");
 
         recyclerView = root.findViewById(R.id.postRecyclerView);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
@@ -59,37 +59,92 @@ public class FeedFragement extends Fragment {
         layoutManager.setReverseLayout(true);
         recyclerView.setLayoutManager(layoutManager);
 
-        recList = new ArrayList<Recommendation>();
-
-        loadPosts();
+        displayAllRecos();
 
         return root;
     }
 
-    private void loadPosts() {
+    private void displayAllRecos() {
 
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Recommendations");
-        ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                recList.clear();
-                for (DataSnapshot ds: dataSnapshot.getChildren()){
-                    Recommendation recommendation = ds.getValue(Recommendation.class);
-                    recList.add(recommendation);
-                    adapterRecs = new AdapterRecs(getActivity(), recList);
-                    recyclerView.setAdapter(adapterRecs);
-
-
-
-                }
-            }
+        FirebaseRecyclerAdapter<Recommendation, RecosViewHolder> fireBaseRecyclerAdapter = new FirebaseRecyclerAdapter<Recommendation, RecosViewHolder>
+                (
+                        Recommendation.class,
+                        R.layout.recommandation_item,
+                        RecosViewHolder.class,
+                        recosRef
+                ) {
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Toast.makeText(getActivity(), "Error", Toast.LENGTH_SHORT);
-            }
-        });
+            protected void populateViewHolder(final RecosViewHolder recosViewHolder, final Recommendation model, int i) {
 
+                Picasso.with(getContext()).load(model.getImg()).fit().centerInside().into(recosViewHolder.getImg());
+
+                recosViewHolder.setDesc(model.getName());
+
+
+                usersRef.child(model.getUserRecoUid()).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        final String pseudo = dataSnapshot.child("pseudo").getValue().toString();
+                        recosViewHolder.setTitre(pseudo + " a recommandé un " + model.getType());
+                        if(dataSnapshot.child("pdpUrl").exists()){
+                            Picasso.with(getContext()).load(dataSnapshot.child("pdpUrl").getValue().toString()).fit().centerInside().into(recosViewHolder.getImgProfil());
+                        }
+
+
+
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+
+
+
+            }
+        };
+        recyclerView.setAdapter(fireBaseRecyclerAdapter);
+
+
+
+    }
+
+    public static class RecosViewHolder extends RecyclerView.ViewHolder{
+
+        View mView;
+
+        public RecosViewHolder(View itemView) {
+            super(itemView);
+            this.mView = itemView;
+        }
+
+        public void setDesc(String desc){
+            TextView descR = (TextView) mView.findViewById(R.id.desc);
+            descR.setText(desc);
+        }
+
+        public void setTitre(String text){
+            TextView nameR = (TextView) mView.findViewById(R.id.name);
+            nameR.setText(text);
+        }
+
+        public ImageView getImg() {
+            ImageView imgR = (ImageView) mView.findViewById(R.id.img_ar);
+            return imgR;
+        }
+
+        public void setmView(View mView) {
+            this.mView = mView;
+        }
+
+        public CircleImageView getImgProfil(){
+            CircleImageView imgProfil = (CircleImageView) mView.findViewById(R.id.imgProfil);
+            return imgProfil;
+        }
     }
 
 

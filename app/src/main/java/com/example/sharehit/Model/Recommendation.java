@@ -5,21 +5,16 @@ import java.util.List;
 public class Recommendation {
 
     private String type;
-
-    public String getUserRecoUid() {
-        return userRecoUid;
-    }
-
-    public void setUserRecoUid(String userRecoUid) {
-        this.userRecoUid = userRecoUid;
-    }
-
     private String userRecoUid;
     private String desc;
     private String name;
     private String img;
     private List<User> likers;
     private List<Comment> comments;
+
+    public Recommendation(){
+
+    }
 
     public Recommendation(String type, String user,  String name, String img) {
         this.type = type;
@@ -44,10 +39,6 @@ public class Recommendation {
         return comments;
     }
 
-    /*public String toString(){
-        return this.user.getPseudo()+" a recommandé "+type.toString();
-    }*/
-
     public String getName() {
         return name;
     }
@@ -62,5 +53,13 @@ public class Recommendation {
 
     public void setImg(String img) {
         this.img = img;
+    }
+
+    public String getUserRecoUid() {
+        return userRecoUid;
+    }
+
+    public void setUserRecoUid(String userRecoUid) {
+        this.userRecoUid = userRecoUid;
     }
 }

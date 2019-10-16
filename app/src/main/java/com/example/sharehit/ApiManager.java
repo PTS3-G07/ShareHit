@@ -24,6 +24,7 @@ import com.example.sharehit.Adapter.TypeAdapter;
 import com.example.sharehit.Model.Artist;
 import com.example.sharehit.Model.Morceau;
 import com.example.sharehit.Model.Type;
+import com.google.firebase.auth.FirebaseAuth;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -40,6 +41,7 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
     public static final String EXTRA_URL = "imgUrl";
     public static final String EXTRA_NAME = "name";
     public static final String EXTRA_FAN = "nbFan";
+    public static final String EXTRA_ID = "userRecoUid";
 
     private RecyclerView mRecyclerView;
     private TypeAdapter mExampleAdapter;
@@ -318,6 +320,7 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
             postRec.putExtra(EXTRA_URL, clickedItem.getImgUrl());
             postRec.putExtra(EXTRA_NAME, clickedItem.getName());
             postRec.putExtra(EXTRA_FAN, clickedItem.getSpec());
+            postRec.putExtra(EXTRA_ID, FirebaseAuth.getInstance().getCurrentUser().getUid());
             startActivity(postRec);
         }
     }
