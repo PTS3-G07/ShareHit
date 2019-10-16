@@ -87,7 +87,7 @@ public class SignUp extends AppCompatActivity {
                                                             );
                                                             String userUID = mAuth.getCurrentUser().getUid();
                                                             HashMap usersMap = new HashMap();
-                                                            DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("Users");
+                                                            DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("users");
                                                             usersMap.put(userUID, user);
                                                             usersRef.updateChildren(usersMap);
                                                             progress.dismiss();

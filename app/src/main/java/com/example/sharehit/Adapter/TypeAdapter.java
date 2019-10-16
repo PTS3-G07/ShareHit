@@ -59,10 +59,10 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.TypeViewHolder
         String imageUrl = currentItem.getImgUrl();
         String name = currentItem.getName();
         String spec = currentItem.getSpec();
-        if(currentItem instanceof Morceau){
+        /*if(currentItem instanceof Morceau){
             songUrl = ((Morceau) currentItem).getSongUrl();
             mediaPlayer = MediaPlayer.create(context, Uri.parse(((Morceau) currentItem).getSongUrl()));
-        }
+        }*/
 
         holder.mediaPlayer  = this.mediaPlayer;
         holder.name_ar.setText(name);

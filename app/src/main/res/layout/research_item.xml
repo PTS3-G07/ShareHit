@@ -21,7 +21,7 @@
             android:background="@color/space_transparent"/>
 
         <TextView
-            android:id="@+id/nbrLike"
+            android:id="@+id/name_ar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Creator name"
@@ -29,7 +29,7 @@
             android:textSize="20sp" />
 
         <TextView
-            android:id="@+id/nbrComment"
+            android:id="@+id/spec"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Like: " />
