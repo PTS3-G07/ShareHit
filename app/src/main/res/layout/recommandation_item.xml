@@ -55,10 +55,11 @@
             android:layout_height="10dp"
             android:layout_weight="1" />
 
-        <ImageView
+        <ImageButton
             android:id="@+id/img_ar"
             android:layout_width="match_parent"
             android:layout_height="150dp"
+            android:background="@android:color/transparent"
             android:src="@mipmap/ic_launcher" />
 
         <Space

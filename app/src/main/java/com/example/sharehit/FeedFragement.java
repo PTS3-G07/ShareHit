@@ -3,10 +3,12 @@ package com.example.sharehit;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,6 +31,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -82,6 +85,22 @@ public class FeedFragement extends Fragment {
                 recosViewHolder.setDesc(model.getName());
 
 
+                recosViewHolder.getLikeButton().setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Log.e("IDRECO", String.valueOf(recosViewHolder.getItemId()));
+
+                    }
+                });
+
+                recosViewHolder.getImg().setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                });
+
+
                 usersRef.child(model.getUserRecoUid()).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -132,8 +151,8 @@ public class FeedFragement extends Fragment {
             nameR.setText(text);
         }
 
-        public ImageView getImg() {
-            ImageView imgR = (ImageView) mView.findViewById(R.id.img_ar);
+        public ImageButton getImg() {
+            ImageButton imgR = (ImageButton) mView.findViewById(R.id.img_ar);
             return imgR;
         }
 
@@ -144,6 +163,11 @@ public class FeedFragement extends Fragment {
         public CircleImageView getImgProfil(){
             CircleImageView imgProfil = (CircleImageView) mView.findViewById(R.id.imgProfil);
             return imgProfil;
+        }
+
+        public ImageButton getLikeButton(){
+            ImageButton imgButton = (ImageButton) mView.findViewById(R.id.likeButton);
+            return imgButton;
         }
     }
 
