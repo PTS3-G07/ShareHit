@@ -1,6 +1,7 @@
 package com.example.sharehit;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -105,7 +106,7 @@ public class FeedFragement extends Fragment {
                 recosRef.child(idReco).child("likeUsersUid").child(mAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if(dataSnapshot.exists()) recosViewHolder.getLikeButton().setImageResource(R.drawable.like);
+                        if(dataSnapshot.exists()) recosViewHolder.getLikeButton().setColorFilter(Color.BLACK);
                     }
                     @Override public void onCancelled(@NonNull DatabaseError databaseError) { }
                 });
@@ -117,15 +118,17 @@ public class FeedFragement extends Fragment {
                     public void onClick(View v) {
                         if(CURRENT_LIKE == false){
                             getRef(i).child("likeUsersUid").child(mAuth.getCurrentUser().getUid()).child("like_done").setValue("yes");
-                            recosViewHolder.getLikeButton().setImageResource(R.drawable.heart);
+                            recosViewHolder.getLikeButton().setColorFilter(R.color.likeblue);
                             CURRENT_LIKE=true;
                         } else if(CURRENT_LIKE == true){
                             getRef(i).child("likeUsersUid").child(mAuth.getCurrentUser().getUid()).removeValue();
-                            recosViewHolder.getLikeButton().setImageResource(R.drawable.like);
+                            recosViewHolder.getLikeButton().setColorFilter(Color.BLACK);
                             CURRENT_LIKE=false;
                         }
 
                     }
+
+
                 });
 
                 recosViewHolder.getImg().setOnClickListener(new View.OnClickListener() {

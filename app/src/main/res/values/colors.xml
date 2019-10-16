@@ -7,6 +7,7 @@
     <color name="black">#000000</color>
     <color name="barColor">#0C0608</color>
     <color name="gris">#EFEFEFEF</color>
+    <color name="likeblue">#1B8FFB</color>
     <array name="colorPagesViewPager">
         <item>#EDD9CF</item>
         <item>#BED4D6</item>

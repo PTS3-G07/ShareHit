@@ -77,7 +77,7 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:background="@android:color/transparent"
-                android:src="@drawable/heart"
+                android:src="@drawable/likebut"
                 android:text="LIKE" />
 
             <ImageButton
@@ -87,7 +87,7 @@
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
                 android:text="COMM"
-                android:src="@drawable/comment" />
+                android:src="@drawable/comment"/>
 
             <Space
                 android:layout_width="200dp"
