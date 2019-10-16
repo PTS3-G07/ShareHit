@@ -25,6 +25,7 @@ import java.util.HashMap;
 
 import static com.example.sharehit.ApiManager.EXTRA_ID;
 import static com.example.sharehit.ApiManager.EXTRA_NAME;
+import static com.example.sharehit.ApiManager.EXTRA_PREVIEW;
 import static com.example.sharehit.ApiManager.EXTRA_TYPE;
 import static com.example.sharehit.ApiManager.EXTRA_URL;
 
@@ -55,6 +56,7 @@ public class PostRec extends AppCompatActivity {
         final String name = intent.getStringExtra(EXTRA_NAME);
         final String userUID = intent.getStringExtra(EXTRA_ID);
         final String type = intent.getStringExtra(EXTRA_TYPE);
+        final String urlPreview = intent.getStringExtra(EXTRA_PREVIEW);
         //String nbFan = intent.getStringExtra(EXTRA_FAN);
 
         postRec = findViewById(R.id.postRec);
@@ -85,7 +87,8 @@ public class PostRec extends AppCompatActivity {
                             type,
                             userUID,
                             name,
-                            imageUrl
+                            imageUrl,
+                            urlPreview
                     );
 
                             HashMap usersMap = new HashMap();

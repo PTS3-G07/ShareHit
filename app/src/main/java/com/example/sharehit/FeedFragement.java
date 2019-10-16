@@ -1,6 +1,7 @@
 package com.example.sharehit;
 
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.util.Log;
@@ -30,6 +31,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -42,6 +44,7 @@ public class FeedFragement extends Fragment {
     private DatabaseReference recosRef, usersRef;
     private FirebaseAuth mAuth;
     private String current_user_id;
+    private  MediaPlayer mp = new MediaPlayer();
 
 
     @Nullable
@@ -96,6 +99,27 @@ public class FeedFragement extends Fragment {
                 recosViewHolder.getImg().setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+
+                        if (model.getUrlPreview()!=null) {
+                            try {
+                                if (mp.isPlaying()){
+                                    mp.pause();
+                                    mp.reset();
+                                }else {
+                                    mp.setDataSource(model.getUrlPreview());
+                                    mp.prepareAsync();
+                                    mp.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                                        @Override
+                                        public void onPrepared(MediaPlayer mp) {
+                                            mp.start();
+                                        }
+                                    });
+                                }
+                            } catch (IOException e) {
+                                Log.e("pa2chance", "prepare() failed");
+                            }
+                        }
+
 
                     }
                 });

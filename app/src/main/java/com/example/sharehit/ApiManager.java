@@ -42,6 +42,7 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
     public static final String EXTRA_NAME = "name";
     public static final String EXTRA_TYPE = "type";
     public static final String EXTRA_ID = "userRecoUid";
+    public static final String EXTRA_PREVIEW = "userUrlPreview";
 
     private RecyclerView mRecyclerView;
     private TypeAdapter mExampleAdapter;
@@ -317,7 +318,7 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
     public void onItemClick(int position) {
         Intent postRec = new Intent(this, PostRec.class);
         boolean isPLAYING = false;
-        if(mExampleList.get(position) instanceof Morceau){
+        /*if(mExampleList.get(position) instanceof Morceau){
             Morceau clickedItem = (Morceau) mExampleList.get(position);
             MediaPlayer mp = new MediaPlayer();
             try {
@@ -334,14 +335,18 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
             }
 
         }
-        else{
+        else{*/
             Type clickedItem = mExampleList.get(position);
             postRec.putExtra(EXTRA_URL, clickedItem.getImgUrl());
             postRec.putExtra(EXTRA_NAME, clickedItem.getName());
             postRec.putExtra(EXTRA_TYPE, typeRecom);
             postRec.putExtra(EXTRA_ID, FirebaseAuth.getInstance().getCurrentUser().getUid());
+            if(clickedItem instanceof Morceau) {
+                clickedItem = (Morceau) clickedItem;
+                postRec.putExtra(EXTRA_PREVIEW, ((Morceau) clickedItem).getSongUrl());
+            }
             startActivity(postRec);
-        }
+        //}
     }
 
         /*postRec.putExtra(EXTRA_URL, clickedItem.getImgUrl());

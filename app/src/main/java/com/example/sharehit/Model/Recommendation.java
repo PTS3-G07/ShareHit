@@ -20,11 +20,21 @@ public class Recommendation {
 
     }
 
-    public Recommendation(String type, String user,  String name, String img) {
+    public Recommendation(String type, String user,  String name, String img, String urlPreview) {
         this.type = type;
         this.userRecoUid = user;
         this.name = name;
         this.urlImage = img;
+        this.urlPreview=urlPreview;
+    }
+
+
+    public String getUrlPreview() {
+        return urlPreview;
+    }
+
+    public void setUrlPreview(String urlPreview) {
+        this.urlPreview = urlPreview;
     }
 
     public String getType() {
