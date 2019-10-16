@@ -31,6 +31,8 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class FeedFragement extends Fragment {
 
     RecyclerView recyclerView;
@@ -73,12 +75,32 @@ public class FeedFragement extends Fragment {
                 ) {
 
             @Override
-            protected void populateViewHolder(RecosViewHolder recosViewHolder, Recommendation model, int i) {
+            protected void populateViewHolder(final RecosViewHolder recosViewHolder, final Recommendation model, int i) {
 
                 Picasso.with(getContext()).load(model.getImg()).fit().centerInside().into(recosViewHolder.getImg());
 
                 recosViewHolder.setDesc(model.getName());
-                recosViewHolder.setTitre("machin recommande un " + model.getType());
+
+
+                usersRef.child(model.getUserRecoUid()).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        final String pseudo = dataSnapshot.child("pseudo").getValue().toString();
+                        recosViewHolder.setTitre(pseudo + " a recommandé un " + model.getType());
+                        if(dataSnapshot.child("pdpUrl").exists()){
+                            Picasso.with(getContext()).load(dataSnapshot.child("pdpUrl").getValue().toString()).fit().centerInside().into(recosViewHolder.getImgProfil());
+                        }
+
+
+
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
 
 
 
@@ -108,8 +130,6 @@ public class FeedFragement extends Fragment {
         public void setTitre(String text){
             TextView nameR = (TextView) mView.findViewById(R.id.name);
             nameR.setText(text);
-
-
         }
 
         public ImageView getImg() {
@@ -121,8 +141,8 @@ public class FeedFragement extends Fragment {
             this.mView = mView;
         }
 
-        public ImageView getImgProfil(){
-            ImageView imgProfil = (ImageView) mView.findViewById(R.id.imgProfil);
+        public CircleImageView getImgProfil(){
+            CircleImageView imgProfil = (CircleImageView) mView.findViewById(R.id.imgProfil);
             return imgProfil;
         }
     }

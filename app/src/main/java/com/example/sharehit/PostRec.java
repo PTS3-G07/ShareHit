@@ -24,6 +24,7 @@ import com.google.firebase.storage.StorageReference;
 import java.util.HashMap;
 
 import static com.example.sharehit.ApiManager.EXTRA_FAN;
+import static com.example.sharehit.ApiManager.EXTRA_ID;
 import static com.example.sharehit.ApiManager.EXTRA_NAME;
 import static com.example.sharehit.ApiManager.EXTRA_URL;
 
@@ -52,6 +53,7 @@ public class PostRec extends AppCompatActivity {
         Intent intent = getIntent();
         final String imageUrl = intent.getStringExtra(EXTRA_URL);
         final String name = intent.getStringExtra(EXTRA_NAME);
+        final String userUID = intent.getStringExtra(EXTRA_ID);
         String nbFan = intent.getStringExtra(EXTRA_FAN);
 
         postRec = findViewById(R.id.postRec);
@@ -69,7 +71,6 @@ public class PostRec extends AppCompatActivity {
                     pseudoData = ""+ ds.child("pseudo").getValue();
                     String emailData = user.getEmail();
                     String pdpUrl = ""+ ds.child("pdpUrl").getValue();
-                    final String userUID = firebaseAuth.getCurrentUser().getUid();
                     final String timeStamp = String.valueOf(System.currentTimeMillis());
                     final User user = new User(
                             pseudoData,
@@ -79,12 +80,12 @@ public class PostRec extends AppCompatActivity {
                         @Override
                         public void onClick(View v) {
 
-                Recommendation recommendation = new Recommendation(
-                  "Artist",
-                        userUID,
-                        name,
-                        imageUrl
-                );
+                    Recommendation recommendation = new Recommendation(
+                      "Artist",
+                            userUID,
+                            name,
+                            imageUrl
+                    );
 
                             HashMap usersMap = new HashMap();
                             DatabaseReference recomRef = FirebaseDatabase.getInstance().getReference().child("recos");

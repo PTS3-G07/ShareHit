@@ -54,4 +54,12 @@ public class Recommendation {
     public void setImg(String img) {
         this.img = img;
     }
+
+    public String getUserRecoUid() {
+        return userRecoUid;
+    }
+
+    public void setUserRecoUid(String userRecoUid) {
+        this.userRecoUid = userRecoUid;
+    }
 }
