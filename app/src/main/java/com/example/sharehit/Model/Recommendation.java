@@ -5,16 +5,16 @@ import java.util.List;
 public class Recommendation {
 
     private String type;
-    private User user;
+    private String userRecoUid;
     private String desc;
     private String name;
     private String img;
     private List<User> likers;
     private List<Comment> comments;
 
-    public Recommendation(String type, User user,  String name, String img) {
+    public Recommendation(String type, String user,  String name, String img) {
         this.type = type;
-        this.user = user;
+        this.userRecoUid = user;
         this.name = name;
         this.img = img;
     }
