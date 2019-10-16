@@ -19,14 +19,22 @@
         android:supportsRtl="true"
         android:usesCleartextTraffic="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".PostRec"></activity>
-        <activity android:name=".ApiManager" />
-        <activity android:name=".Uploadpdp" />
-        <activity android:name=".FeedPage" />
-        <activity android:name=".SignUp" />
-        <activity android:name=".MainActivity" />
-        <activity android:name=".PasswordForget" />
-        <activity android:name=".LoginPage">
+        <activity android:name=".PostRec"
+            android:screenOrientation="portrait"></activity>
+        <activity android:name=".ApiManager"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".Uploadpdp"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".FeedPage"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".SignUp"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".MainActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".PasswordForget"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".LoginPage"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
