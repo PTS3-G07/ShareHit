@@ -1,6 +1,7 @@
 package com.example.sharehit;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.util.Log;
@@ -42,6 +43,7 @@ public class FeedFragement extends Fragment {
     private DatabaseReference recosRef, usersRef;
     private FirebaseAuth mAuth;
     private String current_user_id;
+    private boolean CURRENT_LIKE=false, test=false;
 
 
     @Nullable
@@ -78,17 +80,47 @@ public class FeedFragement extends Fragment {
                 ) {
 
             @Override
-            protected void populateViewHolder(final RecosViewHolder recosViewHolder, final Recommendation model, int i) {
+            protected void populateViewHolder(final RecosViewHolder recosViewHolder, final Recommendation model, final int i) {
 
                 Picasso.with(getContext()).load(model.getImg()).fit().centerInside().into(recosViewHolder.getImg());
 
                 recosViewHolder.setDesc(model.getName());
+                final String idReco = getRef(i).getKey();
+
+
+
+                recosRef.child(idReco).child("likeUsersUid").child(mAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if(dataSnapshot.exists()){
+                            recosViewHolder.getLikeButton().setImageResource(R.drawable.like);
+                            if(test==false){
+                                CURRENT_LIKE=true;
+                                test = true;
+                            }
+
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
 
 
                 recosViewHolder.getLikeButton().setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Log.e("IDRECO", String.valueOf(recosViewHolder.getItemId()));
+                        if(CURRENT_LIKE == false){
+                            getRef(i).child("likeUsersUid").child(mAuth.getCurrentUser().getUid()).child("like_done").setValue("yes");
+                            recosViewHolder.getLikeButton().setImageResource(R.drawable.like);
+                            CURRENT_LIKE=true;
+                        } else if(CURRENT_LIKE == true){
+                            getRef(i).child("likeUsersUid").child(mAuth.getCurrentUser().getUid()).removeValue();
+                            recosViewHolder.getLikeButton().setImageResource(R.drawable.heart);
+                            CURRENT_LIKE=false;
+                        }
 
                     }
                 });
@@ -96,6 +128,7 @@ public class FeedFragement extends Fragment {
                 recosViewHolder.getImg().setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+
 
                     }
                 });
