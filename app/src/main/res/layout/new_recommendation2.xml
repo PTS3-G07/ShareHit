@@ -36,8 +36,7 @@
             android:layout_marginEnd="10dp"
             android:layout_marginRight="10dp"
             android:background="@color/space_transparent"
-
-            app:srcCompat="@drawable/artiste" />
+            android:src="@drawable/artiste" />
 
         <ImageButton
             android:id="@+id/album"
@@ -46,16 +45,15 @@
             android:layout_marginEnd="10dp"
             android:layout_marginRight="10dp"
             android:background="@color/space_transparent"
-
-            app:srcCompat="@drawable/album" />
+            android:src="@drawable/album" />
 
         <ImageButton
             android:id="@+id/morceau"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@color/space_transparent"
+            android:src="@drawable/morceau" />
 
-            app:srcCompat="@drawable/morceau" />
     </LinearLayout>
 
     <LinearLayout
@@ -63,7 +61,8 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="189dp">
+        tools:layout_editor_absoluteY="189dp"
+        tools:ignore="MissingConstraints">
 
         <ImageButton
             android:id="@+id/jeuVideo"
@@ -72,8 +71,7 @@
             android:layout_marginEnd="10dp"
             android:layout_marginRight="10dp"
             android:background="@color/space_transparent"
-
-            app:srcCompat="@drawable/jeu_video" />
+            android:src="@drawable/jeu_video" />
 
         <ImageButton
             android:id="@+id/film"
@@ -82,16 +80,14 @@
             android:layout_marginEnd="10dp"
             android:layout_marginRight="10dp"
             android:background="@color/space_transparent"
-
-            app:srcCompat="@drawable/film" />
+            android:src="@drawable/film" />
 
         <ImageButton
             android:id="@+id/serie"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@color/space_transparent"
-
-            app:srcCompat="@drawable/serie" />
+            android:src="@drawable/serie" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
