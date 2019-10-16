@@ -1,6 +1,7 @@
 package com.example.sharehit;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -56,6 +57,9 @@ public class PostRec extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_rec);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
 
         nomPost = (TextView) findViewById(R.id.namePost);
         descPost = (TextView) findViewById(R.id.descPost);

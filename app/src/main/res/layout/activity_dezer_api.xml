@@ -6,10 +6,33 @@
     android:layout_height="match_parent"
     tools:context=".ApiManager">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="41dp"
+                android:layout_height="match_parent"
+                android:src="@drawable/slogo" />
+
+        </LinearLayout>
+
+    </androidx.appcompat.widget.Toolbar>
+
     <SearchView
         android:id="@+id/searchv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbar2"
         app:iconifiedByDefault="false" />
 
     <androidx.recyclerview.widget.RecyclerView

@@ -1,5 +1,6 @@
 package com.example.sharehit;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -59,6 +60,9 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dezer_api);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
 
         Bundle b = getIntent().getExtras();
         if(b != null)
