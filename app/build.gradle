@@ -42,6 +42,7 @@ dependencies {
     implementation 'com.firebaseui:firebase-ui-database:2.1.1'
     implementation 'com.android.support:recyclerview-v7:29.0.0'
 
+
 }
 
 apply plugin: 'com.google.gms.google-services'

@@ -27,6 +27,7 @@ public class Recommendation {
         return type;
     }
 
+
     public String getDesc() {
         return desc;
     }

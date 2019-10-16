@@ -16,7 +16,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
 
 import com.example.sharehit.Adapter.AdapterRecs;
 import com.example.sharehit.Model.Recommendation;
