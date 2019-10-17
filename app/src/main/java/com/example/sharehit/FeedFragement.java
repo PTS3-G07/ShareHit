@@ -115,6 +115,9 @@ public class FeedFragement extends Fragment {
 
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if (!dataSnapshot.hasChildren()){
+                            recosViewHolder.setPseudoCom("Aucun commentaire");
+                        }
                         for (DataSnapshot child : dataSnapshot.getChildren()) {
                             final String index = child.getKey();
                             String idUsr = dataSnapshot.child(index).child("uid").getValue().toString();
@@ -129,8 +132,25 @@ public class FeedFragement extends Fragment {
 
                                 }
                             });
+                            recosRef.child(idReco).child("Coms").addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    if (dataSnapshot.getChildrenCount()-1>0){
+                                        if (dataSnapshot.getChildrenCount()-1==1){
+                                            recosViewHolder.setAutreComment("Voir l'autre commentaire.");
+                                        }
+                                        recosViewHolder.setAutreComment("Voir les "+(dataSnapshot.getChildrenCount()-1)+" autres commentaires.");
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
                             recosViewHolder.setNbrCom(dataSnapshot.child(index).child("com").getValue().toString());
                         }
+
 
                     }
 
@@ -289,6 +309,7 @@ public class FeedFragement extends Fragment {
         TextView nbrlike;
         TextView nbrCom;
         TextView pseudoCom;
+        TextView autreComment;
 
         public RecosViewHolder(View itemView) {
             super(itemView);
@@ -296,6 +317,11 @@ public class FeedFragement extends Fragment {
             nbrlike = (TextView) mView.findViewById(R.id.nbrLike);
             nbrCom = (TextView) mView.findViewById(R.id.nbrComment);
             pseudoCom = mView.findViewById(R.id.pseudoComment);
+            autreComment = mView.findViewById(R.id.autreComment);
+        }
+
+        public void setAutreComment(String autreComment1){
+            autreComment.setText(autreComment1);
         }
 
         public void setTime(String timeText){
