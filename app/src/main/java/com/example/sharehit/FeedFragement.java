@@ -102,6 +102,7 @@ public class FeedFragement extends Fragment {
 
                 recosViewHolder.setDesc(model.getName());
                 final String idReco = getRef(i).getKey();
+                recosViewHolder.autreComment.setHeight(0);
 
                 /*if(recosRef.child(idReco).child("likeUsersUid").child(mAuth.getCurrentUser().getUid()).child("like_done").equals("yes")){
                     CURRENT_LIKE=true;
@@ -140,7 +141,9 @@ public class FeedFragement extends Fragment {
                                         if (dataSnapshot.getChildrenCount()-1==1){
                                             recosViewHolder.setAutreComment("Voir l'autre commentaire.");
                                         }
-                                        recosViewHolder.setAutreComment("Voir les "+(dataSnapshot.getChildrenCount()-1)+" autres commentaires.");
+                                        else{
+                                            recosViewHolder.setAutreComment("Voir les "+(dataSnapshot.getChildrenCount()-1)+" autres commentaires.");
+                                        }
                                     }
                                     else {
                                         recosViewHolder.autreComment.setHeight(0);
@@ -249,6 +252,15 @@ public class FeedFragement extends Fragment {
                         String key = usersRef.child(mAuth.getCurrentUser().getUid()).child("bookmarks").push().getKey();
                         usersRef.child(mAuth.getCurrentUser().getUid()).child("bookmarks").child(key).setValue(getRef(i).getKey());
 
+                    }
+                });
+
+                recosViewHolder.autreComment.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        b.putString("key", getRef(i).getKey());
+                        intent2.putExtras(b);
+                        startActivity(intent2);
                     }
                 });
 
