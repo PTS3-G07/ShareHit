@@ -67,9 +67,12 @@ public class User {
 
      */
 
+    /*
     public void commentRecommendation(Recommendation recommendation, String comment){
         recommendation.getComments().add(new Comment(this, comment));
     }
+
+     */
 
     public void follow(User user){
         this.followed.add(user);
