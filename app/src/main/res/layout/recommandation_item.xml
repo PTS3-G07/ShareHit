@@ -122,12 +122,23 @@
             android:textColor="@android:color/black"
             android:textSize="14sp" />
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+        <TextView
+            android:id="@+id/pseudoComment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Comment:"
+            android:textStyle="bold"
+            android:layout_marginRight="10dp"/>
         <TextView
             android:id="@+id/nbrComment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Comment:"
-            android:textSize="14sp"/>
+            android:text="Comment:" />
+        </LinearLayout>
 
     </LinearLayout>
 
