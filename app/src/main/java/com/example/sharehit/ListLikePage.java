@@ -53,35 +53,18 @@ public class ListLikePage extends AppCompatActivity {
         recosRef = FirebaseDatabase.getInstance().getReference().child("recos").child(b.getString("key")).child("likeUserUid");
         usersRef = FirebaseDatabase.getInstance().getReference().child("users");
 
-        FirebaseRecyclerAdapter<User, UserViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<User, UserViewHolder>
-                (
-                        User.class,
-                        R.layout.like_user_profil_display,
-                        UserViewHolder.class,
-                        recosRef
-                ) {
+        recosRef.addValueEventListener(new ValueEventListener() {
             @Override
-            protected void populateViewHolder(final UserViewHolder userViewHolder, final User user, int i) {
-                Log.e("IDUSER", getRef(i).getKey());
-                usersRef.child(getRef(i).getKey()).addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        userViewHolder.setPseudoListLike(dataSnapshot.child("pseudo").getValue().toString());
-                        Picasso.with(getApplicationContext()).load(dataSnapshot.child("pdpUrl").getValue().toString()).fit().centerInside().into(userViewHolder.getImgProfil());
-
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
 
             }
-        };
 
-        listLike.setAdapter(firebaseRecyclerAdapter);
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
 
     }
