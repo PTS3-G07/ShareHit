@@ -111,6 +111,26 @@ public class FeedFragement extends Fragment {
 
                 Log.e(""+recosRef.child(idReco).toString(), "CURRENT_LIKE="+CURRENT_LIKE);
 
+                recosRef.child(idReco).child("Coms").limitToLast(1).addValueEventListener(new ValueEventListener(){
+
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                       /* if (dataSnapshot.exists()) {
+                            Log.e("testest", dataSnapshot.toString());
+                            Log.e("testest", ""+dataSnapshot.child(getRef(i).getKey()).getValue());
+                        }
+                        if (dataSnapshot.child(dataSnapshot.getValue().toString()).child("com").exists()) {
+                            Log.e("testest", dataSnapshot.child(dataSnapshot.getValue().toString()).child("com").getValue().toString());
+                            recosViewHolder.setNbrCom(dataSnapshot.child(dataSnapshot.getValue().toString()).child("com").getValue().toString());
+                        }*/
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
                 recosRef.child(idReco).child("likeUsersUid").addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -258,13 +278,13 @@ public class FeedFragement extends Fragment {
 
         View mView;
         TextView nbrlike;
-        //TextView nbrCom;
+        TextView nbrCom;
 
         public RecosViewHolder(View itemView) {
             super(itemView);
             this.mView = itemView;
             nbrlike = (TextView) mView.findViewById(R.id.nbrLike);
-            //nbrCom = (TextView) mView.findViewById(R.id.nbrComment);
+            nbrCom = (TextView) mView.findViewById(R.id.nbrComment);
         }
 
         public void setTime(String timeText){
@@ -305,9 +325,9 @@ public class FeedFragement extends Fragment {
             nbrlike.setText(text);
         }
 
-        /*public void setNbrCom(String text){
-            nbrlike.setText(text);
-        }*/
+        public void setNbrCom(String text){
+            nbrCom.setText(text);
+        }
 
         public String getNbrLike(){
             return nbrlike.getText().toString();
