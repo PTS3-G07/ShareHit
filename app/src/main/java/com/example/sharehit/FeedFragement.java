@@ -132,19 +132,9 @@ public class FeedFragement extends Fragment {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         if(dataSnapshot.exists()) {
                             recosViewHolder.getLikeButton().setImageResource(R.drawable.like);
-                            /*if(dataSnapshot.getChildrenCount()==0){
-                                recosViewHolder.setNbrLike("Aimé par vous");
-                            }
-                            if(dataSnapshot.getChildrenCount()==1){
-                                recosViewHolder.setNbrLike("Aimé par vous et 1 personne");
-                            }
-                            else{
-                                recosViewHolder.setNbrLike("Aimé par vous et "+Long.toString(dataSnapshot.getChildrenCount())+" personnes");
-                            }*/
                         }
                         else{
                             recosViewHolder.getLikeButton().setImageResource(R.drawable.heart);
-                            //recosViewHolder.setNbrLike(Long.toString(dataSnapshot.getChildrenCount()) + " like");
                         }
                     }
                     @Override public void onCancelled(@NonNull DatabaseError databaseError) { }
@@ -170,6 +160,7 @@ public class FeedFragement extends Fragment {
                 });
 
                 recosViewHolder.getImg().setOnClickListener(new View.OnClickListener() {
+
                     @Override
                     public void onClick(View v) {
                         if (model.getUrlPreview()!=null) {
@@ -195,6 +186,8 @@ public class FeedFragement extends Fragment {
 
 
                     }
+
+
                 });
 
                 recosViewHolder.getListLike().setOnClickListener(new View.OnClickListener() {
@@ -256,11 +249,13 @@ public class FeedFragement extends Fragment {
 
         View mView;
         TextView nbrlike;
+        //TextView nbrCom;
 
         public RecosViewHolder(View itemView) {
             super(itemView);
             this.mView = itemView;
             nbrlike = (TextView) mView.findViewById(R.id.nbrLike);
+            //nbrCom = (TextView) mView.findViewById(R.id.nbrComment);
         }
 
         public void setTime(String timeText){
@@ -300,6 +295,10 @@ public class FeedFragement extends Fragment {
         public void setNbrLike(String text){
             nbrlike.setText(text);
         }
+
+        /*public void setNbrCom(String text){
+            nbrlike.setText(text);
+        }*/
 
         public String getNbrLike(){
             return nbrlike.getText().toString();

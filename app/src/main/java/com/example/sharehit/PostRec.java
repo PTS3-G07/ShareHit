@@ -130,44 +130,36 @@ public class PostRec extends AppCompatActivity {
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for(DataSnapshot ds : dataSnapshot.getChildren()){
-                    pseudoData = ""+ ds.child("pseudo").getValue();
-                    String emailData = user.getEmail();
-                    String pdpUrl = ""+ ds.child("pdpUrl").getValue();
-                    final User user = new User(
-                            pseudoData,
-                            emailData
-                    );
-                    postRec.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
 
-                    Recommendation recommendation = new Recommendation(
-                            type,
-                            userUID,
-                            name,
-                            imageUrl,
-                            urlPreview,
-                            new Timestamp(System.currentTimeMillis()).getTime()
-                    );
+                postRec.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
 
-                        Log.e("testest",""+new Timestamp(System.currentTimeMillis()).getTime());
-                            HashMap usersMap = new HashMap();
-                            DatabaseReference recomRef = FirebaseDatabase.getInstance().getReference().child("recos");
-                            String key = recomRef.push().getKey();
-                            usersMap.put(/*"Recom"+timeStamp*/key, recommendation);
-                            recomRef.updateChildren(usersMap);
+                        Log.e("testest", "laaaaaaaaaaaaaaaaaaaa");
 
-                            mp.stop();
+                        Recommendation recommendation = new Recommendation(
+                                type,
+                                userUID,
+                                name,
+                                imageUrl,
+                                urlPreview,
+                                new Timestamp(System.currentTimeMillis()).getTime()
+                        );
 
-                            startActivity(new Intent(PostRec.this, FeedPage.class));
-                            finish();
+                        HashMap usersMap = new HashMap();
+                        DatabaseReference recomRef = FirebaseDatabase.getInstance().getReference().child("recos");
+                        String key = recomRef.push().getKey();
+                        usersMap.put(key, recommendation);
+                        recomRef.updateChildren(usersMap);
+
+                        mp.stop();
+
+                        startActivity(new Intent(PostRec.this, FeedPage.class));
+                        finish();
 
 
-                        }
-                    });
-
-                }
+                    }
+                });
             }
 
             @Override
