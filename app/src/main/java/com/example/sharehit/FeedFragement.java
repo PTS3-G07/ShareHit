@@ -67,7 +67,7 @@ public class FeedFragement extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         current_user_id = mAuth.getCurrentUser().getUid();
         recosRef = FirebaseDatabase.getInstance().getReference().child("recos");
-        usersRef = FirebaseDatabase.getInstance().getReference().child("Users");
+        usersRef = FirebaseDatabase.getInstance().getReference().child("users");
 
         recyclerView = root.findViewById(R.id.postRecyclerView);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
@@ -188,6 +188,15 @@ public class FeedFragement extends Fragment {
                     }
 
 
+                });
+
+                recosViewHolder.getBookButton().setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String key = usersRef.child(mAuth.getCurrentUser().getUid()).child("bookmarks").push().getKey();
+                        usersRef.child(mAuth.getCurrentUser().getUid()).child("bookmarks").child(key).setValue(getRef(i).getKey());
+
+                    }
                 });
 
                 recosViewHolder.getListLike().setOnClickListener(new View.OnClickListener() {
@@ -312,6 +321,11 @@ public class FeedFragement extends Fragment {
         public ImageButton getCommentButton(){
             ImageButton button = (ImageButton) mView.findViewById(R.id.commentButton);
             return button;
+        }
+
+        public ImageButton getBookButton(){
+            ImageButton img = (ImageButton) mView.findViewById(R.id.bookButton);
+            return img;
         }
     }
 

@@ -45,7 +45,7 @@ public class AdapterRecs extends RecyclerView.Adapter<AdapterRecs.MyHolder> {
         firebaseAuth = FirebaseAuth.getInstance();
         user = firebaseAuth.getCurrentUser();
         database = FirebaseDatabase.getInstance();
-        myRef = database.getReference("Users");
+        myRef = database.getReference("users");
 
 
 
