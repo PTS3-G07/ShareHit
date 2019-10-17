@@ -28,6 +28,7 @@ import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.HashMap;
 
 import static com.example.sharehit.ApiManager.EXTRA_ID;
@@ -133,7 +134,6 @@ public class PostRec extends AppCompatActivity {
                     pseudoData = ""+ ds.child("pseudo").getValue();
                     String emailData = user.getEmail();
                     String pdpUrl = ""+ ds.child("pdpUrl").getValue();
-                    final String timeStamp = String.valueOf(System.currentTimeMillis());
                     final User user = new User(
                             pseudoData,
                             emailData
@@ -147,9 +147,11 @@ public class PostRec extends AppCompatActivity {
                             userUID,
                             name,
                             imageUrl,
-                            urlPreview
+                            urlPreview,
+                            new Timestamp(System.currentTimeMillis()).getTime()
                     );
 
+                        Log.e("testest",""+new Timestamp(System.currentTimeMillis()).getTime());
                             HashMap usersMap = new HashMap();
                             DatabaseReference recomRef = FirebaseDatabase.getInstance().getReference().child("recos");
                             String key = recomRef.push().getKey();

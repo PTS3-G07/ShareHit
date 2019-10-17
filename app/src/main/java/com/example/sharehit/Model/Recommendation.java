@@ -1,5 +1,6 @@
 package com.example.sharehit.Model;
 
+import java.security.Timestamp;
 import java.util.List;
 
 public class Recommendation {
@@ -8,7 +9,7 @@ public class Recommendation {
     private String album;
     private String artist;
     private List<String> likeUserUid;
-    private String timeStamp;
+    private long timeStamp;
     private String track;
     private String type;
     private String name;
@@ -20,14 +21,23 @@ public class Recommendation {
 
     }
 
-    public Recommendation(String type, String user,  String name, String img, String urlPreview) {
+    public Recommendation(String type, String user,  String name, String img, String urlPreview, long timeStamp) {
         this.type = type;
         this.userRecoUid = user;
         this.name = name;
         this.urlImage = img;
         this.urlPreview=urlPreview;
+        this.timeStamp=timeStamp;
     }
 
+
+    public long getTimeStamp() {
+        return timeStamp;
+    }
+
+    public void setTimeStamp(long timeStamp) {
+        this.timeStamp = timeStamp;
+    }
 
     public String getUrlPreview() {
         return urlPreview;

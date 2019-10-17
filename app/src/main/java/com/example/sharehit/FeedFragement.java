@@ -33,7 +33,11 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
+import java.sql.PreparedStatement;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -67,6 +71,7 @@ public class FeedFragement extends Fragment {
         layoutManager.setReverseLayout(true);
         recyclerView.setLayoutManager(layoutManager);
 
+
         displayAllRecos();
 
         return root;
@@ -92,9 +97,6 @@ public class FeedFragement extends Fragment {
                 final String idReco = getRef(i).getKey();
 
 
-
-
-
                 recosRef.child(idReco).child("likeUsersUid").addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -107,6 +109,9 @@ public class FeedFragement extends Fragment {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         if(dataSnapshot.exists()) recosViewHolder.getLikeButton().setImageResource(R.drawable.like);
+                        else{
+                            recosViewHolder.getLikeButton().setImageResource(R.drawable.heart);
+                        }
                     }
                     @Override public void onCancelled(@NonNull DatabaseError databaseError) { }
                 });
@@ -118,13 +123,14 @@ public class FeedFragement extends Fragment {
                     public void onClick(View v) {
                         if(CURRENT_LIKE == false){
                             getRef(i).child("likeUsersUid").child(mAuth.getCurrentUser().getUid()).child("like_done").setValue("yes");
-                            recosViewHolder.getLikeButton().setImageResource(R.drawable.heart);
+                            //recosViewHolder.getLikeButton().setImageResource(R.drawable.heart);
                             CURRENT_LIKE=true;
                         } else if(CURRENT_LIKE == true){
                             getRef(i).child("likeUsersUid").child(mAuth.getCurrentUser().getUid()).removeValue();
-                            recosViewHolder.getLikeButton().setImageResource(R.drawable.like);
+                            //recosViewHolder.getLikeButton().setImageResource(R.drawable.like);
                             CURRENT_LIKE=false;
                         }
+
 
                     }
 
@@ -140,6 +146,7 @@ public class FeedFragement extends Fragment {
                                     mp.pause();
                                     mp.reset();
                                 }else {
+                                    mp.reset();
                                     mp.setDataSource(model.getUrlPreview());
                                     mp.prepareAsync();
                                     mp.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
@@ -167,9 +174,12 @@ public class FeedFragement extends Fragment {
                         if(dataSnapshot.child("pdpUrl").exists()){
                             Picasso.with(getContext()).load(dataSnapshot.child("pdpUrl").getValue().toString()).fit().centerInside().into(recosViewHolder.getImgProfil());
                         }
+                        /*DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                        Date date_mini = dateFormat.format(timestamp.getTime());*/
 
-
-
+                        Date date=new Date(model.getTimeStamp());
+                        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy"+" à "+"H-mm");
+                        recosViewHolder.setTime("Le "+dateFormat.format(date));
 
                     }
 
@@ -197,6 +207,11 @@ public class FeedFragement extends Fragment {
         public RecosViewHolder(View itemView) {
             super(itemView);
             this.mView = itemView;
+        }
+
+        public void setTime(String timeText){
+            TextView time = (TextView) mView.findViewById(R.id.time);
+            time.setText(timeText);
         }
 
         public void setDesc(String desc){
