@@ -70,7 +70,7 @@ public class PostRec extends AppCompatActivity {
         firebaseAuth = FirebaseAuth.getInstance();
         user = firebaseAuth.getCurrentUser();
         database = FirebaseDatabase.getInstance();
-        myRef = database.getReference("Users");
+        myRef = database.getReference("users");
         Query query = myRef.orderByChild("email").equalTo(user.getEmail());
         Intent intent = getIntent();
         final String imageUrl = intent.getStringExtra(EXTRA_URL);

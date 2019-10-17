@@ -113,8 +113,8 @@ public class ProfilFragement extends Fragment {
         user = firebaseAuth.getCurrentUser();
         mAuth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
-        usersRef = database.getReference().child("Users").child(user.getUid());
-        myRef = database.getReference("Users");
+        usersRef = database.getReference().child("users").child(user.getUid());
+        myRef = database.getReference("users");
         pdp=  root.findViewById(R.id.pdp);
         pseudo= root.findViewById(R.id.pseudo);
         upload= root.findViewById(R.id.upload);
