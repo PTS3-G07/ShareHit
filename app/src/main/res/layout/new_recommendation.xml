@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#FFFFFF"
+    android:background="@drawable/rectangle_arrondi"
     android:orientation="vertical"
     android:padding="10dp">
 
@@ -12,7 +12,7 @@
         android:id="@+id/textView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_margin="25dp"
         android:fontFamily="@font/urania_medium"
         android:text="Quel type de recommandantion voulez-vous faire ?"
         android:textColor="@color/black"
