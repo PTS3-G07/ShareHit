@@ -19,6 +19,9 @@ public class User {
     public List<User> followed;
 
 
+    public User(){
+
+    }
 
     public User(String pseudo, String email) {
         this.pseudo = pseudo;

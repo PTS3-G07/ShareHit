@@ -53,10 +53,14 @@ public class FeedFragement extends Fragment {
     private final static MediaPlayer mp = new MediaPlayer();
 
 
+
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ViewGroup root = (ViewGroup) inflater.inflate(R.layout.fragement_feed, null);
+
+
 
 
 
@@ -79,6 +83,9 @@ public class FeedFragement extends Fragment {
 
 
     private void displayAllRecos() {
+        final Intent intent1 = new Intent(getContext(), ListLikePage.class);
+        final Intent intent2 = new Intent(getContext(), CommentPage.class);
+        final Bundle b = new Bundle();
 
         FirebaseRecyclerAdapter<Recommendation, RecosViewHolder> fireBaseRecyclerAdapter = new FirebaseRecyclerAdapter<Recommendation, RecosViewHolder>
                 (
@@ -165,6 +172,26 @@ public class FeedFragement extends Fragment {
                     }
                 });
 
+                recosViewHolder.getListLike().setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        b.putString("key", getRef(i).getKey());
+                        intent1.putExtras(b);
+                        startActivity(intent1);
+
+                    }
+                });
+
+                recosViewHolder.getCommentButton().setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        b.putString("key", getRef(i).getKey());
+                        intent2.putExtras(b);
+                        startActivity(intent2);
+
+                    }
+                });
+
 
                 usersRef.child(model.getUserRecoUid()).addValueEventListener(new ValueEventListener() {
                     @Override
@@ -246,6 +273,16 @@ public class FeedFragement extends Fragment {
         public void setNbrLike(String text){
             TextView nbrlike = (TextView) mView.findViewById(R.id.nbrLike);
             nbrlike.setText(text);
+        }
+
+        public TextView getListLike(){
+            TextView nbrLikeBut = (TextView) mView.findViewById(R.id.nbrLike);
+            return  nbrLikeBut;
+        }
+
+        public ImageButton getCommentButton(){
+            ImageButton button = (ImageButton) mView.findViewById(R.id.commentButton);
+            return button;
         }
     }
 
