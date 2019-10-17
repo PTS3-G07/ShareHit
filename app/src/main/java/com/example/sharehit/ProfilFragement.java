@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -35,7 +36,11 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.sharehit.Model.Recommendation;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -57,6 +62,10 @@ import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -67,9 +76,9 @@ import static androidx.core.provider.FontsContractCompat.FontRequestCallback.RES
 public class ProfilFragement extends Fragment {
 
 
-    FirebaseAuth firebaseAuth;
+    FirebaseAuth firebaseAuth, mAuth;
     FirebaseUser user;
-    DatabaseReference myRef, usersRef;
+    DatabaseReference myRef, usersRef, recosRef;
     FirebaseDatabase database;
     private StorageReference mStorageRef;
     public Uri imguri;
@@ -85,7 +94,9 @@ public class ProfilFragement extends Fragment {
     private static final int PICK_IMAGE_REQUEST = 111;
     String cameraPermissions[];
     String storagePermissions[];
-    ProgressBar loading;
+    public boolean CURRENT_LIKE;
+    private RecyclerView post;
+    private final static MediaPlayer mp = new MediaPlayer();
 
 
 
@@ -100,6 +111,7 @@ public class ProfilFragement extends Fragment {
         ViewGroup root = (ViewGroup) inflater.inflate(R.layout.fragement_profil, null);
         firebaseAuth = FirebaseAuth.getInstance();
         user = firebaseAuth.getCurrentUser();
+        mAuth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
         usersRef = database.getReference().child("Users").child(user.getUid());
         myRef = database.getReference("Users");
@@ -107,16 +119,14 @@ public class ProfilFragement extends Fragment {
         pseudo= root.findViewById(R.id.pseudo);
         upload= root.findViewById(R.id.upload);
         fb = root.findViewById(R.id.fb);
-        loading = root.findViewById(R.id.loading);
-        loading.setVisibility(View.INVISIBLE);
-
-
-        if (pseudo.getText().length() < 0) {
-            loading.setVisibility(View.VISIBLE);
-        } else {
-
-        }
         final String userUID = firebaseAuth.getCurrentUser().getUid();
+        recosRef = FirebaseDatabase.getInstance().getReference().child("recos");
+
+        post = (RecyclerView) root.findViewById(R.id.postIudRecyclerView);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        layoutManager.setStackFromEnd(true);
+        layoutManager.setReverseLayout(true);
+        post.setLayoutManager(layoutManager);
 
         cameraPermissions = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
         storagePermissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
@@ -124,7 +134,6 @@ public class ProfilFragement extends Fragment {
         pd = new ProgressDialog(getActivity());
         mStorageRef = FirebaseStorage.getInstance().getReference();
 
-        Query query = myRef.orderByChild("email").equalTo(user.getEmail());
         usersRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -154,9 +163,16 @@ public class ProfilFragement extends Fragment {
             }
         });
 
+        displayAllPostUid();
+
 
         return root;
     }
+
+
+
+
+
 
     private boolean checkStoragePermission(){
         boolean result = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -211,12 +227,12 @@ public class ProfilFragement extends Fragment {
 
     private void showNameUpdateDialog(String name) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Update pseudo");
+        builder.setTitle("Changer de pseudo");
         LinearLayout linearLayout = new LinearLayout(getActivity());
         linearLayout.setPadding(10,10,10,10);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         final EditText editText = new EditText(getActivity());
-        editText.setHint("Enter new pseudo");
+        editText.setHint("Pseudo...");
         linearLayout.addView(editText);
         builder.setView(linearLayout);
         builder.setPositiveButton("Update", new DialogInterface.OnClickListener() {
@@ -310,10 +326,171 @@ public class ProfilFragement extends Fragment {
         }
 
 
-        }
+    }
+
+    private void displayAllPostUid() {
+
+        final Intent intent1 = new Intent(getContext(), ListLikePage.class);
+        final Intent intent2 = new Intent(getContext(), CommentPage.class);
+        final Bundle b = new Bundle();
+
+        Query myPost = recosRef.orderByChild("userRecoUid").startAt(user.getUid()).endAt(user.getUid()+"\uf8ff");
+
+        FirebaseRecyclerAdapter<Recommendation, FeedFragement.RecosViewHolder> fireBaseRecyclerAdapter = new FirebaseRecyclerAdapter<Recommendation, FeedFragement.RecosViewHolder>
+                (
+                        Recommendation.class,
+                        R.layout.recommandation_item,
+                        FeedFragement.RecosViewHolder.class,
+                        myPost
+                ) {
+
+            @Override
+            protected void populateViewHolder(final FeedFragement.RecosViewHolder recosViewHolder, final Recommendation model, final int i) {
+                if (model.getUserRecoUid().equals(user.getUid())) {
+                    Picasso.with(getContext()).load(model.getImg()).fit().centerInside().into(recosViewHolder.getImg());
+
+                    recosViewHolder.setDesc(model.getName());
+                    final String idReco = getRef(i).getKey();
+                    recosRef.child(idReco).child("likeUsersUid").addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.getChildrenCount() == 0) {
+                                recosViewHolder.setNbrLike("Personne n'aime ça");
+                            } else if (dataSnapshot.getChildrenCount() == 1) {
+                                recosViewHolder.setNbrLike("Aimé par 1 personne");
+                            } else {
+                                recosViewHolder.setNbrLike("Aimé par " + Long.toString(dataSnapshot.getChildrenCount()) + " personnes");
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                        }
+                    });
+
+                    recosRef.child(idReco).child("likeUsersUid").child(mAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.exists()) {
+                                recosViewHolder.getLikeButton().setImageResource(R.drawable.like);
+                            /*if(dataSnapshot.getChildrenCount()==0){
+                                recosViewHolder.setNbrLike("Aimé par vous");
+                            }
+                            if(dataSnapshot.getChildrenCount()==1){
+                                recosViewHolder.setNbrLike("Aimé par vous et 1 personne");
+                            }
+                            else{
+                                recosViewHolder.setNbrLike("Aimé par vous et "+Long.toString(dataSnapshot.getChildrenCount())+" personnes");
+                            }*/
+                            } else {
+                                recosViewHolder.getLikeButton().setImageResource(R.drawable.heart);
+                                //recosViewHolder.setNbrLike(Long.toString(dataSnapshot.getChildrenCount()) + " like");
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                        }
+                    });
 
 
-        }
+                    recosViewHolder.getLikeButton().setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (CURRENT_LIKE == false) {
+                                getRef(i).child("likeUsersUid").child(mAuth.getCurrentUser().getUid()).child("like_done").setValue("yes");
+                                //recosViewHolder.getLikeButton().setImageResource(R.drawable.heart);
+                                CURRENT_LIKE = true;
+                            } else if (CURRENT_LIKE == true) {
+                                getRef(i).child("likeUsersUid").child(mAuth.getCurrentUser().getUid()).removeValue();
+                                //recosViewHolder.getLikeButton().setImageResource(R.drawable.like);
+                                CURRENT_LIKE = false;
+                            }
+
+                        }
+
+                    });
+
+                    recosViewHolder.getImg().setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (model.getUrlPreview() != null) {
+                                try {
+                                    if (mp.isPlaying()) {
+                                        mp.pause();
+                                        mp.reset();
+                                    } else {
+                                        mp.reset();
+                                        mp.setDataSource(model.getUrlPreview());
+                                        mp.prepareAsync();
+                                        mp.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                                            @Override
+                                            public void onPrepared(MediaPlayer mp) {
+                                                mp.start();
+                                            }
+                                        });
+                                    }
+                                } catch (IOException e) {
+                                    Log.e("pa2chance", "prepare() failed");
+                                }
+                            }
+
+
+                        }
+                    });
+
+                    recosViewHolder.getListLike().setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            b.putString("key", getRef(i).getKey());
+                            intent1.putExtras(b);
+                            startActivity(intent1);
+
+                        }
+                    });
+
+                    recosViewHolder.getCommentButton().setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            b.putString("key", getRef(i).getKey());
+                            intent2.putExtras(b);
+                            startActivity(intent2);
+
+                        }
+                    });
+
+
+                    usersRef.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            final String pseudo = dataSnapshot.child("pseudo").getValue().toString();
+                            recosViewHolder.setTitre(pseudo + " a recommandé " + model.getType());
+                            if (dataSnapshot.child("pdpUrl").exists()) {
+                                Picasso.with(getContext()).load(dataSnapshot.child("pdpUrl").getValue().toString()).fit().centerInside().into(recosViewHolder.getImgProfil());
+                            }
+                        /*DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                        Date date_mini = dateFormat.format(timestamp.getTime());*/
+
+                            Date date = new Date(model.getTimeStamp());
+                            DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy" + " à " + "H" + ":" + "mm");
+                            recosViewHolder.setTime("Le " + dateFormat.format(date));
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
+                }
+
+
+            }
+        };
+        post.setAdapter(fireBaseRecyclerAdapter);
+
+    }
+}
 
 
 
