@@ -69,7 +69,7 @@ public class ProfilFragement extends Fragment {
 
     FirebaseAuth firebaseAuth;
     FirebaseUser user;
-    DatabaseReference myRef;
+    DatabaseReference myRef, usersRef;
     FirebaseDatabase database;
     private StorageReference mStorageRef;
     public Uri imguri;
@@ -101,6 +101,7 @@ public class ProfilFragement extends Fragment {
         firebaseAuth = FirebaseAuth.getInstance();
         user = firebaseAuth.getCurrentUser();
         database = FirebaseDatabase.getInstance();
+        usersRef = database.getReference().child("Users").child(user.getUid());
         myRef = database.getReference("Users");
         pdp=  root.findViewById(R.id.pdp);
         pseudo= root.findViewById(R.id.pseudo);
@@ -108,6 +109,8 @@ public class ProfilFragement extends Fragment {
         fb = root.findViewById(R.id.fb);
         loading = root.findViewById(R.id.loading);
         loading.setVisibility(View.INVISIBLE);
+
+
         if (pseudo.getText().length() < 0) {
             loading.setVisibility(View.VISIBLE);
         } else {
@@ -120,24 +123,14 @@ public class ProfilFragement extends Fragment {
         mStorageRef = FirebaseStorage.getInstance().getReference();
         pd = new ProgressDialog(getActivity());
         mStorageRef = FirebaseStorage.getInstance().getReference();
-        Picasso.with(getContext())
-                .load("https://firebasestorage.googleapis.com/v0/b/share-hit-52071.appspot.com/o/Pdp%"+ userUID +"?alt=media").placeholder( R.drawable.progress_animation ).fit()
-                .into(pdp);
+
         Query query = myRef.orderByChild("email").equalTo(user.getEmail());
-        query.addValueEventListener(new ValueEventListener() {
+        usersRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for(DataSnapshot ds : dataSnapshot.getChildren()){
-                    String pseudoData = ""+ ds.child("pseudo").getValue();
-                    String pdpUrl = ""+ ds.child("pdpUrl").getValue();
-/*
-                        Picasso.with(getContext())
-                                .load(pdpUrl).placeholder( R.drawable.progress_animation ).fit()
-                                .into(pdp);
-*/
-                    pseudo.setText(pseudoData);
+                pseudo.setText(dataSnapshot.child("pseudo").getValue().toString());
+                Picasso.with(getContext()).load(dataSnapshot.child("pdpUrl").getValue().toString()).fit().centerInside().into(pdp);
 
-                }
             }
 
             @Override
@@ -145,9 +138,6 @@ public class ProfilFragement extends Fragment {
 
             }
         });
-
-
-
 
         fb.setOnClickListener(new View.OnClickListener() {
             @Override

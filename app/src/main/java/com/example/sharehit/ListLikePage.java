@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -61,6 +62,7 @@ public class ListLikePage extends AppCompatActivity {
                 ) {
             @Override
             protected void populateViewHolder(final UserViewHolder userViewHolder, final User user, int i) {
+                Log.e("IDUSER", getRef(i).getKey());
                 usersRef.child(getRef(i).getKey()).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
