@@ -91,12 +91,12 @@
 
             <ImageButton
                 android:id="@+id/commentButton"
-                android:layout_width="30dp"
+                android:layout_width="35dp"
                 android:layout_height="50dp"
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
-                android:text="COMM"
-                android:src="@drawable/comment"/>
+                android:src="@drawable/comment"
+                android:text="COMM" />
 
             <Space
                 android:layout_width="200dp"
