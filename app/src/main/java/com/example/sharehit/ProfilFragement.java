@@ -138,7 +138,7 @@ public class ProfilFragement extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 pseudo.setText(dataSnapshot.child("pseudo").getValue().toString());
-                Picasso.with(getContext()).load(dataSnapshot.child("pdpUrl").getValue().toString()).fit().centerInside().into(pdp);
+                if (dataSnapshot.child("pdpUrl").exists()) Picasso.with(getContext()).load(dataSnapshot.child("pdpUrl").getValue().toString()).fit().centerInside().into(pdp);
 
             }
 
@@ -313,7 +313,7 @@ public class ProfilFragement extends Fragment {
                         @Override
                         public void onSuccess(Uri uri) {
                             HashMap usersMap = new HashMap();
-                            DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("Users").child(user.getUid());
+                            DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid());
                             usersMap.put("pdpUrl", String.valueOf(uri));
                             usersRef.updateChildren(usersMap);
                         }
