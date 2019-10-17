@@ -90,6 +90,7 @@ public class SignUp extends AppCompatActivity {
                                                             DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("users");
                                                             usersMap.put(userUID, user);
                                                             usersRef.updateChildren(usersMap);
+                                                            usersRef.child(userUID).child("pdpUrl").setValue("https://firebasestorage.googleapis.com/v0/b/share-hit-52071.appspot.com/o/Pdp%2Fman.png?alt=media&token=c8267070-0673-406b-a564-e9642afb6666");
                                                             progress.dismiss();
                                                             startActivity(new Intent(SignUp.this, FeedPage.class));
                                                             finish();
