@@ -109,20 +109,17 @@ public class FeedFragement extends Fragment {
                     CURRENT_LIKE=false;
                 }*/
 
-                Log.e(""+recosRef.child(idReco).toString(), "CURRENT_LIKE="+CURRENT_LIKE);
+                Log.e(""+idReco, "CURRENT_LIKE="+CURRENT_LIKE);
 
                 recosRef.child(idReco).child("Coms").limitToLast(1).addValueEventListener(new ValueEventListener(){
 
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                       /* if (dataSnapshot.exists()) {
-                            Log.e("testest", dataSnapshot.toString());
-                            Log.e("testest", ""+dataSnapshot.child(getRef(i).getKey()).getValue());
+                        for (DataSnapshot child : dataSnapshot.getChildren()) {
+                            final String index = child.getKey();
+                            recosViewHolder.setNbrCom(dataSnapshot.child(index).child("com").getValue().toString());
+
                         }
-                        if (dataSnapshot.child(dataSnapshot.getValue().toString()).child("com").exists()) {
-                            Log.e("testest", dataSnapshot.child(dataSnapshot.getValue().toString()).child("com").getValue().toString());
-                            recosViewHolder.setNbrCom(dataSnapshot.child(dataSnapshot.getValue().toString()).child("com").getValue().toString());
-                        }*/
                     }
 
                     @Override
