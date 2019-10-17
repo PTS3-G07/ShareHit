@@ -49,7 +49,7 @@ public class FeedFragement extends Fragment {
     private DatabaseReference recosRef, usersRef;
     private FirebaseAuth mAuth;
     private String current_user_id;
-    private boolean CURRENT_LIKE=false, test=false;
+    public boolean CURRENT_LIKE, test=false;
     private final static MediaPlayer mp = new MediaPlayer();
 
 
@@ -103,11 +103,26 @@ public class FeedFragement extends Fragment {
                 recosViewHolder.setDesc(model.getName());
                 final String idReco = getRef(i).getKey();
 
+                /*if(recosRef.child(idReco).child("likeUsersUid").child(mAuth.getCurrentUser().getUid()).child("like_done").equals("yes")){
+                    CURRENT_LIKE=true;
+                }else{
+                    CURRENT_LIKE=false;
+                }*/
+
+                Log.e(""+recosRef.child(idReco).toString(), "CURRENT_LIKE="+CURRENT_LIKE);
 
                 recosRef.child(idReco).child("likeUsersUid").addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        recosViewHolder.setNbrLike(Long.toString(dataSnapshot.getChildrenCount()) + " like");
+                        if(dataSnapshot.getChildrenCount()==0){
+                            recosViewHolder.setNbrLike("Personne n'aime ça");
+                        }
+                        else if(dataSnapshot.getChildrenCount()==1){
+                            recosViewHolder.setNbrLike("Aimé par 1 personne");
+                        }
+                        else{
+                            recosViewHolder.setNbrLike("Aimé par " + Long.toString(dataSnapshot.getChildrenCount()) + " personnes");
+                        }
                     }
                     @Override public void onCancelled(@NonNull DatabaseError databaseError) { }
                 });
@@ -115,9 +130,21 @@ public class FeedFragement extends Fragment {
                 recosRef.child(idReco).child("likeUsersUid").child(mAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if(dataSnapshot.exists()) recosViewHolder.getLikeButton().setImageResource(R.drawable.like);
+                        if(dataSnapshot.exists()) {
+                            recosViewHolder.getLikeButton().setImageResource(R.drawable.like);
+                            /*if(dataSnapshot.getChildrenCount()==0){
+                                recosViewHolder.setNbrLike("Aimé par vous");
+                            }
+                            if(dataSnapshot.getChildrenCount()==1){
+                                recosViewHolder.setNbrLike("Aimé par vous et 1 personne");
+                            }
+                            else{
+                                recosViewHolder.setNbrLike("Aimé par vous et "+Long.toString(dataSnapshot.getChildrenCount())+" personnes");
+                            }*/
+                        }
                         else{
                             recosViewHolder.getLikeButton().setImageResource(R.drawable.heart);
+                            //recosViewHolder.setNbrLike(Long.toString(dataSnapshot.getChildrenCount()) + " like");
                         }
                     }
                     @Override public void onCancelled(@NonNull DatabaseError databaseError) { }
@@ -138,9 +165,7 @@ public class FeedFragement extends Fragment {
                             CURRENT_LIKE=false;
                         }
 
-
                     }
-
 
                 });
 
@@ -205,7 +230,7 @@ public class FeedFragement extends Fragment {
                         Date date_mini = dateFormat.format(timestamp.getTime());*/
 
                         Date date=new Date(model.getTimeStamp());
-                        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy"+" à "+"H-mm");
+                        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy"+" à "+"H"+":"+"mm");
                         recosViewHolder.setTime("Le "+dateFormat.format(date));
 
                     }
@@ -230,10 +255,12 @@ public class FeedFragement extends Fragment {
     public static class RecosViewHolder extends RecyclerView.ViewHolder{
 
         View mView;
+        TextView nbrlike;
 
         public RecosViewHolder(View itemView) {
             super(itemView);
             this.mView = itemView;
+            nbrlike = (TextView) mView.findViewById(R.id.nbrLike);
         }
 
         public void setTime(String timeText){
@@ -271,8 +298,11 @@ public class FeedFragement extends Fragment {
         }
 
         public void setNbrLike(String text){
-            TextView nbrlike = (TextView) mView.findViewById(R.id.nbrLike);
             nbrlike.setText(text);
+        }
+
+        public String getNbrLike(){
+            return nbrlike.getText().toString();
         }
 
         public TextView getListLike(){
