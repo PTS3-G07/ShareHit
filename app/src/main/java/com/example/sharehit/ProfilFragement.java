@@ -244,7 +244,7 @@ public class ProfilFragement extends Fragment {
                  //  pd.show();
                  HashMap reslt = new HashMap();
                   reslt.put("pseudo", value);
-                  DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("Users").child(user.getUid());
+                  DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid());
                   usersRef.updateChildren(reslt);
               }else {
                   editText.setError("Enter pseudo");
