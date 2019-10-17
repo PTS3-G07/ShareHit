@@ -111,6 +111,7 @@ public class CommentPage extends AppCompatActivity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
+                        commentViewHolder.setPseudoComment(dataSnapshot.child("pseudo").getValue().toString());
                         if(dataSnapshot.child("pdpUrl").exists()){
                             Picasso.with(getApplicationContext()).load(dataSnapshot.child("pdpUrl").getValue().toString()).fit().centerInside().into(commentViewHolder.getImgProfilComment());
                         }
@@ -151,6 +152,11 @@ public class CommentPage extends AppCompatActivity {
         public void setTime(String time){
             TextView tx = (TextView) mView.findViewById(R.id.timeStamp);
             tx.setText(time);
+        }
+
+        public void setPseudoComment(String name){
+            TextView tx = (TextView) mView.findViewById(R.id.pseudoComment);
+            tx.setText(name);
         }
     }
 }
