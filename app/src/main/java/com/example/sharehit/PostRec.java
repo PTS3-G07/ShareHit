@@ -32,6 +32,7 @@ import java.sql.Timestamp;
 import java.util.HashMap;
 
 import static com.example.sharehit.ApiManager.EXTRA_ID;
+import static com.example.sharehit.ApiManager.EXTRA_LINK;
 import static com.example.sharehit.ApiManager.EXTRA_NAME;
 import static com.example.sharehit.ApiManager.EXTRA_PREVIEW;
 import static com.example.sharehit.ApiManager.EXTRA_TYPE;
@@ -80,6 +81,7 @@ public class PostRec extends AppCompatActivity {
         final String userUID = intent.getStringExtra(EXTRA_ID);
         final String type = intent.getStringExtra(EXTRA_TYPE);
         final String urlPreview = intent.getStringExtra(EXTRA_PREVIEW);
+        final String link = intent.getStringExtra(EXTRA_LINK);
         //String nbFan = intent.getStringExtra(EXTRA_FAN);
 
         Picasso.with(getApplicationContext()).load(imageUrl).fit().centerInside().into(imgPost);
@@ -145,7 +147,8 @@ public class PostRec extends AppCompatActivity {
                                 name,
                                 imageUrl,
                                 urlPreview,
-                                new Timestamp(System.currentTimeMillis()).getTime()
+                                new Timestamp(System.currentTimeMillis()).getTime(),
+                                link
                         );
 
                         HashMap usersMap = new HashMap();

@@ -4,8 +4,8 @@ public class Morceau extends Type {
 
     private String songUrl;
 
-    public Morceau(String name, String artiste, String imgUrl, String songUrl){
-        super(name, imgUrl, artiste);
+    public Morceau(String name, String artiste, String imgUrl, String songUrl, String link){
+        super(name, imgUrl, artiste,link);
         this.songUrl = songUrl;
         setCONST_NOMMAGE("Artiste: ");
     }

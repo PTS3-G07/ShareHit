@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.util.Log;
@@ -12,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -135,7 +137,7 @@ public class FeedFragement extends Fragment {
 
                                 }
                             });
-                            recosRef.child(idReco).child("Coms").limitToLast(1).addValueEventListener(new ValueEventListener() {
+                            recosRef.child(idReco).child("Coms").addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     if (dataSnapshot.getChildrenCount()-1>0){
@@ -345,11 +347,21 @@ public class FeedFragement extends Fragment {
                     }
                 });
 
-
-
+                recosViewHolder.getDesc().setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Log.e("testest",""+model.getLink());
+                        Intent viewIntent =
+                                new Intent("android.intent.action.VIEW",
+                                        Uri.parse(model.getLink()));
+                        startActivity(viewIntent);
+                    }
+                });
 
             }
         };
+
+
         recyclerView.setAdapter(fireBaseRecyclerAdapter);
 
 
@@ -375,6 +387,7 @@ public class FeedFragement extends Fragment {
         TextView nbrCom;
         TextView pseudoCom;
         TextView autreComment;
+        TextView descR;
 
         public RecosViewHolder(View itemView) {
             super(itemView);
@@ -383,6 +396,7 @@ public class FeedFragement extends Fragment {
             nbrCom = (TextView) mView.findViewById(R.id.nbrComment);
             pseudoCom = mView.findViewById(R.id.pseudoComment);
             autreComment = mView.findViewById(R.id.autreComment);
+            descR = (TextView) mView.findViewById(R.id.desc);
         }
 
         public void setAutreComment(String autreComment1){
@@ -399,8 +413,11 @@ public class FeedFragement extends Fragment {
         }
 
         public void setDesc(String desc){
-            TextView descR = (TextView) mView.findViewById(R.id.desc);
             descR.setText(desc);
+        }
+
+        public TextView getDesc(){
+            return descR;
         }
 
         public void setTitre(String text){

@@ -16,21 +16,24 @@ public class Recommendation {
     private String urlImage;
     private String urlPreview;
     private String userRecoUid;
+    private String link;
 
     public Recommendation(){
 
     }
 
-    public Recommendation(String type, String user,  String name, String img, String urlPreview, long timeStamp) {
+    public Recommendation(String type, String user,  String name, String img, String urlPreview, long timeStamp, String link) {
         this.type = type;
         this.userRecoUid = user;
         this.name = name;
         this.urlImage = img;
         this.urlPreview=urlPreview;
         this.timeStamp=timeStamp;
+        this.link=link;
     }
 
 
+    public String getLink(){return link;}
     public long getTimeStamp() {
         return timeStamp;
     }

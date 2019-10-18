@@ -44,6 +44,7 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
     public static final String EXTRA_TYPE = "type";
     public static final String EXTRA_ID = "userRecoUid";
     public static final String EXTRA_PREVIEW = "userUrlPreview";
+    public static final String EXTRA_LINK = "link";
 
     private RecyclerView mRecyclerView;
     private TypeAdapter mExampleAdapter;
@@ -142,7 +143,8 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
                         String name = data.getString("name");
                         String nbFan = data.getString("nb_fan");
                         String imgUrl = data.getString("picture_medium");
-                        mExampleList.add(new Artist(name, nbFan, imgUrl));
+                        String link = data.getString("link");
+                        mExampleList.add(new Artist(name, nbFan, imgUrl, link));
                     }
 
                     mExampleAdapter = new TypeAdapter(ApiManager.this, mExampleList);
@@ -188,7 +190,8 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
                         JSONObject artiste = data.getJSONObject("artist");
                         String artistName = artiste.getString("name");
                         String imgUrl = data.getString("cover_medium");
-                        mExampleList.add(new Artist(name, artistName, imgUrl));
+                        String link = data.getString("link");
+                        mExampleList.add(new Artist(name, artistName, imgUrl, link));
                     }
 
                     mExampleAdapter = new TypeAdapter(ApiManager.this, mExampleList);
@@ -236,8 +239,9 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
                         String albumTitle = artist.getString("name");
                         String imgUrl = artist.getString("picture_medium");
                         String previewUrl = data.getString("preview");
+                        String link = data.getString("link");
                         Log.e("abcde", title+previewUrl);
-                        Morceau m = new Morceau(title, albumTitle, imgUrl,previewUrl);
+                        Morceau m = new Morceau(title, albumTitle, imgUrl,previewUrl,link);
                         mExampleList.add(m);
                     }
 
@@ -279,13 +283,16 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
             @Override
             public void onResponse(JSONObject response) {
                 try {
+                    Log.e("testest", "response");
                     JSONArray jsonArray = response.getJSONArray("Search");
                     for(int i = 0 ; jsonArray.length() > i; i++){
                         JSONObject data = jsonArray.getJSONObject(i);
                         String title = data.getString("Title");
                         String year = data.getString("Year");
                         String imgUrl = data.getString("Poster");
-                        mExampleList.add(new Artist(title, year, imgUrl));
+                        String imdbID = data.getString("imdbID");
+                        String link = "https://www.imdb.com/title/"+imdbID+"/";
+                        mExampleList.add(new Artist(title, year, imgUrl, link));
                     }
 
                     mExampleAdapter = new TypeAdapter(ApiManager.this, mExampleList);
@@ -345,6 +352,7 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
             postRec.putExtra(EXTRA_NAME, clickedItem.getName());
             postRec.putExtra(EXTRA_TYPE, typeRecom);
             postRec.putExtra(EXTRA_ID, FirebaseAuth.getInstance().getCurrentUser().getUid());
+            postRec.putExtra(EXTRA_LINK, clickedItem.getLink());
             if(clickedItem instanceof Morceau) {
                 clickedItem = (Morceau) clickedItem;
                 postRec.putExtra(EXTRA_PREVIEW, ((Morceau) clickedItem).getSongUrl());
