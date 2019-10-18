@@ -35,7 +35,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class ProfilPage extends AppCompatActivity {
 
     private CircleImageView pdp;
-    private TextView pseudo;
+    private TextView pseudo, textView;
     private RecyclerView post;
     private Button follow;
 
@@ -62,13 +62,27 @@ public class ProfilPage extends AppCompatActivity {
         pseudo = (TextView) findViewById(R.id.pseudoProfilPage);
         post = (RecyclerView) findViewById(R.id.postProfilPageRecyclerView);
         follow = (Button) findViewById(R.id.followProfilPage);
+        textView = (TextView) findViewById(R.id.textView8);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         layoutManager.setStackFromEnd(true);
         layoutManager.setReverseLayout(true);
         post.setLayoutManager(layoutManager);
 
-        Bundle b = getIntent().getExtras();
+        final Bundle b = getIntent().getExtras();
+
+        if(mAuth.getCurrentUser().getUid().equals(b.getString("key"))){
+            follow.setVisibility(View.INVISIBLE);
+            textView.setText("Mes recommandations");
+
+        }
+
+        follow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
 
         usersRef.child(b.getString("key")).addValueEventListener(new ValueEventListener() {
             @Override
