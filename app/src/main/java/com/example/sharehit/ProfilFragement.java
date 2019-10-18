@@ -114,7 +114,7 @@ public class ProfilFragement extends Fragment {
         user = firebaseAuth.getCurrentUser();
         mAuth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
-        usersRef = database.getReference().child("users").child(user.getUid());
+        usersRef = database.getReference().child("users");
         myRef = database.getReference("users");
         pdp=  root.findViewById(R.id.pdp);
         pseudo= root.findViewById(R.id.pseudo);
@@ -135,7 +135,7 @@ public class ProfilFragement extends Fragment {
         pd = new ProgressDialog(getActivity());
         mStorageRef = FirebaseStorage.getInstance().getReference();
 
-        usersRef.addValueEventListener(new ValueEventListener() {
+        usersRef.child(user.getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 pseudo.setText(dataSnapshot.child("pseudo").getValue().toString());
@@ -347,143 +347,221 @@ public class ProfilFragement extends Fragment {
 
             @Override
             protected void populateViewHolder(final FeedFragement.RecosViewHolder recosViewHolder, final Recommendation model, final int i) {
-                if (model.getUserRecoUid().equals(user.getUid())) {
-                    Picasso.with(getContext()).load(model.getImg()).fit().centerInside().into(recosViewHolder.getImg());
 
-                    recosViewHolder.setDesc(model.getName());
-                    final String idReco = getRef(i).getKey();
-                    recosRef.child(idReco).child("likeUsersUid").addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            if (dataSnapshot.getChildrenCount() == 0) {
-                                recosViewHolder.setNbrLike("Personne n'aime ça");
-                            } else if (dataSnapshot.getChildrenCount() == 1) {
-                                recosViewHolder.setNbrLike("Aimé par 1 personne");
-                            } else {
-                                recosViewHolder.setNbrLike("Aimé par " + Long.toString(dataSnapshot.getChildrenCount()) + " personnes");
-                            }
+                Picasso.with(getContext()).load(model.getImg()).fit().centerInside().into(recosViewHolder.getImg());
+
+
+
+                recosViewHolder.setDesc(model.getName());
+                final String idReco = getRef(i).getKey();
+                recosViewHolder.autreComment.setHeight(0);
+
+                /*if(recosRef.child(idReco).child("likeUsersUid").child(mAuth.getCurrentUser().getUid()).child("like_done").equals("yes")){
+                    CURRENT_LIKE=true;
+                }else{
+                    CURRENT_LIKE=false;
+                }*/
+
+                Log.e(""+recosRef.child(idReco).toString(), "CURRENT_LIKE="+CURRENT_LIKE);
+
+                recosRef.child(idReco).child("Coms").limitToLast(1).addValueEventListener(new ValueEventListener(){
+
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if (!dataSnapshot.hasChildren()){
+                            recosViewHolder.setPseudoCom("Aucun commentaire");
                         }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-                        }
-                    });
-
-                    recosRef.child(idReco).child("likeUsersUid").child(mAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            if (dataSnapshot.exists()) {
-                                recosViewHolder.getLikeButton().setImageResource(R.drawable.like);
-                            /*if(dataSnapshot.getChildrenCount()==0){
-                                recosViewHolder.setNbrLike("Aimé par vous");
-                            }
-                            if(dataSnapshot.getChildrenCount()==1){
-                                recosViewHolder.setNbrLike("Aimé par vous et 1 personne");
-                            }
-                            else{
-                                recosViewHolder.setNbrLike("Aimé par vous et "+Long.toString(dataSnapshot.getChildrenCount())+" personnes");
-                            }*/
-                            } else {
-                                recosViewHolder.getLikeButton().setImageResource(R.drawable.heart);
-                                //recosViewHolder.setNbrLike(Long.toString(dataSnapshot.getChildrenCount()) + " like");
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-                        }
-                    });
-
-
-                    recosViewHolder.getLikeButton().setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if (CURRENT_LIKE == false) {
-                                getRef(i).child("likeUsersUid").child(mAuth.getCurrentUser().getUid()).child("like_done").setValue("yes");
-                                //recosViewHolder.getLikeButton().setImageResource(R.drawable.heart);
-                                CURRENT_LIKE = true;
-                            } else if (CURRENT_LIKE == true) {
-                                getRef(i).child("likeUsersUid").child(mAuth.getCurrentUser().getUid()).removeValue();
-                                //recosViewHolder.getLikeButton().setImageResource(R.drawable.like);
-                                CURRENT_LIKE = false;
-                            }
-
-                        }
-
-                    });
-
-                    recosViewHolder.getImg().setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if (model.getUrlPreview() != null) {
-                                try {
-                                    if (mp.isPlaying()) {
-                                        mp.pause();
-                                        mp.reset();
-                                    } else {
-                                        mp.reset();
-                                        mp.setDataSource(model.getUrlPreview());
-                                        mp.prepareAsync();
-                                        mp.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                                            @Override
-                                            public void onPrepared(MediaPlayer mp) {
-                                                mp.start();
-                                            }
-                                        });
-                                    }
-                                } catch (IOException e) {
-                                    Log.e("pa2chance", "prepare() failed");
+                        for (DataSnapshot child : dataSnapshot.getChildren()) {
+                            final String index = child.getKey();
+                            String idUsr = dataSnapshot.child(index).child("uid").getValue().toString();
+                            usersRef.child(idUsr).child("pseudo").addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    recosViewHolder.setPseudoCom(dataSnapshot.getValue().toString()+":");
                                 }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
+                            recosRef.child(idReco).child("Coms").addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    if (dataSnapshot.getChildrenCount()-1>0){
+                                        recosViewHolder.autreComment.setHeight(recosViewHolder.nbrlike.getHeight());
+                                        if (dataSnapshot.getChildrenCount()-1==1){
+                                            recosViewHolder.setAutreComment("Voir l'autre commentaire.");
+                                        }
+                                        else{
+                                            recosViewHolder.setAutreComment("Voir les "+(dataSnapshot.getChildrenCount()-1)+" autres commentaires.");
+                                        }
+                                    }
+                                    else {
+                                        recosViewHolder.autreComment.setHeight(0);
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
+                            recosViewHolder.setNbrCom(dataSnapshot.child(index).child("com").getValue().toString());
+                        }
+
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+                recosRef.child(idReco).child("likeUsersUid").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if(dataSnapshot.getChildrenCount()==0){
+                            recosViewHolder.setNbrLike("Personne n'aime ça");
+                        }
+                        else if(dataSnapshot.getChildrenCount()==1){
+                            recosViewHolder.setNbrLike("Aimé par 1 personne");
+                        }
+                        else{
+                            recosViewHolder.setNbrLike("Aimé par " + Long.toString(dataSnapshot.getChildrenCount()) + " personnes");
+                        }
+                    }
+                    @Override public void onCancelled(@NonNull DatabaseError databaseError) { }
+                });
+
+                recosRef.child(idReco).child("likeUsersUid").child(mAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if(dataSnapshot.exists()) {
+                            recosViewHolder.getLikeButton().setImageResource(R.drawable.like);
+                        }
+                        else{
+                            recosViewHolder.getLikeButton().setImageResource(R.drawable.heart);
+                        }
+                    }
+                    @Override public void onCancelled(@NonNull DatabaseError databaseError) { }
+                });
+
+
+
+                recosViewHolder.getLikeButton().setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if(CURRENT_LIKE == false){
+                            getRef(i).child("likeUsersUid").child(mAuth.getCurrentUser().getUid()).child("like_done").setValue("yes");
+                            //recosViewHolder.getLikeButton().setImageResource(R.drawable.heart);
+                            CURRENT_LIKE=true;
+                        } else if(CURRENT_LIKE == true){
+                            getRef(i).child("likeUsersUid").child(mAuth.getCurrentUser().getUid()).removeValue();
+                            //recosViewHolder.getLikeButton().setImageResource(R.drawable.like);
+                            CURRENT_LIKE=false;
+                        }
+
+                    }
+
+                });
+
+                recosViewHolder.getImg().setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+                        if (model.getUrlPreview()!=null) {
+                            try {
+                                if (mp.isPlaying()){
+                                    mp.pause();
+                                    mp.reset();
+                                }else {
+                                    mp.reset();
+                                    mp.setDataSource(model.getUrlPreview());
+                                    mp.prepareAsync();
+                                    mp.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                                        @Override
+                                        public void onPrepared(MediaPlayer mp) {
+                                            mp.start();
+                                        }
+                                    });
+                                }
+                            } catch (IOException e) {
+                                Log.e("pa2chance", "prepare() failed");
                             }
-
-
                         }
-                    });
 
-                    recosViewHolder.getListLike().setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            b.putString("key", getRef(i).getKey());
-                            intent1.putExtras(b);
-                            startActivity(intent1);
 
+                    }
+
+
+                });
+
+                recosViewHolder.getBookButton().setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String key = usersRef.child(mAuth.getCurrentUser().getUid()).child("bookmarks").push().getKey();
+                        usersRef.child(mAuth.getCurrentUser().getUid()).child("bookmarks").child(key).setValue(getRef(i).getKey());
+
+                    }
+                });
+
+                recosViewHolder.autreComment.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        b.putString("key", getRef(i).getKey());
+                        intent2.putExtras(b);
+                        startActivity(intent2);
+                    }
+                });
+
+                recosViewHolder.getListLike().setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        b.putString("key", getRef(i).getKey());
+                        intent1.putExtras(b);
+                        startActivity(intent1);
+
+                    }
+                });
+
+                recosViewHolder.getCommentButton().setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        b.putString("key", getRef(i).getKey());
+                        intent2.putExtras(b);
+                        startActivity(intent2);
+
+                    }
+                });
+
+
+                usersRef.child(user.getUid()).addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        final String pseudo = dataSnapshot.child("pseudo").getValue().toString();
+                        recosViewHolder.setTitre(pseudo + " a recommandé " + model.getType());
+                        if(dataSnapshot.child("pdpUrl").exists()){
+                            Picasso.with(getContext()).load(dataSnapshot.child("pdpUrl").getValue().toString()).fit().centerInside().into(recosViewHolder.getImgProfil());
                         }
-                    });
-
-                    recosViewHolder.getCommentButton().setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            b.putString("key", getRef(i).getKey());
-                            intent2.putExtras(b);
-                            startActivity(intent2);
-
-                        }
-                    });
-
-
-                    usersRef.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            final String pseudo = dataSnapshot.child("pseudo").getValue().toString();
-                            recosViewHolder.setTitre(pseudo + " a recommandé " + model.getType());
-                            if (dataSnapshot.child("pdpUrl").exists()) {
-                                Picasso.with(getContext()).load(dataSnapshot.child("pdpUrl").getValue().toString()).fit().centerInside().into(recosViewHolder.getImgProfil());
-                            }
                         /*DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                         Date date_mini = dateFormat.format(timestamp.getTime());*/
 
-                            Date date = new Date(model.getTimeStamp());
-                            DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy" + " à " + "H" + ":" + "mm");
-                            recosViewHolder.setTime("Le " + dateFormat.format(date));
-                        }
+                        Date date=new Date(model.getTimeStamp());
+                        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy"+" à "+"H"+":"+"mm");
+                        recosViewHolder.setTime("Le "+dateFormat.format(date));
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                    }
 
-                        }
-                    });
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                }
+                    }
+                });
+
+
+
 
 
             }

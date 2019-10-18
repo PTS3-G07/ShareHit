@@ -1,27 +1,19 @@
 package com.example.sharehit;
 
-import android.content.Intent;
-import android.graphics.Color;
-import android.media.MediaPlayer;
-import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.sharehit.Adapter.AdapterRecs;
+import android.content.Intent;
+import android.media.MediaPlayer;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+
 import com.example.sharehit.Model.Recommendation;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
@@ -29,77 +21,94 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
-import java.sql.PreparedStatement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class FeedFragement extends Fragment {
+public class ProfilPage extends AppCompatActivity {
 
-    RecyclerView recyclerView;
+    private CircleImageView pdp;
+    private TextView pseudo;
+    private RecyclerView post;
+    private Button follow;
+
     private DatabaseReference recosRef, usersRef;
     private FirebaseAuth mAuth;
-    private String current_user_id;
-    public boolean CURRENT_LIKE, test=false;
+
+    public boolean CURRENT_LIKE;
+
     private final static MediaPlayer mp = new MediaPlayer();
 
-
-
-
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        ViewGroup root = (ViewGroup) inflater.inflate(R.layout.fragement_feed, null);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_profil_page);
 
-
-
-
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
 
         mAuth = FirebaseAuth.getInstance();
-        current_user_id = mAuth.getCurrentUser().getUid();
         recosRef = FirebaseDatabase.getInstance().getReference().child("recos");
         usersRef = FirebaseDatabase.getInstance().getReference().child("users");
 
-        recyclerView = root.findViewById(R.id.postRecyclerView);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        pdp = (CircleImageView) findViewById(R.id.pdpProfilPage);
+        pseudo = (TextView) findViewById(R.id.pseudoProfilPage);
+        post = (RecyclerView) findViewById(R.id.postProfilPageRecyclerView);
+        follow = (Button) findViewById(R.id.followProfilPage);
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         layoutManager.setStackFromEnd(true);
         layoutManager.setReverseLayout(true);
-        recyclerView.setLayoutManager(layoutManager);
+        post.setLayoutManager(layoutManager);
+
+        Bundle b = getIntent().getExtras();
+
+        usersRef.child(b.getString("key")).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                pseudo.setText(dataSnapshot.child("pseudo").getValue().toString());
+                Picasso.with(getApplicationContext()).load(dataSnapshot.child("pdpUrl").getValue().toString()).fit().centerInside().into(pdp);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        displayAllRecosUser(b.getString("key"));
 
 
-        displayAllRecos();
-
-        return root;
     }
 
+    private void displayAllRecosUser(String uid) {
 
-    private void displayAllRecos() {
-        final Intent intent1 = new Intent(getContext(), ListLikePage.class);
-        final Intent intent2 = new Intent(getContext(), CommentPage.class);
-        final Intent intent3 = new Intent(getContext(), ProfilPage.class);
+        final Intent intent1 = new Intent(getApplicationContext(), ListLikePage.class);
+        final Intent intent2 = new Intent(getApplicationContext(), CommentPage.class);
+        final Intent intent3 = new Intent(getApplicationContext(), ProfilPage.class);
         final Bundle b = new Bundle();
 
-        FirebaseRecyclerAdapter<Recommendation, RecosViewHolder> fireBaseRecyclerAdapter = new FirebaseRecyclerAdapter<Recommendation, RecosViewHolder>
+        Query postUser = recosRef.orderByChild("userRecoUid").startAt(uid).endAt(uid+"\uf8ff");
+
+        FirebaseRecyclerAdapter<Recommendation, FeedFragement.RecosViewHolder> fireBaseRecyclerAdapter = new FirebaseRecyclerAdapter<Recommendation, FeedFragement.RecosViewHolder>
                 (
                         Recommendation.class,
                         R.layout.recommandation_item,
-                        RecosViewHolder.class,
-                        recosRef
+                        FeedFragement.RecosViewHolder.class,
+                        postUser
                 ) {
 
             @Override
-            protected void populateViewHolder(final RecosViewHolder recosViewHolder, final Recommendation model, final int i) {
+            protected void populateViewHolder(final FeedFragement.RecosViewHolder recosViewHolder, final Recommendation model, final int i) {
 
-                Picasso.with(getContext()).load(model.getImg()).fit().centerInside().into(recosViewHolder.getImg());
+                Picasso.with(getApplicationContext()).load(model.getImg()).fit().centerInside().into(recosViewHolder.getImg());
 
 
 
@@ -294,7 +303,7 @@ public class FeedFragement extends Fragment {
                         final String pseudo = dataSnapshot.child("pseudo").getValue().toString();
                         recosViewHolder.setTitre(pseudo + " a recommandé " + model.getType());
                         if(dataSnapshot.child("pdpUrl").exists()){
-                            Picasso.with(getContext()).load(dataSnapshot.child("pdpUrl").getValue().toString()).fit().centerInside().into(recosViewHolder.getImgProfil());
+                            Picasso.with(getApplicationContext()).load(dataSnapshot.child("pdpUrl").getValue().toString()).fit().centerInside().into(recosViewHolder.getImgProfil());
                         }
                         /*DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                         Date date_mini = dateFormat.format(timestamp.getTime());*/
@@ -325,103 +334,6 @@ public class FeedFragement extends Fragment {
 
             }
         };
-        recyclerView.setAdapter(fireBaseRecyclerAdapter);
-
-
-
+        post.setAdapter(fireBaseRecyclerAdapter);
     }
-
-    public static class RecosViewHolder extends RecyclerView.ViewHolder{
-
-        View mView;
-        TextView nbrlike;
-        TextView nbrCom;
-        TextView pseudoCom;
-        TextView autreComment;
-
-        public RecosViewHolder(View itemView) {
-            super(itemView);
-            this.mView = itemView;
-            nbrlike = (TextView) mView.findViewById(R.id.nbrLike);
-            nbrCom = (TextView) mView.findViewById(R.id.nbrComment);
-            pseudoCom = mView.findViewById(R.id.pseudoComment);
-            autreComment = mView.findViewById(R.id.autreComment);
-        }
-
-        public void setAutreComment(String autreComment1){
-            autreComment.setText(autreComment1);
-        }
-
-        public void setTime(String timeText){
-            TextView time = (TextView) mView.findViewById(R.id.time);
-            time.setText(timeText);
-        }
-
-        public void setPseudoCom(String pseudo){
-            pseudoCom.setText(pseudo);
-        }
-
-        public void setDesc(String desc){
-            TextView descR = (TextView) mView.findViewById(R.id.desc);
-            descR.setText(desc);
-        }
-
-        public void setTitre(String text){
-            TextView nameR = (TextView) mView.findViewById(R.id.name);
-            nameR.setText(text);
-        }
-
-        public ImageButton getImg() {
-            ImageButton imgR = (ImageButton) mView.findViewById(R.id.img_ar);
-            return imgR;
-        }
-
-        public void setmView(View mView) {
-            this.mView = mView;
-        }
-
-        public CircleImageView getImgProfil(){
-            CircleImageView imgProfil = (CircleImageView) mView.findViewById(R.id.imgProfil);
-            return imgProfil;
-        }
-
-        public ImageButton getLikeButton(){
-            ImageButton imgButton = (ImageButton) mView.findViewById(R.id.likeButton);
-            return imgButton;
-        }
-
-        public void setNbrLike(String text){
-            nbrlike.setText(text);
-        }
-
-        public void setNbrCom(String text){
-            nbrCom.setText(text);
-        }
-
-        public String getNbrLike(){
-            return nbrlike.getText().toString();
-        }
-
-        public String getNbrComment(){
-            return nbrCom.getText().toString();
-        }
-
-        public TextView getListLike(){
-            TextView nbrLikeBut = (TextView) mView.findViewById(R.id.nbrLike);
-            return  nbrLikeBut;
-        }
-
-        public ImageButton getCommentButton(){
-            ImageButton button = (ImageButton) mView.findViewById(R.id.commentButton);
-            return button;
-        }
-
-        public ImageButton getBookButton(){
-            ImageButton img = (ImageButton) mView.findViewById(R.id.bookButton);
-            return img;
-        }
-    }
-
-
-
 }
