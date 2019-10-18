@@ -19,7 +19,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".CommentPage"></activity>
+        <activity android:name=".ProfilPage"></activity>
+        <activity android:name=".CommentPage" />
         <activity android:name=".ListLikePage" />
         <activity
             android:name=".PostRec"

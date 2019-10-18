@@ -84,6 +84,7 @@ public class FeedFragement extends Fragment {
     private void displayAllRecos() {
         final Intent intent1 = new Intent(getContext(), ListLikePage.class);
         final Intent intent2 = new Intent(getContext(), CommentPage.class);
+        final Intent intent3 = new Intent(getContext(), ProfilPage.class);
         final Bundle b = new Bundle();
 
         FirebaseRecyclerAdapter<Recommendation, RecosViewHolder> fireBaseRecyclerAdapter = new FirebaseRecyclerAdapter<Recommendation, RecosViewHolder>
@@ -98,6 +99,8 @@ public class FeedFragement extends Fragment {
             protected void populateViewHolder(final RecosViewHolder recosViewHolder, final Recommendation model, final int i) {
 
                 Picasso.with(getContext()).load(model.getImg()).fit().centerInside().into(recosViewHolder.getImg());
+
+
 
                 recosViewHolder.setDesc(model.getName());
                 final String idReco = getRef(i).getKey();
@@ -323,6 +326,15 @@ public class FeedFragement extends Fragment {
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
 
+                    }
+                });
+
+                recosViewHolder.getImgProfil().setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        b.putString("key", model.getUserRecoUid());
+                        intent3.putExtras(b);
+                        startActivity(intent3);
                     }
                 });
 
