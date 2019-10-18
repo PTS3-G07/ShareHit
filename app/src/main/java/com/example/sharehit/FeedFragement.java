@@ -332,9 +332,16 @@ public class FeedFragement extends Fragment {
                 recosViewHolder.getImgProfil().setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        b.putString("key", model.getUserRecoUid());
-                        intent3.putExtras(b);
-                        startActivity(intent3);
+                        if(mAuth.getCurrentUser().getUid().equals(model.getUserRecoUid())){
+                            Fragment fragment = new ProfilFragement();
+                            loadFragement(fragment);
+
+                        } else {
+                            b.putString("key", model.getUserRecoUid());
+                            intent3.putExtras(b);
+                            startActivity(intent3);
+                        }
+
                     }
                 });
 
@@ -348,6 +355,18 @@ public class FeedFragement extends Fragment {
 
 
     }
+
+    private boolean loadFragement(Fragment fragment){
+        if(fragment != null){
+            getFragmentManager().beginTransaction().replace(R.id.container, fragment)
+                    .commit();
+
+            return true;
+        }
+        return false;
+    }
+
+
 
     public static class RecosViewHolder extends RecyclerView.ViewHolder{
 
