@@ -1,12 +1,15 @@
 package com.example.sharehit;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -59,10 +62,6 @@ public class FeedFragement extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ViewGroup root = (ViewGroup) inflater.inflate(R.layout.fragement_feed, null);
-
-
-
-
 
         mAuth = FirebaseAuth.getInstance();
         current_user_id = mAuth.getCurrentUser().getUid();
@@ -133,7 +132,7 @@ public class FeedFragement extends Fragment {
 
                                 }
                             });
-                            recosRef.child(idReco).child("Coms").addValueEventListener(new ValueEventListener() {
+                            recosRef.child(idReco).child("Coms").limitToLast(1).addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     if (dataSnapshot.getChildrenCount()-1>0){
@@ -187,7 +186,7 @@ public class FeedFragement extends Fragment {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         if(dataSnapshot.exists()) {
-                            recosViewHolder.getLikeButton().setImageResource(R.drawable.like);
+                            recosViewHolder.getLikeButton().setImageResource(R.drawable.red_heart);
                         }
                         else{
                             recosViewHolder.getLikeButton().setImageResource(R.drawable.heart);
@@ -203,11 +202,9 @@ public class FeedFragement extends Fragment {
                     public void onClick(View v) {
                         if(CURRENT_LIKE == false){
                             getRef(i).child("likeUsersUid").child(mAuth.getCurrentUser().getUid()).child("like_done").setValue("yes");
-                            //recosViewHolder.getLikeButton().setImageResource(R.drawable.heart);
                             CURRENT_LIKE=true;
                         } else if(CURRENT_LIKE == true){
                             getRef(i).child("likeUsersUid").child(mAuth.getCurrentUser().getUid()).removeValue();
-                            //recosViewHolder.getLikeButton().setImageResource(R.drawable.like);
                             CURRENT_LIKE=false;
                         }
 
@@ -215,10 +212,22 @@ public class FeedFragement extends Fragment {
 
                 });
 
-                recosViewHolder.getImg().setOnClickListener(new View.OnClickListener() {
+
+                final GestureDetector.SimpleOnGestureListener listener = new GestureDetector.SimpleOnGestureListener() {
+                    @Override
+                    public boolean onDoubleTap(MotionEvent e) {
+                        if(CURRENT_LIKE == false){
+                            getRef(i).child("likeUsersUid").child(mAuth.getCurrentUser().getUid()).child("like_done").setValue("yes");
+                            CURRENT_LIKE=true;
+                        } else if(CURRENT_LIKE == true){
+                            getRef(i).child("likeUsersUid").child(mAuth.getCurrentUser().getUid()).removeValue();
+                            CURRENT_LIKE=false;
+                        }
+                        return true;
+                    }
 
                     @Override
-                    public void onClick(View v) {
+                    public void onLongPress(MotionEvent e) {
                         if (model.getUrlPreview()!=null) {
                             try {
                                 if (mp.isPlaying()){
@@ -235,15 +244,24 @@ public class FeedFragement extends Fragment {
                                         }
                                     });
                                 }
-                            } catch (IOException e) {
+                            } catch (IOException ex) {
                                 Log.e("pa2chance", "prepare() failed");
                             }
                         }
 
-
                     }
+                };
 
+                final GestureDetector detector = new GestureDetector(listener);
 
+                detector.setOnDoubleTapListener(listener);
+                detector.setIsLongpressEnabled(true);
+
+                recosViewHolder.getImg().setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View view, MotionEvent event) {
+                        return detector.onTouchEvent(event);
+                    }
                 });
 
                 recosViewHolder.getBookButton().setOnClickListener(new View.OnClickListener() {

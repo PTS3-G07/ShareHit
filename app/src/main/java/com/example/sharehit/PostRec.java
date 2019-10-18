@@ -52,6 +52,8 @@ public class PostRec extends AppCompatActivity {
     private TextView nomPost, descPost;
     private ImageView imgProfilPost;
     private ImageButton imgPost;
+    private TextView like;
+    private TextView comment;
     private final static MediaPlayer mp = new MediaPlayer();
 
     @Override
