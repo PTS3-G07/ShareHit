@@ -101,6 +101,7 @@ public class FeedPage extends AppCompatActivity {
         final Dialog d = new Dialog(this, R.style.DialogTheme);
         d.requestWindowFeature(Window.FEATURE_NO_TITLE);
         d.setContentView(R.layout.new_recommendation);
+        ImageButton i = d.findViewById(id.artiste);
         Window window = d.getWindow();
         WindowManager.LayoutParams wlp = window.getAttributes();
         wlp.width = WindowManager.LayoutParams.MATCH_PARENT;

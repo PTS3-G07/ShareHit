@@ -1,11 +1,15 @@
 package com.example.sharehit;
 
+import android.app.ActionBar;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -13,10 +17,14 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,8 +35,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sharehit.Adapter.AdapterRecs;
+import com.example.sharehit.Model.Morceau;
 import com.example.sharehit.Model.Recommendation;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.android.material.resources.TextAppearance;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -46,9 +57,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.xml.datatype.Duration;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class FeedFragement extends Fragment {
+
+    public static final String EXTRA_PREVIEW = "userUrlPreview";
 
     RecyclerView recyclerView;
     private DatabaseReference recosRef, usersRef;
@@ -56,6 +71,12 @@ public class FeedFragement extends Fragment {
     private String current_user_id;
     public boolean CURRENT_LIKE, test=false;
     private final static MediaPlayer mp = new MediaPlayer();
+    private ProgressBar mSeekBarPlayer;
+    private ImageButton stop;
+    private ImageButton btnPause;
+    private LinearLayout lecteur;
+    private TextView nameLect;
+    private ImageView musicImg;
 
 
 
@@ -69,6 +90,20 @@ public class FeedFragement extends Fragment {
         current_user_id = mAuth.getCurrentUser().getUid();
         recosRef = FirebaseDatabase.getInstance().getReference().child("recos");
         usersRef = FirebaseDatabase.getInstance().getReference().child("users");
+
+        lecteur = root.findViewById(R.id.lecteur);
+        stop = root.findViewById(R.id.button1);
+        btnPause = root.findViewById(R.id.button2);
+        mSeekBarPlayer = root.findViewById(R.id.progressBar);
+        nameLect = root.findViewById(R.id.nameLect);
+        musicImg = root.findViewById(R.id.musicImg);
+
+        lecteur.setVisibility(View.INVISIBLE);
+
+        ViewGroup.LayoutParams params = lecteur.getLayoutParams();
+        params.height=0;
+        lecteur.setLayoutParams(params);
+
 
         recyclerView = root.findViewById(R.id.postRecyclerView);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
@@ -231,31 +266,89 @@ public class FeedFragement extends Fragment {
                         return true;
                     }
 
-                    @Override
                     public void onLongPress(MotionEvent e) {
-                        if (model.getUrlPreview()!=null) {
-                            try {
-                                if (mp.isPlaying()){
-                                    mp.pause();
-                                    mp.reset();
-                                }else {
-                                    mp.reset();
-                                    mp.setDataSource(model.getUrlPreview());
-                                    mp.prepareAsync();
-                                    mp.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                                        @Override
-                                        public void onPrepared(MediaPlayer mp) {
-                                            mp.start();
-                                        }
-                                    });
-                                }
-                            } catch (IOException ex) {
-                                Log.e("pa2chance", "prepare() failed");
-                            }
+                        mp.reset();
+                        if (lecteur.getVisibility()==View.INVISIBLE) {
+                            lecteur.setVisibility(View.VISIBLE);
+                            ViewGroup.LayoutParams params = lecteur.getLayoutParams();
+                            params.height = ActionBar.LayoutParams.WRAP_CONTENT;
+                            lecteur.setLayoutParams(params);
                         }
+                        try{
+                            mp.setDataSource(model.getUrlPreview());
+                        }
+                        catch (IOException ex){
+                            Log.e("testest", "Can't found data:"+model.getUrlPreview());
+                        }
+
+                        nameLect.setText(model.getName());
+                        Picasso.with(getContext()).load(model.getImg()).fit().centerInside().into(musicImg);
+                        mp.prepareAsync();
+                        mp.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                            @Override
+                            public void onPrepared(MediaPlayer mp) {
+                                int duration = mp.getDuration();
+                                mSeekBarPlayer.setMax(duration);
+                                mp.start();
+                                mSeekBarPlayer.postDelayed(onEverySecond, 500);
+                            }
+                        });
+
+                        mSeekBarPlayer.setOnTouchListener(new View.OnTouchListener() {
+                            @Override
+                            public boolean onTouch(View view, MotionEvent motionEvent) {
+                                return false;
+                            }
+                        });
+
+                        stop.setOnClickListener(new View.OnClickListener() {
+
+                            @Override
+                            public void onClick(View v) {
+
+                                mp.stop();
+                                mp.reset();
+                                lecteur.setVisibility(View.INVISIBLE);
+
+                                ViewGroup.LayoutParams params = lecteur.getLayoutParams();
+                                params.height=0;
+                                lecteur.setLayoutParams(params);
+
+                            }
+                        });
+
+
+                        btnPause.setOnClickListener(new View.OnClickListener() {
+
+
+                            @Override
+                            public void onClick(View v) {
+                                if (mp.isPlaying()) {
+                                    mp.pause();
+                                    btnPause.setImageResource(R.drawable.ic_play);
+                                }
+                                else {
+                                    btnPause.setImageResource(R.drawable.ic_pause);
+                                    try {
+                                        mp.prepare();
+                                    } catch (IllegalStateException e) {
+                                        // TODO Auto-generated catch block
+                                        e.printStackTrace();
+                                    } catch (IOException e) {
+                                        // TODO Auto-generated catch block
+                                        e.printStackTrace();
+                                    }
+                                    mp.start();
+                                    mSeekBarPlayer.postDelayed(onEverySecond, 1000);
+                                }
+
+                            }
+                        });
 
                     }
                 };
+
+
 
                 final GestureDetector detector = new GestureDetector(listener);
 
@@ -274,6 +367,7 @@ public class FeedFragement extends Fragment {
                     public void onClick(View v) {
                         String key = usersRef.child(mAuth.getCurrentUser().getUid()).child("bookmarks").push().getKey();
                         usersRef.child(mAuth.getCurrentUser().getUid()).child("bookmarks").child(key).setValue(getRef(i).getKey());
+                        
 
                     }
                 });
@@ -388,6 +482,7 @@ public class FeedFragement extends Fragment {
         TextView pseudoCom;
         TextView autreComment;
         TextView descR;
+        ImageView pause;
 
         public RecosViewHolder(View itemView) {
             super(itemView);
@@ -397,6 +492,10 @@ public class FeedFragement extends Fragment {
             pseudoCom = mView.findViewById(R.id.pseudoComment);
             autreComment = mView.findViewById(R.id.autreComment);
             descR = (TextView) mView.findViewById(R.id.desc);
+            //pause = mView.findViewById(R.id.pauseButton);
+            //progressBar = mView.findViewById(R.id.timeProgressBar);
+            //pause.setVisibility(View.INVISIBLE);
+            //progressBar.setVisibility(View.INVISIBLE);
         }
 
         public void setAutreComment(String autreComment1){
@@ -474,8 +573,22 @@ public class FeedFragement extends Fragment {
             ImageButton img = (ImageButton) mView.findViewById(R.id.bookButton);
             return img;
         }
+
+
     }
+    private Runnable onEverySecond = new Runnable() {
+        @Override
+        public void run(){
+            if(mp != null) {
+                mSeekBarPlayer.setProgress(mp.getCurrentPosition());
+            }
 
-
-
+            if(mp.isPlaying()) {
+                btnPause.setImageResource(R.drawable.ic_pause);
+                mSeekBarPlayer.postDelayed(onEverySecond, 100);
+            }else{
+                btnPause.setImageResource(R.drawable.ic_play);
+            }
+        }
+    };
 }

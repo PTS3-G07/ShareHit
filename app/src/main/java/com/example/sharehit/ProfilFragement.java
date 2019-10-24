@@ -546,7 +546,16 @@ public class ProfilFragement extends Fragment {
                             Picasso.with(getContext()).load(dataSnapshot.child("pdpUrl").getValue().toString()).fit().centerInside().into(recosViewHolder.getImgProfil());
                         }
                         /*DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                        Date date_mini = dateFormat.format(timestamp.getTime());*/
+                        Date dat
+
+
+
+
+
+
+
+
+                        e_mini = dateFormat.format(timestamp.getTime());*/
 
                         Date date=new Date(model.getTimeStamp());
                         DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy"+" à "+"H"+":"+"mm");

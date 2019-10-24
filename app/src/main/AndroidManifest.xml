@@ -29,9 +29,6 @@
             android:name=".ApiManager"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".Uploadpdp"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".FeedPage"
             android:screenOrientation="portrait" />
         <activity
@@ -43,6 +40,8 @@
         <activity
             android:name=".PasswordForget"
             android:screenOrientation="portrait" />
+        <activity android:name=".Mp3PlayerActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".LoginPage"
             android:screenOrientation="portrait">
