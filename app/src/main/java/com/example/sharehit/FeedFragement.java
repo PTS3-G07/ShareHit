@@ -1,32 +1,21 @@
 package com.example.sharehit;
 
 import android.app.ActionBar;
-import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.CountDownTimer;
-import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-import android.webkit.WebView;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -34,12 +23,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.sharehit.Adapter.AdapterRecs;
-import com.example.sharehit.Model.Morceau;
 import com.example.sharehit.Model.Recommendation;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.google.android.material.resources.TextAppearance;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -49,15 +34,9 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
-import java.sql.PreparedStatement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-
-import javax.xml.datatype.Duration;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -263,6 +242,17 @@ public class FeedFragement extends Fragment {
                             getRef(i).child("likeUsersUid").child(mAuth.getCurrentUser().getUid()).removeValue();
                             CURRENT_LIKE=false;
                         }
+                        return true;
+                    }
+
+                    public boolean onSingleTapConfirmed(MotionEvent e) {
+
+                        Log.e("testest",""+model.getLink());
+                        Intent viewIntent =
+                                new Intent("android.intent.action.VIEW",
+                                        Uri.parse(model.getLink()));
+                        startActivity(viewIntent);
+
                         return true;
                     }
 
