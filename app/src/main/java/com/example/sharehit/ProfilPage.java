@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
@@ -42,7 +43,7 @@ public class ProfilPage extends AppCompatActivity {
     private DatabaseReference recosRef, usersRef;
     private FirebaseAuth mAuth;
 
-    public boolean CURRENT_LIKE;
+    public boolean CURRENT_LIKE, CURRENT_FOLLOW;
 
     private final static MediaPlayer mp = new MediaPlayer();
 
@@ -50,6 +51,8 @@ public class ProfilPage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profil_page);
+
+        CURRENT_FOLLOW = false;
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
@@ -77,9 +80,37 @@ public class ProfilPage extends AppCompatActivity {
 
         }
 
+        usersRef.child(mAuth.getCurrentUser().getUid()).child("followed").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.child(b.getString("key")).exists()){
+                    CURRENT_FOLLOW=true;
+                    follow.setText("Ne plus suivre");
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
         follow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(CURRENT_FOLLOW == false){
+                    usersRef.child(mAuth.getCurrentUser().getUid()).child("followed").child(b.getString("key")).child("follow_done").setValue("yes");
+                    follow.setText("Ne plus suivre");
+                    CURRENT_FOLLOW=true;
+                } else if(CURRENT_FOLLOW == true){
+                    usersRef.child(mAuth.getCurrentUser().getUid()).child("followed").child(b.getString("key")).child("follow_done").removeValue();
+                    follow.setText("Suivre");
+                    CURRENT_FOLLOW=false;
+
+
+                }
+
 
             }
         });

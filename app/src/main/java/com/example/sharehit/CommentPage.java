@@ -8,10 +8,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.sharehit.Model.Comment;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -71,7 +73,7 @@ public class CommentPage extends AppCompatActivity {
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!sendText.equals("")){
+                if(!TextUtils.isEmpty(sendText.getText().toString())){
                     Comment comment = new Comment(
                             sendText.getText().toString(),
                             new Timestamp(System.currentTimeMillis()).getTime(),
@@ -82,6 +84,8 @@ public class CommentPage extends AppCompatActivity {
                     usersMap.put(key, comment);
                     comRef.updateChildren(usersMap);
                     sendText.setText("");
+                } else {
+                    Toast.makeText(getApplicationContext(), "Le message est vide", Toast.LENGTH_LONG).show();
                 }
             }
         });

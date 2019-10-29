@@ -14,9 +14,9 @@ public class User {
     public String pseudo;
     public String email;
     public String pdp;
-    public List<Recommendation> bookmarks;
+    //public List<Recommendation> bookmarks;
 
-    public List<User> followed;
+    //public List<User> followed;
 
 
     public User(){
@@ -26,8 +26,8 @@ public class User {
     public User(String pseudo, String email) {
         this.pseudo = pseudo;
         this.email = email;
-        this.bookmarks = new ArrayList<>();
-        this.followed = new ArrayList<>();
+        //this.bookmarks = new ArrayList<>();
+        //this.followed = new ArrayList<>();
     }
 
 
@@ -56,11 +56,12 @@ public class User {
         this.pdp = pdp;
     }
 
+    /*
     public void setBookmarked(Recommendation bookmark) {
         bookmarks.add(bookmark);
     }
 
-    /*
+
     public void likeRecommendation(Recommendation recommendation){
         recommendation.getLikers().add(this);
     }
@@ -74,6 +75,7 @@ public class User {
 
      */
 
+    /*
     public void follow(User user){
         this.followed.add(user);
     }
@@ -85,5 +87,7 @@ public class User {
     public List<User> getFollowed() {
         return followed;
     }
+
+     */
 }
 

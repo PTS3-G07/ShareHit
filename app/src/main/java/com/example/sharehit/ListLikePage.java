@@ -19,8 +19,12 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -29,8 +33,7 @@ public class ListLikePage extends AppCompatActivity {
     private DatabaseReference recosRef, usersRef;
     private FirebaseAuth mAuth;
     private String current_user_id;
-    public RecyclerView listLike;
-    String key;
+    public RecyclerView recyclerLike;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,31 +45,48 @@ public class ListLikePage extends AppCompatActivity {
 
         Bundle b = getIntent().getExtras();
 
-        listLike = (RecyclerView) findViewById(R.id.likeRecyclerView);
+        recyclerLike = (RecyclerView) findViewById(R.id.likeRecyclerView);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         layoutManager.setStackFromEnd(true);
         layoutManager.setReverseLayout(true);
-        listLike.setLayoutManager(layoutManager);
+        recyclerLike.setLayoutManager(layoutManager);
 
         mAuth = FirebaseAuth.getInstance();
         current_user_id = mAuth.getCurrentUser().getUid();
+        Log.e("keyreco", b.getString("key"));
         recosRef = FirebaseDatabase.getInstance().getReference().child("recos").child(b.getString("key")).child("likeUserUid");
         usersRef = FirebaseDatabase.getInstance().getReference().child("users");
 
-        recosRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+        displayAllUserLike();
 
+
+    }
+
+    private void displayAllUserLike() {
+        FirebaseRecyclerAdapter<User, UserViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<User, UserViewHolder>
+                (
+                        User.class,
+                        R.layout.like_user_profil_display,
+                        UserViewHolder.class,
+                        usersRef
+                ) {
+            @Override
+            protected void populateViewHolder(final UserViewHolder userViewHolder, final User user, final int i) {
+                Log.e("USERKEY", getRef(i).getKey());
+                recosRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if(dataSnapshot.child(getRef(i).getKey()).exists()) userViewHolder.setPseudoListLike(user.getPseudo());
+                    }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
 
             }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-
+        };
+        recyclerLike.setAdapter(firebaseRecyclerAdapter);
     }
 
     public static class UserViewHolder extends RecyclerView.ViewHolder {
