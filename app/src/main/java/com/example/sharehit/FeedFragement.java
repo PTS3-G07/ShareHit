@@ -266,7 +266,17 @@ public class FeedFragement extends Fragment {
                         return true;
                     }
 
-                    @Override
+                    public boolean onSingleTapConfirmed(MotionEvent e) {
+
+                        Log.e("testest",""+model.getLink());
+                        Intent viewIntent =
+                                new Intent("android.intent.action.VIEW",
+                                        Uri.parse(model.getLink()));
+                        startActivity(viewIntent);
+
+                        return true;
+                    }
+
                     public void onLongPress(MotionEvent e) {
                         mp.reset();
                         if (lecteur.getVisibility()==View.INVISIBLE) {
@@ -368,6 +378,7 @@ public class FeedFragement extends Fragment {
                     public void onClick(View v) {
                         String key = usersRef.child(mAuth.getCurrentUser().getUid()).child("bookmarks").push().getKey();
                         usersRef.child(mAuth.getCurrentUser().getUid()).child("bookmarks").child(key).setValue(getRef(i).getKey());
+                        
 
                     }
                 });
@@ -573,16 +584,16 @@ public class FeedFragement extends Fragment {
             ImageButton img = (ImageButton) mView.findViewById(R.id.bookButton);
             return img;
         }
+
+
     }
-
-
-
     private Runnable onEverySecond = new Runnable() {
         @Override
         public void run(){
             if(mp != null) {
                 mSeekBarPlayer.setProgress(mp.getCurrentPosition());
             }
+
             if(mp.isPlaying()) {
                 btnPause.setImageResource(R.drawable.ic_pause);
                 mSeekBarPlayer.postDelayed(onEverySecond, 100);
