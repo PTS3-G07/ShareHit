@@ -5,6 +5,7 @@
     <color name="colorAccent">#005EAA</color>
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
+    <color name="grey">#CCCCCC</color>
     <color name="barColor">#0C0608</color>
     <color name="gris">#EFEFEFEF</color>
     <color name="likeblue">#1B8FFB</color>
