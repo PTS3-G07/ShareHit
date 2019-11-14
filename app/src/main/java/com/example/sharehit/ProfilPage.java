@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -46,6 +47,8 @@ public class ProfilPage extends AppCompatActivity {
     public boolean CURRENT_LIKE, CURRENT_FOLLOW;
 
     private final static MediaPlayer mp = new MediaPlayer();
+
+    private String keyFollowed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,9 +86,12 @@ public class ProfilPage extends AppCompatActivity {
         usersRef.child(mAuth.getCurrentUser().getUid()).child("followed").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.child(b.getString("key")).exists()){
-                    CURRENT_FOLLOW=true;
-                    follow.setText("Ne plus suivre");
+                for(DataSnapshot ds: dataSnapshot.getChildren()){
+                    if(ds.getValue().equals(b.getString("key"))){
+                        CURRENT_FOLLOW = true;
+                        keyFollowed = ds.getRef().getKey();
+                        follow.setText("Ne plus suivre");
+                    }
                 }
 
             }
@@ -100,16 +106,36 @@ public class ProfilPage extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(CURRENT_FOLLOW == false){
-                    usersRef.child(mAuth.getCurrentUser().getUid()).child("followed").child(b.getString("key")).child("follow_done").setValue("yes");
+                    HashMap usersMap = new HashMap();
+                    usersMap.put(usersRef.child(mAuth.getCurrentUser().getUid()).child("followed").push().getKey(), b.getString("key"));
+                    usersRef.child(mAuth.getCurrentUser().getUid()).child("followed").updateChildren(usersMap);
+                    usersRef.child(mAuth.getCurrentUser().getUid()).child("followed").addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            for(DataSnapshot ds: dataSnapshot.getChildren()){
+                                if(ds.getValue().equals(b.getString("key"))){
+                                    Log.e("Followed key", ds.getRef().getKey());
+                                    keyFollowed = ds.getRef().getKey();
+
+                                }
+                            }
+                        }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
                     follow.setText("Ne plus suivre");
                     CURRENT_FOLLOW=true;
+
                 } else if(CURRENT_FOLLOW == true){
-                    usersRef.child(mAuth.getCurrentUser().getUid()).child("followed").child(b.getString("key")).child("follow_done").removeValue();
+                    usersRef.child(mAuth.getCurrentUser().getUid()).child("followed").child(keyFollowed).removeValue();
                     follow.setText("Suivre");
                     CURRENT_FOLLOW=false;
 
-
                 }
+
+
 
 
             }

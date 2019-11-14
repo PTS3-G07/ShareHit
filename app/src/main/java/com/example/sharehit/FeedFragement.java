@@ -69,7 +69,7 @@ public class FeedFragement extends Fragment {
     private DatabaseReference recosRef, usersRef;
     private FirebaseAuth mAuth;
     private String current_user_id;
-    public boolean CURRENT_LIKE, test=false;
+    public boolean CURRENT_LIKE,  test=false;
     private final static MediaPlayer mp = new MediaPlayer();
     private ProgressBar mSeekBarPlayer;
     private ImageButton stop;
@@ -123,6 +123,18 @@ public class FeedFragement extends Fragment {
         final Intent intent2 = new Intent(getContext(), CommentPage.class);
         final Intent intent3 = new Intent(getContext(), ProfilPage.class);
         final Bundle b = new Bundle();
+        final int[] tailleTableau = new int[1];
+        recosRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                tailleTableau[0] = (int) dataSnapshot.getChildrenCount();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
         FirebaseRecyclerAdapter<Recommendation, RecosViewHolder> fireBaseRecyclerAdapter = new FirebaseRecyclerAdapter<Recommendation, RecosViewHolder>
                 (
@@ -134,6 +146,9 @@ public class FeedFragement extends Fragment {
 
             @Override
             protected void populateViewHolder(final RecosViewHolder recosViewHolder, final Recommendation model, final int i) {
+
+                final String[] keyBookmark = new String[tailleTableau[0]];
+                final boolean[] CURRENT_BOOKMARK = new boolean[tailleTableau[0]];
 
                 Picasso.with(getContext()).load(model.getImg()).fit().centerInside().into(recosViewHolder.getImg());
 
@@ -234,6 +249,35 @@ public class FeedFragement extends Fragment {
                     }
                     @Override public void onCancelled(@NonNull DatabaseError databaseError) { }
                 });
+
+
+                usersRef.child(mAuth.getCurrentUser().getUid()).child("bookmarks").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        boolean test = false;
+                        for(DataSnapshot ds: dataSnapshot.getChildren()){
+                            if(ds.getValue().equals(getRef(i).getKey())){
+                                test = true;
+                                keyBookmark[i] = ds.getRef().getKey();
+                                //follow.setText("Ne plus suivre");
+                            }
+                        }
+                        if(test){
+                            recosViewHolder.getBookButton().setImageResource(R.drawable.bookmark_ok);
+                            CURRENT_BOOKMARK[i] = true;
+                        } else {
+                            CURRENT_BOOKMARK[i] = false;
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+
 
 
 
@@ -376,8 +420,37 @@ public class FeedFragement extends Fragment {
                 recosViewHolder.getBookButton().setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        String key = usersRef.child(mAuth.getCurrentUser().getUid()).child("bookmarks").push().getKey();
-                        usersRef.child(mAuth.getCurrentUser().getUid()).child("bookmarks").child(key).setValue(getRef(i).getKey());
+                        if(CURRENT_BOOKMARK[i] == false){
+                            HashMap usersMap = new HashMap();
+                            usersMap.put(usersRef.child(mAuth.getCurrentUser().getUid()).child("bookmarks").push().getKey(), getRef(i).getKey());
+                            usersRef.child(mAuth.getCurrentUser().getUid()).child("bookmarks").updateChildren(usersMap);
+                            usersRef.child(mAuth.getCurrentUser().getUid()).child("bookmarks").addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    for(DataSnapshot ds: dataSnapshot.getChildren()){
+                                        if(ds.getValue().equals(b.getString("key"))){
+                                            Log.e("Followed key", ds.getRef().getKey());
+                                            keyBookmark[i] = ds.getRef().getKey();
+
+                                        }
+                                    }
+                                }
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
+                            //follow.setText("Ne plus suivre");
+                            recosViewHolder.getBookButton().setImageResource(R.drawable.bookmark_ok);
+                            CURRENT_BOOKMARK[i] =true;
+
+                        } else if(CURRENT_BOOKMARK[i] == true){
+                            usersRef.child(mAuth.getCurrentUser().getUid()).child("bookmarks").child(keyBookmark[i]).removeValue();
+                            recosViewHolder.getBookButton().setImageResource(R.drawable.bookmark);
+                            //follow.setText("Suivre");
+                            CURRENT_BOOKMARK[i] =false;
+
+                        }
                         
 
                     }
