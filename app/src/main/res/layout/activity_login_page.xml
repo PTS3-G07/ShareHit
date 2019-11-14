@@ -132,15 +132,4 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/textView3" />
 
-    <ImageButton
-        android:id="@+id/imageButton2"
-        android:layout_width="147dp"
-        android:layout_height="123dp"
-        android:layout_weight="1"
-        android:background="#00FFFFFF"
-        app:layout_constraintEnd_toStartOf="@+id/loginButt"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout2"
-        app:srcCompat="@drawable/logo_google" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

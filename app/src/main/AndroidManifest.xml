@@ -40,8 +40,6 @@
         <activity
             android:name=".PasswordForget"
             android:screenOrientation="portrait" />
-        <activity android:name=".Mp3PlayerActivity"
-            android:screenOrientation="portrait"/>
         <activity
             android:name=".LoginPage"
             android:screenOrientation="portrait">

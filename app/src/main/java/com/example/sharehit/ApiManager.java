@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
@@ -22,9 +23,11 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.sharehit.Adapter.TypeAdapter;
+import com.example.sharehit.Model.Album;
 import com.example.sharehit.Model.Artist;
 import com.example.sharehit.Model.Morceau;
 import com.example.sharehit.Model.Type;
+import com.example.sharehit.Model.Video;
 import com.google.firebase.auth.FirebaseAuth;
 
 import org.json.JSONArray;
@@ -189,9 +192,9 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
                         String name = data.getString("title");
                         JSONObject artiste = data.getJSONObject("artist");
                         String artistName = artiste.getString("name");
-                        String imgUrl = data.getString("cover_medium");
+                        String imgUrl = data.getString("cover_big");
                         String link = data.getString("link");
-                        mExampleList.add(new Artist(name, artistName, imgUrl, link));
+                        mExampleList.add(new Album(name, artistName, imgUrl, link));
                     }
 
                     mExampleAdapter = new TypeAdapter(ApiManager.this, mExampleList);
@@ -292,7 +295,7 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
                         String imgUrl = data.getString("Poster");
                         String imdbID = data.getString("imdbID");
                         String link = "https://www.imdb.com/title/"+imdbID+"/";
-                        mExampleList.add(new Artist(title, year, imgUrl, link));
+                        mExampleList.add(new Video(title, year, imgUrl, link));
                     }
 
                     mExampleAdapter = new TypeAdapter(ApiManager.this, mExampleList);

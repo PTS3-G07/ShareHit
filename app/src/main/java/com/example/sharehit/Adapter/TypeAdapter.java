@@ -3,6 +3,7 @@ package com.example.sharehit.Adapter;
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,8 +15,14 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sharehit.ApiManager;
+import com.example.sharehit.Model.Album;
+import com.example.sharehit.Model.Artist;
+import com.example.sharehit.Model.Film;
+import com.example.sharehit.Model.JeuVideo;
 import com.example.sharehit.Model.Morceau;
+import com.example.sharehit.Model.Serie;
 import com.example.sharehit.Model.Type;
+import com.example.sharehit.Model.Video;
 import com.example.sharehit.R;
 import com.squareup.picasso.Picasso;
 
@@ -63,10 +70,33 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.TypeViewHolder
             songUrl = ((Morceau) currentItem).getSongUrl();
             mediaPlayer = MediaPlayer.create(context, Uri.parse(((Morceau) currentItem).getSongUrl()));
         }*/
+        String pre="";
+        if (currentItem instanceof Album){
+            pre="Artiste: ";
+        }
+        if (currentItem instanceof Artist){
+            pre="Nombre de fans: ";
+        }
+        if (currentItem instanceof Film){
+            pre="Année: ";
+        }
+        if (currentItem instanceof Video){
+            pre="Année: ";
+        }
+        if (currentItem instanceof JeuVideo){
+            pre="Année: ";
+        }
+        if (currentItem instanceof Morceau){
+            pre="Artiste: ";
+        }
+        if (currentItem instanceof Serie){
+            pre="Année: ";
+        }
 
         holder.mediaPlayer  = this.mediaPlayer;
         holder.name_ar.setText(name);
-        holder.spec.setText(currentItem.getConstNommage() + spec);
+        holder.spec.setText(pre + spec);
+        Log.e("nique", ""+pre );
         Picasso.with(context).load(imageUrl).fit().centerInside().into(holder.img_ar);
     }
 
@@ -105,23 +135,17 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.TypeViewHolder
                 }
             });
 
-            /*img_ar.setOnClickListener(new View.OnClickListener() {
+            img_ar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v){
-                    /*if(mediaPlaying != null){
-                        if(mediaPlaying.isPlaying()){
-                            mediaPlaying.pause();
+                    if(listener != null){
+                        int position = getAdapterPosition();
+                        if(position != RecyclerView.NO_POSITION){
+                            listener.onItemClick(position);
                         }
-
                     }
-                    if(mediaPlayer != null){
-                        mediaPlaying=mediaPlayer;
-                        mediaPlaying.start();
-                    }
-
-
                 }
-            });*/
+            });
         }
     }
 }

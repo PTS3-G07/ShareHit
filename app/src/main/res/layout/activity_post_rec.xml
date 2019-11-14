@@ -28,13 +28,25 @@
 
     </androidx.appcompat.widget.Toolbar>
 
+    <TextView
+        android:id="@+id/text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbar3"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:text="Aperçu"
+        android:textSize="24sp" />
+
     <LinearLayout
         android:id="@+id/linear"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/text"
+        android:layout_marginTop="0dp"
+        android:background="@drawable/rectangle"
         android:orientation="vertical"
-        android:layout_marginTop="10dp"
-        android:layout_below="@+id/toolbar3"
         android:padding="16dp">
 
         <LinearLayout
@@ -84,8 +96,7 @@
             android:layout_width="match_parent"
             android:layout_height="150dp"
             android:background="@drawable/background_img_reco"
-            android:src="@mipmap/ic_launcher"
-            />
+            android:src="@mipmap/ic_launcher" />
 
         <Space
             android:layout_width="match_parent"
