@@ -53,6 +53,7 @@ public class FeedPage extends AppCompatActivity {
     ImageButton serie;
     ImageButton film;
     public int idSearch;
+    private Bundle b;
 
     @Override
     protected void onStart() {
@@ -127,9 +128,17 @@ public class FeedPage extends AppCompatActivity {
 
 
         //window.setAttributes(wlp);
+        b = getIntent().getExtras();
 
-        Fragment fragment = new FeedFragement();
-        loadFragement(fragment);
+
+        if(b == null){
+            Fragment fragment = new FeedFragement();
+            loadFragement(fragment);
+        } else {
+            Fragment fragment = new ProfilFragement();
+            loadFragement(fragment);
+        }
+
         navigationView.setSpaceOnClickListener(new SpaceOnClickListener() {
             Fragment fragment = null;
             @Override

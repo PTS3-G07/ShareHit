@@ -6,9 +6,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import androidx.fragment.app.Fragment;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -96,9 +100,14 @@ public class CommentPage extends AppCompatActivity {
         displayAllComment();
 
 
+
+
     }
 
     private void displayAllComment() {
+        final Intent intent2 = new Intent(getApplicationContext(), FeedPage.class);
+        final Intent intent3 = new Intent(getApplicationContext(), ProfilPage.class);
+        final Bundle b = new Bundle();
         FirebaseRecyclerAdapter<Comment, CommentViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Comment, CommentViewHolder>
                 (
                         Comment.class,
@@ -107,7 +116,7 @@ public class CommentPage extends AppCompatActivity {
                         comRef
                 ) {
             @Override
-            protected void populateViewHolder(final CommentViewHolder commentViewHolder, Comment comment, int i) {
+            protected void populateViewHolder(final CommentViewHolder commentViewHolder, final Comment comment, int i) {
                 commentViewHolder.setMessage(comment.getCom());
 
                 Date date=new Date(comment.getTimestamp());
@@ -129,6 +138,23 @@ public class CommentPage extends AppCompatActivity {
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
 
+                    }
+                });
+
+                commentViewHolder.getImgProfilComment().setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Log.e("UserID", comment.getUid());
+                        if(mAuth.getCurrentUser().getUid().equals(comment.getUid())){
+                            b.putInt("key", 1);
+                            intent2.putExtras(b);
+                            startActivity(intent2);
+
+                        } else {
+                            b.putString("key", comment.getUid());
+                            intent3.putExtras(b);
+                            startActivity(intent3);
+                        }
                     }
                 });
 
