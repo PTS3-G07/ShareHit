@@ -213,22 +213,22 @@ public class ProfilFragement extends Fragment {
 
     private void showEditProfileDialog() {
 
-        String options[] = {"Edit profile picture", "Edit pseudo"};
+        String options[] = {"Changer de photo de profil", "Changer de pseudo"};
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Chose action");
+        builder.setTitle("Edition du profil");
         builder.setItems(options, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if(which == 0){
-                    pd.setMessage("Updating profile picture");
+                    pd.setMessage("Changement de la photo de profil");
                     if(!checkStoragePermission()){
                         requestStoragePermission();
                     }else {
                         pickFromGallery();
                     }
                 }else if (which == 1){
-                    pd.setMessage("Edit pseudo");
-                    showNameUpdateDialog("name");
+                    pd.setMessage("Changement de pseudo");
+                    showNameUpdateDialog();
                 }
             }
         });
@@ -236,17 +236,17 @@ public class ProfilFragement extends Fragment {
 
     }
 
-    private void showNameUpdateDialog(String name) {
+    private void showNameUpdateDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Changer de pseudo");
         LinearLayout linearLayout = new LinearLayout(getActivity());
         linearLayout.setPadding(10,10,10,10);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         final EditText editText = new EditText(getActivity());
-        editText.setHint("Pseudo...");
+        editText.setHint("Nouveau pseudo...");
         linearLayout.addView(editText);
         builder.setView(linearLayout);
-        builder.setPositiveButton("Update", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("Changer", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
               String value = editText.getText().toString().trim();
@@ -257,11 +257,11 @@ public class ProfilFragement extends Fragment {
                   DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid());
                   usersRef.updateChildren(reslt);
               }else {
-                  editText.setError("Enter pseudo");
+                  editText.setError("Entrer un pseudo");
               }
             }
         });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton("Annuler", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
@@ -284,7 +284,7 @@ public class ProfilFragement extends Fragment {
                     if(writeStorageAccepted){
                         pickFromGallery();
                     }else {
-                        Toast.makeText(getActivity(), "Please enable storage permission", Toast.LENGTH_SHORT);
+                        Toast.makeText(getActivity(), "Veuillez autoriser l'accès à la galerie", Toast.LENGTH_SHORT);
 
                     }
                 }
