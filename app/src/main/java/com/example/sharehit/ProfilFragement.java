@@ -47,6 +47,9 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.youtube.player.YouTubePlayer;
+import com.google.android.youtube.player.YouTubePlayerSupportFragment;
+import com.google.android.youtube.player.YouTubeStandalonePlayer;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -158,8 +161,18 @@ public class ProfilFragement extends Fragment {
         upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 firebaseAuth.signOut();
                 startActivity(new Intent(getActivity(), LoginPage.class));
+
+
+                /*
+
+                Intent intent = YouTubeStandalonePlayer.createVideoIntent(getActivity(), "AIzaSyBYORHRvvvzDdhukXCf24orxzFXhoIURr8", "aJ7BoNG-r2c", 0, true, false);
+                startActivity(intent);
+
+                 */
+
 
             }
         });

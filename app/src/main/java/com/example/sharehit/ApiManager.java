@@ -1,6 +1,7 @@
 package com.example.sharehit;
 
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -13,7 +14,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.SearchView;
+import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -26,15 +32,20 @@ import com.example.sharehit.Adapter.TypeAdapter;
 import com.example.sharehit.Model.Album;
 import com.example.sharehit.Model.Artist;
 import com.example.sharehit.Model.Morceau;
+import com.example.sharehit.Model.Recommendation;
 import com.example.sharehit.Model.Type;
 import com.example.sharehit.Model.Video;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -404,12 +415,79 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
             postRec.putExtra(EXTRA_TYPE, typeRecom);
             postRec.putExtra(EXTRA_ID, FirebaseAuth.getInstance().getCurrentUser().getUid());
             postRec.putExtra(EXTRA_LINK, clickedItem.getLink());
+
+
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_postrec,null);
+
+        TextView name = (TextView) dialogView.findViewById(R.id.name_post);
+        name.setText(clickedItem.getName());
+
+        ImageView img = (ImageView) dialogView.findViewById(R.id.picture_post);
+        Picasso.with(getApplicationContext()).load(clickedItem.getImgUrl()).fit().centerInside().into(img);
+
+        Button post = (Button) dialogView.findViewById(R.id.post_post_button);
+        Button cancel = (Button) dialogView.findViewById(R.id.cancel_post_button);
+
+
+
+        final Type finalClickedItem = clickedItem;
+        post.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Recommendation recommendation;
+                if(finalClickedItem instanceof Morceau){
+                    recommendation = new Recommendation(
+                            typeRecom,
+                            FirebaseAuth.getInstance().getCurrentUser().getUid(),
+                            finalClickedItem.getName(),
+                            finalClickedItem.getImgUrl(),
+                            ((Morceau) finalClickedItem).getSongUrl(),
+                            new Timestamp(System.currentTimeMillis()).getTime(),
+                            finalClickedItem.getLink()
+                    );
+                } else {
+                    recommendation = new Recommendation(
+                            typeRecom,
+                            FirebaseAuth.getInstance().getCurrentUser().getUid(),
+                            finalClickedItem.getName(),
+                            finalClickedItem.getImgUrl(),
+                            "",
+                            new Timestamp(System.currentTimeMillis()).getTime(),
+                            finalClickedItem.getLink()
+                    );
+
+
+                }
+                HashMap usersMap = new HashMap();
+                DatabaseReference recomRef = FirebaseDatabase.getInstance().getReference().child("recos");
+                String key = recomRef.push().getKey();
+                usersMap.put(key, recommendation);
+                recomRef.updateChildren(usersMap);
+                startActivity(new Intent(ApiManager.this, FeedPage.class));
+            }
+        });
+
             if(clickedItem instanceof Morceau) {
                 clickedItem = (Morceau) clickedItem;
                 postRec.putExtra(EXTRA_PREVIEW, ((Morceau) clickedItem).getSongUrl());
             }
-            startActivity(postRec);
+            //startActivity(postRec);
         //}
+
+        builder.setView(dialogView);
+        final AlertDialog dialog = builder.create();
+        dialog.show();
+
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
     }
 
         /*postRec.putExtra(EXTRA_URL, clickedItem.getImgUrl());

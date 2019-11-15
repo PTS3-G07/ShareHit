@@ -132,12 +132,7 @@ public class ProfilPage extends AppCompatActivity {
                     usersRef.child(mAuth.getCurrentUser().getUid()).child("followed").child(keyFollowed).removeValue();
                     follow.setText("Suivre");
                     CURRENT_FOLLOW=false;
-
                 }
-
-
-
-
             }
         });
 

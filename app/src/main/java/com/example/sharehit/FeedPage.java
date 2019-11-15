@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -83,6 +84,7 @@ public class FeedPage extends AppCompatActivity {
         setContentView(layout.activity_feed_page);
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
+
 
         email = findViewById(id.showEmail);
         navigationView = findViewById(id.space);
