@@ -462,9 +462,7 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
                 }
                 else if(finalClickedItem instanceof Album){
                     recommendation.setUrlPreview(((Album)clickedItem).getSongUrl());
-
                 }
-
                 HashMap usersMap = new HashMap();
                 DatabaseReference recomRef = FirebaseDatabase.getInstance().getReference().child("recos");
                 String key = recomRef.push().getKey();
