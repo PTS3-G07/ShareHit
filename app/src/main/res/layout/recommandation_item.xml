@@ -130,16 +130,32 @@
                 android:scaleType="fitCenter"
                 android:paddingLeft="10dp"/>
 
-            <ImageButton
-                android:id="@+id/commentButton"
+            <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@android:color/transparent"
-                android:src="@drawable/comment"
-                android:scaleType="fitEnd"
-                android:text="COMM"
-                />
+                android:weightSum="2"
+                android:gravity="right">
+                <ImageButton
+                    android:id="@+id/commentButton"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/comment"
+                    android:scaleType="fitEnd"
+                    android:layout_marginRight="20dp"
+                    android:text="COMM"/>
+                <TextView
+                    android:id="@+id/autreComment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:textSize="15dp"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:text="0"
+                    android:gravity="center"/>
+            </LinearLayout>
         </LinearLayout>
 
 
@@ -160,7 +176,8 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginLeft="16dp"
-            android:layout_marginTop="5dp">
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="10dp">
         <TextView
             android:id="@+id/pseudoComment"
             android:layout_width="wrap_content"
@@ -174,15 +191,6 @@
             android:layout_height="wrap_content"
             android:text="" />
         </LinearLayout>
-
-        <TextView
-            android:id="@+id/autreComment"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:text="" />
 
     </LinearLayout>
 

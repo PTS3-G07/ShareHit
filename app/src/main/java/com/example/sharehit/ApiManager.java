@@ -1,11 +1,11 @@
 package com.example.sharehit;
 
 import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -100,13 +100,6 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                /*
-                if (TextUtils.isEmpty(newText)) {
-                    mExampleList.clear();
-                } else {
-                    parseJSON(newText);
-                }
-*/
 
                 mExampleList.clear();
                 if(type == 1){
@@ -134,9 +127,6 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
                     typeRecom="un jeu vidéo";
                 }
 
-
-
-                // Toast.makeText(DezerApi.this, "Result: "+newText, Toast.LENGTH_LONG).show();
                 return false;
             }
         });
@@ -344,7 +334,7 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
                         JSONObject artist = data.getJSONObject("artist");
                         String title = data.getString("title");
                         String albumTitle = artist.getString("name");
-                        String imgUrl = artist.getString("picture_medium");
+                        String imgUrl = artist.getString("picture_big");
                         String previewUrl = data.getString("preview");
                         String link = data.getString("link");
                         Morceau m = new Morceau(title, albumTitle, imgUrl,previewUrl,link);
@@ -432,7 +422,21 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
 
     @Override
     public void onItemClick(int position) {
-        Intent postRec = new Intent(this, PostRec.class);
+        //Intent postRec = new Intent(this, PostRec.class);
+        Type clickedItem = mExampleList.get(position);
+        /*postRec.putExtra(EXTRA_URL, clickedItem.getImgUrl());
+        postRec.putExtra(EXTRA_NAME, clickedItem.getName());
+        postRec.putExtra(EXTRA_TYPE, typeRecom);
+        postRec.putExtra(EXTRA_ID, FirebaseAuth.getInstance().getCurrentUser().getUid());
+        postRec.putExtra(EXTRA_LINK, clickedItem.getLink());
+        if(clickedItem instanceof Morceau) {
+            postRec.putExtra(EXTRA_PREVIEW, ((Morceau) clickedItem).getSongUrl());
+        }if(clickedItem instanceof Artist) {
+            postRec.putExtra(EXTRA_PREVIEW, ((Artist) clickedItem).getSongUrl());
+        }if(clickedItem instanceof Album) {
+            postRec.putExtra(EXTRA_PREVIEW, ((Album) clickedItem).getSongUrl());
+        }
+        startActivity(postRec);
         boolean isPLAYING = false;
         /*if(mExampleList.get(position) instanceof Morceau){
             Morceau clickedItem = (Morceau) mExampleList.get(position);
@@ -451,13 +455,13 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
             }
 
         }
-        else{*/
+        else{
             Type clickedItem = mExampleList.get(position);
             postRec.putExtra(EXTRA_URL, clickedItem.getImgUrl());
             postRec.putExtra(EXTRA_NAME, clickedItem.getName());
             postRec.putExtra(EXTRA_TYPE, typeRecom);
             postRec.putExtra(EXTRA_ID, FirebaseAuth.getInstance().getCurrentUser().getUid());
-            postRec.putExtra(EXTRA_LINK, clickedItem.getLink());
+            postRec.putExtra(EXTRA_LINK, clickedItem.getLink());*/
 
 
 
@@ -492,7 +496,33 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
                             new Timestamp(System.currentTimeMillis()).getTime(),
                             finalClickedItem.getLink()
                     );
-                } else {
+
+                }
+                else if(finalClickedItem instanceof Artist){
+                    recommendation = new Recommendation(
+                            typeRecom,
+                            FirebaseAuth.getInstance().getCurrentUser().getUid(),
+                            finalClickedItem.getName(),
+                            finalClickedItem.getImgUrl(),
+                            ((Artist) finalClickedItem).getSongUrl(),
+                            new Timestamp(System.currentTimeMillis()).getTime(),
+                            finalClickedItem.getLink()
+                    );
+
+                }
+                else if(finalClickedItem instanceof Album){
+                    recommendation = new Recommendation(
+                            typeRecom,
+                            FirebaseAuth.getInstance().getCurrentUser().getUid(),
+                            finalClickedItem.getName(),
+                            finalClickedItem.getImgUrl(),
+                            ((Album) finalClickedItem).getSongUrl(),
+                            new Timestamp(System.currentTimeMillis()).getTime(),
+                            finalClickedItem.getLink()
+                    );
+
+                }
+                else {
                     recommendation = new Recommendation(
                             typeRecom,
                             FirebaseAuth.getInstance().getCurrentUser().getUid(),
@@ -514,13 +544,13 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
             }
         });
 
-            if(clickedItem instanceof Morceau) {
+            /*if(clickedItem instanceof Morceau) {
                 postRec.putExtra(EXTRA_PREVIEW, ((Morceau) clickedItem).getSongUrl());
             }if(clickedItem instanceof Artist) {
                 postRec.putExtra(EXTRA_PREVIEW, ((Artist) clickedItem).getSongUrl());
             }if(clickedItem instanceof Album) {
                 postRec.putExtra(EXTRA_PREVIEW, ((Album) clickedItem).getSongUrl());
-            }
+            }*/
             //startActivity(postRec);
         //}
 
@@ -536,9 +566,6 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
         });
     }
 
-        /*postRec.putExtra(EXTRA_URL, clickedItem.getImgUrl());
-        postRec.putExtra(EXTRA_NAME, clickedItem.getName());
-        postRec.putExtra(EXTRA_FAN, clickedItem.getNbFans());
-        startActivity(postRec);*/
+
 
 }

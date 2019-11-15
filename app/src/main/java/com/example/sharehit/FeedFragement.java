@@ -193,18 +193,7 @@ public class FeedFragement extends Fragment {
                             recosRef.child(idReco).child("Coms").addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    if (dataSnapshot.getChildrenCount()-1>0){
-                                        recosViewHolder.autreComment.setHeight(recosViewHolder.nbrlike.getHeight());
-                                        if (dataSnapshot.getChildrenCount()-1==1){
-                                            recosViewHolder.setAutreComment("Voir l'autre commentaire.");
-                                        }
-                                        else{
-                                            recosViewHolder.setAutreComment("Voir les "+(dataSnapshot.getChildrenCount()-1)+" autres commentaires.");
-                                        }
-                                    }
-                                    else {
-                                        recosViewHolder.autreComment.setHeight(0);
-                                    }
+                                    recosViewHolder.setAutreComment(""+dataSnapshot.getChildrenCount());
                                 }
 
                                 @Override
