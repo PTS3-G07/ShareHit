@@ -224,7 +224,7 @@ public class FeedFragement extends Fragment {
                 recosRef.child(idReco).child("likeUsersUid").addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if(dataSnapshot.getChildrenCount()==0){
+                        /*if(dataSnapshot.getChildrenCount()==0){
                             recosViewHolder.setNbrLike("Personne n'aime ça");
                         }
                         else if(dataSnapshot.getChildrenCount()==1){
@@ -232,7 +232,8 @@ public class FeedFragement extends Fragment {
                         }
                         else{
                             recosViewHolder.setNbrLike("Aimé par " + Long.toString(dataSnapshot.getChildrenCount()) + " personnes");
-                        }
+                        }*/
+                        recosViewHolder.setNbrLike(Long.toString(dataSnapshot.getChildrenCount()));
                     }
                     @Override public void onCancelled(@NonNull DatabaseError databaseError) { }
                 });

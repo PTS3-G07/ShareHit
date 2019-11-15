@@ -179,6 +179,54 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
         mRequestQueue.add(request);
         return null;
     }
+
+    private Map<String, String> parseJSONartistPreview(String artistName) {
+
+        String url = "http://api.deezer.com/2.0/search/artist/?q="+artistName+"&index=0&nb_items=20&output=json";
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    JSONArray jsonArray = response.getJSONArray("data");
+                    for(int i = 0 ; jsonArray.length() > i; i++){
+                        JSONObject data = jsonArray.getJSONObject(i);
+                        String name = data.getString("name");
+                        String nbFan = data.getString("nb_fan");
+                        String imgUrl = data.getString("picture_medium");
+                        String link = data.getString("link");
+                        mExampleList.add(new Artist(name, nbFan, imgUrl, link));
+                    }
+
+                    mExampleAdapter = new TypeAdapter(ApiManager.this, mExampleList);
+                    mRecyclerView.setAdapter(mExampleAdapter);
+                    mExampleAdapter.setOnItemClickListener(ApiManager.this);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+            }
+        }
+
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("x-rapidapi-host", "deezerdevs-deezer.p.rapidapi.com");
+                params.put("x-rapidapi-key", "e057a6cddamshcf40c6b8e5a6046p1233eajsnf273df986993");
+
+                return params;
+            }
+        };
+
+        mRequestQueue.add(request);
+        return null;
+    }
+
     private Map<String, String> parseJSONalbum(String albumName) {
 
         String url = "http://api.deezer.com/2.0/search/album/?q="+albumName+"&index=0&nb_items=20&output=json";

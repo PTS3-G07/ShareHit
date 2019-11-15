@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="20dp"
+    android:layout_marginBottom="10dp"
     app:cardCornerRadius="10dp">
 
     <LinearLayout
@@ -52,11 +52,6 @@
 
         </LinearLayout>
 
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="10dp"
-            android:layout_weight="1" />
-
         <TextView
             android:id="@+id/time"
             android:layout_width="match_parent"
@@ -65,7 +60,8 @@
             android:gravity="right"
             android:text="TextView"
             android:textSize="10sp"
-            android:paddingRight="16dp"/>
+            android:paddingRight="16dp"
+            android:background="@color/space_transparent"/>
 
         <ImageButton
             android:id="@+id/img_ar"
@@ -83,59 +79,88 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="41dp"
+            android:layout_height="25dp"
             android:orientation="horizontal"
             android:paddingRight="16dp"
-            android:paddingLeft="16dp">
+            android:paddingLeft="16dp"
+            android:weightSum="3">
 
-            <ImageButton
-                android:id="@+id/likeButton"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:background="@android:color/transparent"
-                android:src="@drawable/heart"
-                android:text="LIKE" />
-
-            <ImageButton
-                android:id="@+id/commentButton"
-                android:layout_width="35dp"
-                android:layout_height="50dp"
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@android:color/transparent"
-                android:src="@drawable/comment"
-                android:text="COMM" />
+                android:weightSum="2"
+                android:layout_gravity="center">
 
-            <Space
+                <TextView
+                    android:id="@+id/nbrLike"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="20dp"
+                    android:textSize="15dp"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:text="0"
+                    android:gravity="center" />
+
+                <ImageButton
+                    android:id="@+id/likeButton"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/heart"
+                    android:scaleType="fitStart"
+                    android:text="LIKE" />
+            </LinearLayout>
+
+            <!--<Space
                 android:layout_width="200dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1" />
+                android:layout_weight="1" />-->
 
             <ImageButton
                 android:id="@+id/bookButton"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
                 android:text="Bookmark"
-                android:src="@drawable/bookmark" />
+                android:src="@drawable/bookmark"
+                android:scaleType="fitCenter"
+                android:paddingLeft="10dp"/>
+
+            <ImageButton
+                android:id="@+id/commentButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:src="@drawable/comment"
+                android:scaleType="fitEnd"
+                android:text="COMM"
+                />
         </LinearLayout>
 
-        <TextView
+
+
+        <!--<TextView
             android:id="@+id/nbrLike"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:paddingLeft="16dp"
             android:text="Like:"
-            android:textStyle="bold"
             android:textColor="@android:color/black"
             android:textSize="14sp"
-            android:paddingRight="16dp"
-            android:paddingLeft="16dp"/>
+            android:textStyle="bold" />-->
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_margin="16dp">
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="5dp">
         <TextView
             android:id="@+id/pseudoComment"
             android:layout_width="wrap_content"
@@ -149,13 +174,15 @@
             android:layout_height="wrap_content"
             android:text="" />
         </LinearLayout>
+
         <TextView
             android:id="@+id/autreComment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text=""
-            android:layout_marginBottom="16dp"
-            android:layout_marginLeft="16dp"/>
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:text="" />
 
     </LinearLayout>
 
