@@ -145,9 +145,12 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
                         JSONObject data = jsonArray.getJSONObject(i);
                         String name = data.getString("name");
                         String nbFan = data.getString("nb_fan");
-                        String imgUrl = data.getString("picture_medium");
+                        String imgUrl = data.getString("picture_big");
                         String link = data.getString("link");
-                        mExampleList.add(new Artist(name, nbFan, imgUrl, link));
+                        String tracklist = data.getString("tracklist");
+                        final Artist artiste = new Artist(name, nbFan, imgUrl, link);
+                        parseJSONartistPreview(tracklist, artiste);
+                        mExampleList.add(artiste);
                     }
 
                     mExampleAdapter = new TypeAdapter(ApiManager.this, mExampleList);
@@ -180,27 +183,23 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
         return null;
     }
 
-    private Map<String, String> parseJSONartistPreview(String artistName) {
+    private Map<String, String> parseJSONartistPreview(String tracklist, final Artist artiste) {
 
-        String url = "http://api.deezer.com/2.0/search/artist/?q="+artistName+"&index=0&nb_items=20&output=json";
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+        if(tracklist.endsWith("50"))
+        {
+            tracklist = tracklist.substring(0,tracklist.length() - 2);
+        tracklist+="1";
+    }
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, tracklist, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
                     JSONArray jsonArray = response.getJSONArray("data");
-                    for(int i = 0 ; jsonArray.length() > i; i++){
+                    for(int i = 0 ; jsonArray.length() > i; i++) {
                         JSONObject data = jsonArray.getJSONObject(i);
-                        String name = data.getString("name");
-                        String nbFan = data.getString("nb_fan");
-                        String imgUrl = data.getString("picture_medium");
-                        String link = data.getString("link");
-                        mExampleList.add(new Artist(name, nbFan, imgUrl, link));
+                        String urlPreview = data.getString("preview");
+                        artiste.setSongUrl(urlPreview);
                     }
-
-                    mExampleAdapter = new TypeAdapter(ApiManager.this, mExampleList);
-                    mRecyclerView.setAdapter(mExampleAdapter);
-                    mExampleAdapter.setOnItemClickListener(ApiManager.this);
-
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -242,13 +241,59 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
                         String artistName = artiste.getString("name");
                         String imgUrl = data.getString("cover_big");
                         String link = data.getString("link");
-                        mExampleList.add(new Album(name, artistName, imgUrl, link));
+                        String tracklist = data.getString("tracklist");
+                        Album album = new Album(artistName, name, imgUrl, link);
+                        parseJSONalbumPreview(tracklist, album);
+                        mExampleList.add(album);
                     }
 
                     mExampleAdapter = new TypeAdapter(ApiManager.this, mExampleList);
                     mRecyclerView.setAdapter(mExampleAdapter);
                     mExampleAdapter.setOnItemClickListener(ApiManager.this);
 
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+            }
+        }
+
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("x-rapidapi-host", "deezerdevs-deezer.p.rapidapi.com");
+                params.put("x-rapidapi-key", "e057a6cddamshcf40c6b8e5a6046p1233eajsnf273df986993");
+
+                return params;
+            }
+        };
+
+        mRequestQueue.add(request);
+        return null;
+    }
+
+    private Map<String, String> parseJSONalbumPreview(String tracklist, final Album album) {
+
+        if(tracklist.endsWith("50"))
+        {
+            tracklist = tracklist.substring(0,tracklist.length() - 2);
+            tracklist+="1";
+        }
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, tracklist, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    JSONArray jsonArray = response.getJSONArray("data");
+                    for(int i = 0 ; jsonArray.length() > i; i++) {
+                        JSONObject data = jsonArray.getJSONObject(i);
+                        String urlPreview = data.getString("preview");
+                        album.setSongUrl(urlPreview);
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -291,7 +336,6 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
                         String imgUrl = artist.getString("picture_medium");
                         String previewUrl = data.getString("preview");
                         String link = data.getString("link");
-                        Log.e("abcde", title+previewUrl);
                         Morceau m = new Morceau(title, albumTitle, imgUrl,previewUrl,link);
                         mExampleList.add(m);
                     }
@@ -334,7 +378,6 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    Log.e("testest", "response");
                     JSONArray jsonArray = response.getJSONArray("Search");
                     for(int i = 0 ; jsonArray.length() > i; i++){
                         JSONObject data = jsonArray.getJSONObject(i);
@@ -405,8 +448,11 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
             postRec.putExtra(EXTRA_ID, FirebaseAuth.getInstance().getCurrentUser().getUid());
             postRec.putExtra(EXTRA_LINK, clickedItem.getLink());
             if(clickedItem instanceof Morceau) {
-                clickedItem = (Morceau) clickedItem;
                 postRec.putExtra(EXTRA_PREVIEW, ((Morceau) clickedItem).getSongUrl());
+            }if(clickedItem instanceof Artist) {
+                postRec.putExtra(EXTRA_PREVIEW, ((Artist) clickedItem).getSongUrl());
+            }if(clickedItem instanceof Album) {
+                postRec.putExtra(EXTRA_PREVIEW, ((Album) clickedItem).getSongUrl());
             }
             startActivity(postRec);
         //}

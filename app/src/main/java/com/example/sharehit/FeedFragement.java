@@ -331,6 +331,7 @@ public class FeedFragement extends Fragment {
                             lecteur.setLayoutParams(params);
                         }
                         try{
+                            Log.e("testest", ""+model.getUrlPreview() );
                             mp.setDataSource(model.getUrlPreview());
                         }
                         catch (IOException ex){
