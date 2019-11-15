@@ -194,6 +194,7 @@ public class FeedFragement extends Fragment {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     recosViewHolder.setAutreComment(""+dataSnapshot.getChildrenCount());
+                                    recosViewHolder.setNbrCom(dataSnapshot.child(index).child("com").getValue().toString());
                                 }
 
                                 @Override
@@ -201,7 +202,7 @@ public class FeedFragement extends Fragment {
 
                                 }
                             });
-                            recosViewHolder.setNbrCom(dataSnapshot.child(index).child("com").getValue().toString());
+                            //recosViewHolder.setNbrCom(dataSnapshot.child(index).child("com").getValue().toString());
                         }
 
 

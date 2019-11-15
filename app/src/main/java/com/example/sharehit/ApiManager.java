@@ -422,62 +422,21 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
 
     @Override
     public void onItemClick(int position) {
-        //Intent postRec = new Intent(this, PostRec.class);
-        Type clickedItem = mExampleList.get(position);
-        /*postRec.putExtra(EXTRA_URL, clickedItem.getImgUrl());
-        postRec.putExtra(EXTRA_NAME, clickedItem.getName());
-        postRec.putExtra(EXTRA_TYPE, typeRecom);
-        postRec.putExtra(EXTRA_ID, FirebaseAuth.getInstance().getCurrentUser().getUid());
-        postRec.putExtra(EXTRA_LINK, clickedItem.getLink());
-        if(clickedItem instanceof Morceau) {
-            postRec.putExtra(EXTRA_PREVIEW, ((Morceau) clickedItem).getSongUrl());
-        }if(clickedItem instanceof Artist) {
-            postRec.putExtra(EXTRA_PREVIEW, ((Artist) clickedItem).getSongUrl());
-        }if(clickedItem instanceof Album) {
-            postRec.putExtra(EXTRA_PREVIEW, ((Album) clickedItem).getSongUrl());
-        }
-        startActivity(postRec);
-        boolean isPLAYING = false;
-        /*if(mExampleList.get(position) instanceof Morceau){
-            Morceau clickedItem = (Morceau) mExampleList.get(position);
-            MediaPlayer mp = new MediaPlayer();
-            try {
-                mp.setDataSource(clickedItem.getSongUrl());
-                mp.prepareAsync();
-                mp.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                    @Override
-                    public void onPrepared(MediaPlayer mp) {
-                        mp.start();
-                    }
-                });
-            } catch (IOException e) {
-                Log.e("pa2chance", "prepare() failed");
-            }
-
-        }
-        else{
-            Type clickedItem = mExampleList.get(position);
-            postRec.putExtra(EXTRA_URL, clickedItem.getImgUrl());
-            postRec.putExtra(EXTRA_NAME, clickedItem.getName());
-            postRec.putExtra(EXTRA_TYPE, typeRecom);
-            postRec.putExtra(EXTRA_ID, FirebaseAuth.getInstance().getCurrentUser().getUid());
-            postRec.putExtra(EXTRA_LINK, clickedItem.getLink());*/
-
-
+        final Type clickedItem = mExampleList.get(position);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         LayoutInflater inflater = getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_postrec,null);
 
-        TextView name = (TextView) dialogView.findViewById(R.id.name_post);
+        TextView name = dialogView.findViewById(R.id.name_post);
         name.setText(clickedItem.getName());
 
-        ImageView img = (ImageView) dialogView.findViewById(R.id.picture_post);
+        ImageView img = dialogView.findViewById(R.id.picture_post);
         Picasso.with(getApplicationContext()).load(clickedItem.getImgUrl()).fit().centerInside().into(img);
 
-        Button post = (Button) dialogView.findViewById(R.id.post_post_button);
-        Button cancel = (Button) dialogView.findViewById(R.id.cancel_post_button);
+        Button post = dialogView.findViewById(R.id.post_post_button);
+        Button cancel = dialogView.findViewById(R.id.cancel_post_button);
 
 
 
@@ -485,56 +444,27 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
         post.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Recommendation recommendation;
+                Recommendation recommendation = new Recommendation(
+                        typeRecom,
+                        FirebaseAuth.getInstance().getCurrentUser().getUid(),
+                        finalClickedItem.getName(),
+                        finalClickedItem.getImgUrl(),
+                        null,
+                        new Timestamp(System.currentTimeMillis()).getTime(),
+                        finalClickedItem.getLink()
+                );
                 if(finalClickedItem instanceof Morceau){
-                    recommendation = new Recommendation(
-                            typeRecom,
-                            FirebaseAuth.getInstance().getCurrentUser().getUid(),
-                            finalClickedItem.getName(),
-                            finalClickedItem.getImgUrl(),
-                            ((Morceau) finalClickedItem).getSongUrl(),
-                            new Timestamp(System.currentTimeMillis()).getTime(),
-                            finalClickedItem.getLink()
-                    );
+                    recommendation.setUrlPreview(((Morceau)clickedItem).getSongUrl());
 
                 }
                 else if(finalClickedItem instanceof Artist){
-                    recommendation = new Recommendation(
-                            typeRecom,
-                            FirebaseAuth.getInstance().getCurrentUser().getUid(),
-                            finalClickedItem.getName(),
-                            finalClickedItem.getImgUrl(),
-                            ((Artist) finalClickedItem).getSongUrl(),
-                            new Timestamp(System.currentTimeMillis()).getTime(),
-                            finalClickedItem.getLink()
-                    );
-
+                    recommendation.setUrlPreview(((Artist)clickedItem).getSongUrl());
                 }
                 else if(finalClickedItem instanceof Album){
-                    recommendation = new Recommendation(
-                            typeRecom,
-                            FirebaseAuth.getInstance().getCurrentUser().getUid(),
-                            finalClickedItem.getName(),
-                            finalClickedItem.getImgUrl(),
-                            ((Album) finalClickedItem).getSongUrl(),
-                            new Timestamp(System.currentTimeMillis()).getTime(),
-                            finalClickedItem.getLink()
-                    );
+                    recommendation.setUrlPreview(((Album)clickedItem).getSongUrl());
 
                 }
-                else {
-                    recommendation = new Recommendation(
-                            typeRecom,
-                            FirebaseAuth.getInstance().getCurrentUser().getUid(),
-                            finalClickedItem.getName(),
-                            finalClickedItem.getImgUrl(),
-                            "",
-                            new Timestamp(System.currentTimeMillis()).getTime(),
-                            finalClickedItem.getLink()
-                    );
 
-
-                }
                 HashMap usersMap = new HashMap();
                 DatabaseReference recomRef = FirebaseDatabase.getInstance().getReference().child("recos");
                 String key = recomRef.push().getKey();
@@ -543,16 +473,6 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
                 startActivity(new Intent(ApiManager.this, FeedPage.class));
             }
         });
-
-            /*if(clickedItem instanceof Morceau) {
-                postRec.putExtra(EXTRA_PREVIEW, ((Morceau) clickedItem).getSongUrl());
-            }if(clickedItem instanceof Artist) {
-                postRec.putExtra(EXTRA_PREVIEW, ((Artist) clickedItem).getSongUrl());
-            }if(clickedItem instanceof Album) {
-                postRec.putExtra(EXTRA_PREVIEW, ((Album) clickedItem).getSongUrl());
-            }*/
-            //startActivity(postRec);
-        //}
 
         builder.setView(dialogView);
         final AlertDialog dialog = builder.create();

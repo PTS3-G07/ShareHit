@@ -44,6 +44,8 @@ public class CommentPage extends AppCompatActivity {
 
     private RecyclerView commentList;
 
+    private int nbComm;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,6 +86,7 @@ public class CommentPage extends AppCompatActivity {
                     usersMap.put(key, comment);
                     comRef.updateChildren(usersMap);
                     sendText.setText("");
+                    nbComm++;
                 } else {
                     Toast.makeText(getApplicationContext(), "Le message est vide", Toast.LENGTH_LONG).show();
                 }
@@ -119,6 +122,7 @@ public class CommentPage extends AppCompatActivity {
                         if(dataSnapshot.child("pdpUrl").exists()){
                             Picasso.with(getApplicationContext()).load(dataSnapshot.child("pdpUrl").getValue().toString()).fit().centerInside().into(commentViewHolder.getImgProfilComment());
                         }
+                        commentList.scrollToPosition(nbComm);
 
                     }
 
