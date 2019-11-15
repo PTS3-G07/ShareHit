@@ -4,11 +4,15 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -25,6 +29,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
+import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
@@ -132,6 +137,18 @@ public class PostRec extends AppCompatActivity {
 
 
 
+        final Dialog d = new Dialog(this, R.style.DialogTheme);
+        d.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        d.setContentView(R.layout.post_reco_validation);
+        ImageButton i = d.findViewById(R.id.artiste);
+        Window window = d.getWindow();
+        WindowManager.LayoutParams wlp = window.getAttributes();
+        wlp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        wlp.gravity = Gravity.BOTTOM;
+        window.setAttributes(wlp);
+
+        final Intent intent2 = new Intent(PostRec.this, FeedPage.class);
+        final Bundle b = new Bundle();
 
         query.addValueEventListener(new ValueEventListener() {
             @Override
@@ -159,8 +176,12 @@ public class PostRec extends AppCompatActivity {
 
                         mp.stop();
 
-                        startActivity(new Intent(PostRec.this, FeedPage.class));
+                        intent2.putExtra("myObject", new Gson().toJson(recommendation));
+                        b.putInt("key", 1);
+                        intent2.putExtras(b);
+                        startActivity(intent2);
                         finish();
+                        d.show();
 
 
                     }

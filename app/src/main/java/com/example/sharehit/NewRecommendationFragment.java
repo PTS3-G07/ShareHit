@@ -23,7 +23,6 @@ public class NewRecommendationFragment extends Fragment {
         ViewGroup root = (ViewGroup) inflater.inflate(R.layout.new_recommendation, null);
         artiste = root.findViewById(R.id.artiste);
         artiste.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
                 Toast.makeText(getActivity(), "Authentication failed.", Toast.LENGTH_LONG).show();

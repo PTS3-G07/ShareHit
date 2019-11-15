@@ -77,6 +77,7 @@ public class FeedFragement extends Fragment {
     private LinearLayout lecteur;
     private TextView nameLect;
     private ImageView musicImg;
+    private Bundle b;
 
 
 
@@ -103,6 +104,8 @@ public class FeedFragement extends Fragment {
         ViewGroup.LayoutParams params = lecteur.getLayoutParams();
         params.height=0;
         lecteur.setLayoutParams(params);
+
+
 
 
         recyclerView = root.findViewById(R.id.postRecyclerView);
