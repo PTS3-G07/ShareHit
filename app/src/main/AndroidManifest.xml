@@ -37,7 +37,6 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".SplashScreen">
         <activity android:name=".SplashScreen"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen">
             <intent-filter>
