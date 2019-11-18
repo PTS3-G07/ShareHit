@@ -156,7 +156,7 @@ public class FeedFragement extends Fragment {
 
                 Picasso.with(getContext()).load(model.getImg()).fit().centerInside().into(recosViewHolder.getImg());
 
-
+                Log.e("testesto", model.getName()+" - "+model.getUrlPreview() );
 
                 recosViewHolder.setDesc(model.getName());
                 final String idReco = getRef(i).getKey();
@@ -183,7 +183,7 @@ public class FeedFragement extends Fragment {
                             usersRef.child(idUsr).child("pseudo").addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    recosViewHolder.setPseudoCom(dataSnapshot.getValue().toString()+":");
+                                    recosViewHolder.setPseudoCom(dataSnapshot.getValue().toString()+" :");
                                 }
 
                                 @Override
@@ -450,6 +450,11 @@ public class FeedFragement extends Fragment {
                     }
                 });
 
+                if(model.getUrlPreview()!=null ) {
+                    recosViewHolder.playButton.setVisibility(View.VISIBLE);
+                    recosViewHolder.circle.setVisibility(View.VISIBLE);
+                }
+
                 recosViewHolder.playButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -578,6 +583,7 @@ public class FeedFragement extends Fragment {
         ImageView pause;
         ImageView playButton;
         Indicator player;
+        ImageView circle;
 
         public RecosViewHolder(View itemView) {
             super(itemView);
@@ -589,7 +595,11 @@ public class FeedFragement extends Fragment {
             descR = (TextView) mView.findViewById(R.id.desc);
             playButton = mView.findViewById(R.id.playButton);
             player = mView.findViewById(R.id.player);
+
+            circle = mView.findViewById(R.id.circle);
             player.setVisibility(View.INVISIBLE);
+            playButton.setVisibility(View.INVISIBLE);
+            circle.setVisibility(View.INVISIBLE);
             //pause = mView.findViewById(R.id.pauseButton);
             //progressBar = mView.findViewById(R.id.timeProgressBar);
             //pause.setVisibility(View.INVISIBLE);
