@@ -9,6 +9,8 @@
     <color name="barColor">#0C0608</color>
     <color name="gris">#EFEFEFEF</color>
     <color name="likeblue">#1B8FFB</color>
+    <color name="grisStyle">#939598</color>
+    <color name="trans">#80000000</color>
     <array name="colorPagesViewPager">
         <item>#EDD9CF</item>
         <item>#BED4D6</item>

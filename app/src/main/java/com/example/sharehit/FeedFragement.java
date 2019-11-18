@@ -47,6 +47,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
+import com.taishi.library.Indicator;
 
 import java.io.IOException;
 import java.sql.PreparedStatement;
@@ -194,6 +195,7 @@ public class FeedFragement extends Fragment {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     recosViewHolder.setAutreComment(""+dataSnapshot.getChildrenCount());
+                                    recosViewHolder.setNbrCom(dataSnapshot.child(index).child("com").getValue().toString());
                                 }
 
                                 @Override
@@ -201,7 +203,7 @@ public class FeedFragement extends Fragment {
 
                                 }
                             });
-                            recosViewHolder.setNbrCom(dataSnapshot.child(index).child("com").getValue().toString());
+                            //recosViewHolder.setNbrCom(dataSnapshot.child(index).child("com").getValue().toString());
                         }
 
 
@@ -312,88 +314,6 @@ public class FeedFragement extends Fragment {
                         startActivity(viewIntent);
 
                         return true;
-                    }
-
-                    public void onLongPress(MotionEvent e) {
-                        mp.reset();
-                        if (lecteur.getVisibility()==View.INVISIBLE) {
-                            lecteur.setVisibility(View.VISIBLE);
-                            ViewGroup.LayoutParams params = lecteur.getLayoutParams();
-                            params.height = ActionBar.LayoutParams.WRAP_CONTENT;
-                            lecteur.setLayoutParams(params);
-                        }
-                        try{
-                            Log.e("testest", ""+model.getUrlPreview() );
-                            mp.setDataSource(model.getUrlPreview());
-                        }
-                        catch (IOException ex){
-                            Log.e("testest", "Can't found data:"+model.getUrlPreview());
-                        }
-
-                        nameLect.setText(model.getName());
-                        Picasso.with(getContext()).load(model.getImg()).fit().centerInside().into(musicImg);
-                        mp.prepareAsync();
-                        mp.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                            @Override
-                            public void onPrepared(MediaPlayer mp) {
-                                int duration = mp.getDuration();
-                                mSeekBarPlayer.setMax(duration);
-                                mp.start();
-                                mSeekBarPlayer.postDelayed(onEverySecond, 500);
-                            }
-                        });
-
-                        mSeekBarPlayer.setOnTouchListener(new View.OnTouchListener() {
-                            @Override
-                            public boolean onTouch(View view, MotionEvent motionEvent) {
-                                return false;
-                            }
-                        });
-
-                        stop.setOnClickListener(new View.OnClickListener() {
-
-                            @Override
-                            public void onClick(View v) {
-
-                                mp.stop();
-                                mp.reset();
-                                lecteur.setVisibility(View.INVISIBLE);
-
-                                ViewGroup.LayoutParams params = lecteur.getLayoutParams();
-                                params.height=0;
-                                lecteur.setLayoutParams(params);
-
-                            }
-                        });
-
-
-                        btnPause.setOnClickListener(new View.OnClickListener() {
-
-
-                            @Override
-                            public void onClick(View v) {
-                                if (mp.isPlaying()) {
-                                    mp.pause();
-                                    btnPause.setImageResource(R.drawable.ic_play);
-                                }
-                                else {
-                                    btnPause.setImageResource(R.drawable.ic_pause);
-                                    try {
-                                        mp.prepare();
-                                    } catch (IllegalStateException e) {
-                                        // TODO Auto-generated catch block
-                                        e.printStackTrace();
-                                    } catch (IOException e) {
-                                        // TODO Auto-generated catch block
-                                        e.printStackTrace();
-                                    }
-                                    mp.start();
-                                    mSeekBarPlayer.postDelayed(onEverySecond, 1000);
-                                }
-
-                            }
-                        });
-
                     }
                 };
 
@@ -530,6 +450,101 @@ public class FeedFragement extends Fragment {
                     }
                 });
 
+                recosViewHolder.playButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        recosViewHolder.playButton.setVisibility(View.INVISIBLE);
+                        recosViewHolder.player.setVisibility(View.VISIBLE);
+                        mp.reset();
+                        if (lecteur.getVisibility()==View.INVISIBLE) {
+                            lecteur.setVisibility(View.VISIBLE);
+                            ViewGroup.LayoutParams params = lecteur.getLayoutParams();
+                            params.height = ActionBar.LayoutParams.WRAP_CONTENT;
+                            lecteur.setLayoutParams(params);
+                        }
+                        try{
+                            Log.e("testest", ""+model.getUrlPreview() );
+                            mp.setDataSource(model.getUrlPreview());
+                        }
+                        catch (IOException ex){
+                            Log.e("testest", "Can't found data:"+model.getUrlPreview());
+                        }
+
+                        nameLect.setText(model.getName());
+                        Picasso.with(getContext()).load(model.getImg()).fit().centerInside().into(musicImg);
+                        mp.prepareAsync();
+                        mp.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                            @Override
+                            public void onPrepared(MediaPlayer mp) {
+                                int duration = mp.getDuration();
+                                mSeekBarPlayer.setMax(duration);
+                                mp.start();
+                                mSeekBarPlayer.postDelayed(onEverySecond, 500);
+                            }
+                        });
+
+                        mSeekBarPlayer.setOnTouchListener(new View.OnTouchListener() {
+                            @Override
+                            public boolean onTouch(View view, MotionEvent motionEvent) {
+                                return false;
+                            }
+                        });
+
+                        stop.setOnClickListener(new View.OnClickListener() {
+
+                            @Override
+                            public void onClick(View v) {
+
+                                mp.stop();
+                                mp.reset();
+                                lecteur.setVisibility(View.INVISIBLE);
+
+                                recosViewHolder.playButton.setVisibility(View.VISIBLE);
+                                recosViewHolder.player.setVisibility(View.INVISIBLE);
+
+                                ViewGroup.LayoutParams params = lecteur.getLayoutParams();
+                                params.height=0;
+                                lecteur.setLayoutParams(params);
+
+                            }
+                        });
+
+
+                        btnPause.setOnClickListener(new View.OnClickListener() {
+
+
+                            @Override
+                            public void onClick(View v) {
+                                if (mp.isPlaying()) {
+                                    mp.pause();
+                                    btnPause.setImageResource(R.drawable.ic_play);
+                                    recosViewHolder.playButton.setVisibility(View.VISIBLE);
+                                    recosViewHolder.player.setVisibility(View.INVISIBLE);
+
+                                }
+                                else {
+                                    btnPause.setImageResource(R.drawable.ic_pause);
+                                    recosViewHolder.playButton.setVisibility(View.INVISIBLE);
+                                    recosViewHolder.player.setVisibility(View.VISIBLE);
+                                    try {
+                                        mp.prepare();
+                                    } catch (IllegalStateException e) {
+                                        // TODO Auto-generated catch block
+                                        e.printStackTrace();
+                                    } catch (IOException e) {
+                                        // TODO Auto-generated catch block
+                                        e.printStackTrace();
+                                    }
+                                    mp.start();
+                                    mSeekBarPlayer.postDelayed(onEverySecond, 1000);
+                                }
+
+                            }
+                        });
+                    }
+                });
+
+
             }
         };
 
@@ -561,6 +576,8 @@ public class FeedFragement extends Fragment {
         TextView autreComment;
         TextView descR;
         ImageView pause;
+        ImageView playButton;
+        Indicator player;
 
         public RecosViewHolder(View itemView) {
             super(itemView);
@@ -570,6 +587,9 @@ public class FeedFragement extends Fragment {
             pseudoCom = mView.findViewById(R.id.pseudoComment);
             autreComment = mView.findViewById(R.id.autreComment);
             descR = (TextView) mView.findViewById(R.id.desc);
+            playButton = mView.findViewById(R.id.playButton);
+            player = mView.findViewById(R.id.player);
+            player.setVisibility(View.INVISIBLE);
             //pause = mView.findViewById(R.id.pauseButton);
             //progressBar = mView.findViewById(R.id.timeProgressBar);
             //pause.setVisibility(View.INVISIBLE);

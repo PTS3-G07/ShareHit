@@ -6,12 +6,13 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 
-public class SplashScreen extends Activity {
+public class SplashScreen extends AppCompatActivity  {
 
     private ImageView logo;
 
@@ -22,14 +23,17 @@ public class SplashScreen extends Activity {
 
         logo = (ImageView) findViewById(R.id.logoSplashScreen);
         final Animation anim = (AnimationUtils.loadAnimation(this, R.anim.zoomin));
+        final Animation fadeOut = new AlphaAnimation(1, 0);
+        logo.startAnimation(anim);
 
         int secondsDelayed = 1;
         new Handler().postDelayed(new Runnable() {
             public void run() {
                 startActivity(new Intent(SplashScreen.this, LoginPage.class));
+                overridePendingTransition(R.anim.fadeout,0);
                 finish();
             }
-        }, secondsDelayed * 1000);
+        }, secondsDelayed*1500);
 
 
     }

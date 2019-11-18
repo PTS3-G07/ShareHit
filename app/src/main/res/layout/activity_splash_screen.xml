@@ -7,10 +7,17 @@
     tools:context=".SplashScreen"
     android:background="@color/colorPrimary">
 
-    <ImageView
+    <!--<ImageView
         android:id="@+id/logoSplashScreen"
         android:layout_width="75dp"
         android:layout_height="75dp"
-        android:src="@drawable/slogo"
+        android:srcCompat="@drawable/slogo"
+        android:scaleType="fitXY"
+        android:layout_gravity="center"/>-->
+    <ImageView
+        android:id="@+id/logoSplashScreen"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        app:srcCompat="@drawable/slogo"
         android:layout_gravity="center"/>
 </FrameLayout>

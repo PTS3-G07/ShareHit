@@ -63,6 +63,9 @@
             android:paddingRight="16dp"
             android:background="@color/space_transparent"/>
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
         <ImageButton
             android:id="@+id/img_ar"
             android:layout_width="match_parent"
@@ -70,6 +73,46 @@
             android:scaleType="center"
             android:background="@color/space_transparent"
             android:src="@mipmap/ic_launcher" />
+
+            <ImageView
+                android:id="@+id/imageView5"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                app:srcCompat="@drawable/cercle"
+                android:layout_margin="15dp"/>
+
+            <com.taishi.library.Indicator
+                android:id="@+id/player"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignStart="@+id/imageView5"
+                android:layout_alignLeft="@+id/imageView5"
+                android:layout_alignTop="@+id/imageView5"
+                android:layout_alignEnd="@+id/imageView5"
+                android:layout_alignRight="@+id/imageView5"
+                android:layout_alignBottom="@+id/imageView5"
+                android:layout_margin="15dp"
+                app:bar_color="#939598"
+                app:bar_num="3"
+                app:duration="3000"
+                app:step_num="10" />
+
+            <ImageView
+                android:id="@+id/playButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignStart="@+id/imageView5"
+                android:layout_alignLeft="@+id/imageView5"
+                android:layout_alignTop="@+id/imageView5"
+                android:layout_alignEnd="@+id/imageView5"
+                android:layout_alignRight="@+id/imageView5"
+                android:layout_alignBottom="@+id/imageView5"
+                android:layout_marginLeft="12dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginRight="9dp"
+                android:layout_marginBottom="15dp"
+                app:srcCompat="@drawable/ic_play" />
+        </RelativeLayout>
 
 
         <Space
