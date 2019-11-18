@@ -2,22 +2,33 @@ package com.example.sharehit;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -25,10 +36,18 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.luseen.spacenavigation.SpaceItem;
 import com.luseen.spacenavigation.SpaceNavigationView;
 import com.luseen.spacenavigation.SpaceOnClickListener;
 import com.squareup.picasso.Picasso;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 
 import static com.example.sharehit.ApiManager.EXTRA_ID;
 import static com.example.sharehit.ApiManager.EXTRA_LINK;
@@ -52,8 +71,20 @@ public class FeedPage extends AppCompatActivity {
     ImageButton jeuVideo;
     ImageButton serie;
     ImageButton film;
+
+    ImageButton notification;
+
     public int idSearch;
     private Bundle b;
+
+    final private String FCM_API = "https://fcm.googleapis.com/fcm/send";
+    final private String serverKey = "key" + "AAAA7jlTwSc:APA91bEri7kGWiI-rXn3iE1LOttF0c8FJWcRr6MJwYUAhhTIjf4flxtr_lMEso12JyidGtZqIu-Gb3R74xU_m2ioLhyRNm-OnqyuW8uOY9DY9UIK4IZdSJVDURFAQd4sfdcVxFWfajp7";
+    final private String contentType = "application/json";
+    final String TAG = "NOTIFICATION TAG";
+
+    String NOTIFICATION_TITLE;
+    String NOTIFICATION_MESSAGE;
+    String TOPIC;
 
     @Override
     protected void onStart() {
@@ -95,6 +126,50 @@ public class FeedPage extends AppCompatActivity {
         navigationView.addSpaceItem(new SpaceItem("", drawable.bookmark));
         navigationView.addSpaceItem(new SpaceItem("", drawable.profil));
         navigationView.showIconOnly();
+
+        notification = (ImageButton) findViewById(id.notification_button);
+
+
+        notification.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final EditText editText = new EditText(FeedPage.this);
+                editText.setHint("Demande...");
+                AlertDialog.Builder builder = new AlertDialog.Builder(FeedPage.this);
+                builder.setTitle("Demander une recommandation")
+                        .setView(editText)
+                        .setPositiveButton("Envoyer", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                if(editText.getText().toString().trim().length() > 2){
+                                    TOPIC = "/topics/userABC"; //topic must match with what the receiver subscribed to
+                                    NOTIFICATION_TITLE = "ShareHit notification";
+                                    NOTIFICATION_MESSAGE = editText.getText().toString();
+
+                                    JSONObject notification = new JSONObject();
+                                    JSONObject notifcationBody = new JSONObject();
+                                    try {
+                                        notifcationBody.put("title", NOTIFICATION_TITLE);
+                                        notifcationBody.put("message", NOTIFICATION_MESSAGE);
+
+                                        notification.put("to", TOPIC);
+                                        notification.put("data", notifcationBody);
+                                    } catch (JSONException e) {
+                                        Log.e(TAG, "onCreate: " + e.getMessage() );
+                                    }
+                                    sendNotification(notification);
+
+                                } else {
+                                    Toast.makeText(getApplicationContext(), "Veuillez saisir une demande de plus de 3 caractères", Toast.LENGTH_LONG).show();
+                                }
+
+
+                            }
+                        });
+                builder.create().show();
+            }
+        });
+
         //checkUserStatus();
         /*
         logout.setOnClickListener(new View.OnClickListener() {
@@ -256,6 +331,37 @@ public class FeedPage extends AppCompatActivity {
         });
 
 
+    }
+
+    private void sendNotification(JSONObject notification) {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(FCM_API, notification,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.i(TAG, "onResponse: " + response.toString());
+                        /*
+                        edtTitle.setText("");
+                        edtMessage.setText("");
+
+                         */
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(FeedPage.this, "Request error", Toast.LENGTH_LONG).show();
+                        Log.i(TAG, "onErrorResponse: Didn't work");
+                    }
+                }){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("Authorization", serverKey);
+                params.put("Content-Type", contentType);
+                return params;
+            }
+        };
+        MySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjectRequest);
     }
 
     @Override

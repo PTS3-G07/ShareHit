@@ -15,17 +15,30 @@
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme" >
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="35dp"
-            android:gravity="center">
+            android:layout_height="wrap_content">
 
             <ImageView
                 android:layout_width="41dp"
-                android:layout_height="match_parent"
-                android:src="@drawable/slogo" />
+                android:layout_height="41dp"
+                android:src="@drawable/slogo"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentLeft="true"
+                android:layout_gravity="center"/>
 
-        </LinearLayout>
+            <ImageButton
+                android:id="@+id/notification_button"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/notification_button"
+                android:text="Creer une partie"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="3dp"
+                android:layout_marginRight="10dp"/>
+
+        </RelativeLayout>
 
     </androidx.appcompat.widget.Toolbar>
 
