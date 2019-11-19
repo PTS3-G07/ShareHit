@@ -159,25 +159,26 @@ public class FeedFragement extends Fragment {
                 recosViewHolder.setDesc(model.getName());
                 final String idReco = getRef(i).getKey();
 
-                Log.e("testesto", model.getName()+" - "+model.getUrlPreview() +" - "+idReco);
+                //Log.e("testesto", model.getName()+" - "+model.getUrlPreview() +" - "+idReco);
 
-                /*if(recosRef.child(idReco).child("likeUsersUid").child(mAuth.getCurrentUser().getUid()).child("like_done").equals("yes")){
-                    CURRENT_LIKE=true;
-                }else{
-                    CURRENT_LIKE=false;
-                }*/
-
-                Log.e(""+recosRef.child(idReco).toString(), "CURRENT_LIKE="+CURRENT_LIKE);
+                //Log.e(""+recosRef.child(idReco).toString(), "CURRENT_LIKE="+CURRENT_LIKE);
 
                 recosRef.child(idReco).child("Coms").limitToLast(1).addValueEventListener(new ValueEventListener(){
 
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        Log.e("letesta", ""+dataSnapshot );
                         if (!dataSnapshot.hasChildren()){
                             recosViewHolder.setPseudoCom("Aucun commentaire");
+                            recosViewHolder.setAutreComment("0");
+                            recosViewHolder.setNbrCom("");
                         }
                         else {
                             for (DataSnapshot child : dataSnapshot.getChildren()) {
+                                if (child.child("com").exists()) {
+
+                                    recosViewHolder.setNbrCom(child.child("com").getValue().toString());
+                                }
                                 final String index = child.getKey();
                                 String idUsr = dataSnapshot.child(index).child("uid").getValue().toString();
                                 usersRef.child(idUsr).child("pseudo").addValueEventListener(new ValueEventListener() {
@@ -191,11 +192,8 @@ public class FeedFragement extends Fragment {
 
                                     }
                                 });
-                                //recosViewHolder.setNbrCom(dataSnapshot.child(index).child("com").getValue().toString());
                             }
                         }
-
-
                     }
 
                     @Override
@@ -209,7 +207,6 @@ public class FeedFragement extends Fragment {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         if(dataSnapshot.exists()) {
                             recosViewHolder.setAutreComment("" + dataSnapshot.getChildrenCount());
-                            //recosViewHolder.setNbrCom(dataSnapshot.getChildrenCount());
                         }
                     }
 
