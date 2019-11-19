@@ -159,8 +159,24 @@ public class ProfilFragement extends Fragment {
             @Override
             public void onClick(View v) {
 
-                firebaseAuth.signOut();
-                startActivity(new Intent(getActivity(), LoginPage.class));
+                String options[] = {"Un truc", "Se déconnecter"};
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setTitle("Paramètres");
+                builder.setItems(options, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if(which == 0){
+                            pd.setMessage("Un truc");
+                        }else if (which == 1){
+                            pd.setMessage("Se déconnecter");
+                            firebaseAuth.signOut();
+                            startActivity(new Intent(getActivity(), LoginPage.class));
+                        }
+                    }
+                });
+                builder.create().show();
+
+
 
 
                 /*

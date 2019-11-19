@@ -107,10 +107,10 @@
                 android:layout_alignEnd="@+id/circle"
                 android:layout_alignRight="@+id/circle"
                 android:layout_alignBottom="@+id/circle"
-                android:layout_marginLeft="12dp"
-                android:layout_marginTop="15dp"
-                android:layout_marginRight="9dp"
-                android:layout_marginBottom="15dp"
+                android:paddingLeft="12dp"
+                android:paddingTop="15dp"
+                android:paddingRight="9dp"
+                android:paddingBottom="15dp"
                 app:srcCompat="@drawable/ic_play" />
         </RelativeLayout>
 
