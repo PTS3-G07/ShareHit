@@ -82,7 +82,6 @@ public class FeedFragement extends Fragment {
 
 
 
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -117,6 +116,23 @@ public class FeedFragement extends Fragment {
 
 
         displayAllRecos();
+
+        class MyGestureListener extends GestureDetector.SimpleOnGestureListener {
+            private static final String DEBUG_TAG = "Gestures";
+
+            @Override
+            public boolean onDown(MotionEvent event) {
+                Log.d(DEBUG_TAG,"onDown: " + event.toString());
+                return true;
+            }
+
+            @Override
+            public boolean onFling(MotionEvent event1, MotionEvent event2,
+                                   float velocityX, float velocityY) {
+                Log.d(DEBUG_TAG, "onFling: " + event1.toString() + event2.toString());
+                return true;
+            }
+        }
 
         return root;
     }
