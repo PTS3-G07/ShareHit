@@ -7,8 +7,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -40,14 +46,23 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.luseen.spacenavigation.SpaceItem;
 import com.luseen.spacenavigation.SpaceNavigationView;
 import com.luseen.spacenavigation.SpaceOnClickListener;
+import com.squareup.picasso.MemoryPolicy;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 import static com.example.sharehit.ApiManager.EXTRA_ID;
 import static com.example.sharehit.ApiManager.EXTRA_LINK;
@@ -73,6 +88,9 @@ public class FeedPage extends AppCompatActivity {
     ImageButton film;
 
     ImageButton notification;
+
+    private FirebaseAuth mAuth;
+    CircleImageView profilePicture;
 
     public int idSearch;
     private Bundle b;
@@ -110,6 +128,38 @@ public class FeedPage extends AppCompatActivity {
         return false;
     }
 
+    public static Drawable drawableFromUrl(String url) throws IOException {
+        Bitmap x;
+
+        HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+        connection.connect();
+        InputStream input = connection.getInputStream();
+
+        x = BitmapFactory.decodeStream(input);
+        return new BitmapDrawable(Resources.getSystem(), x);
+    }
+
+    private Drawable ImageOperations(Context ctx, String url, String saveFilename) {
+        try {
+            InputStream is = (InputStream) this.fetch(url);
+            Drawable d = Drawable.createFromStream(is, saveFilename);
+            return d;
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            return null;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public Object fetch(String address) throws MalformedURLException,IOException {
+
+        URL url = new URL(address);
+        Object content = url.getContent();
+        return content;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -117,9 +167,14 @@ public class FeedPage extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
 
+        mAuth = FirebaseAuth.getInstance();
+
 
         email = findViewById(id.showEmail);
         navigationView = findViewById(id.space);
+        profilePicture = (CircleImageView) findViewById(id.itemProfilPicture);
+        //Picasso.with(getApplicationContext()).load("https://firebasestorage.googleapis.com/v0/b/share-hit-52071.appspot.com/o/Pdp%2F"+mAuth.getCurrentUser().getUid()+"?alt=media&token=32f03c76-31a8-4ea2-8cac-8fa92bef6667").networkPolicy(NetworkPolicy.NO_CACHE).memoryPolicy(MemoryPolicy.NO_CACHE).fit().centerInside().into(profilePicture);
+
         navigationView.initWithSaveInstanceState(savedInstanceState);
         navigationView.addSpaceItem(new SpaceItem("", drawable.time_icon));
         navigationView.addSpaceItem(new SpaceItem("", drawable.star_icon));

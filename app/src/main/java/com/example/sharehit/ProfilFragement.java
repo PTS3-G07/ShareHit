@@ -58,6 +58,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.MemoryPolicy;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
@@ -135,11 +137,12 @@ public class ProfilFragement extends Fragment {
         pd = new ProgressDialog(getActivity());
         mStorageRef = FirebaseStorage.getInstance().getReference();
 
+        Picasso.with(getContext()).load("https://firebasestorage.googleapis.com/v0/b/share-hit-52071.appspot.com/o/Pdp%2F"+mAuth.getCurrentUser().getUid()+"?alt=media&token=32f03c76-31a8-4ea2-8cac-8fa92bef6667").networkPolicy(NetworkPolicy.NO_CACHE).memoryPolicy(MemoryPolicy.NO_CACHE).fit().centerInside().into(pdp);
+
         usersRef.child(user.getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 pseudo.setText(dataSnapshot.child("pseudo").getValue().toString());
-                if (dataSnapshot.child("pdpUrl").exists()) Picasso.with(getContext()).load(dataSnapshot.child("pdpUrl").getValue().toString()).fit().centerInside().into(pdp);
 
             }
 
@@ -336,7 +339,8 @@ public class ProfilFragement extends Fragment {
                 @Override
                 public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                     //Picasso.with(getContext()).load(imguri).resize(180, 180).into(pdp);
-                    filepath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    /*
+                    filepath.getDownloadUrl().addOnSuccessListener(    new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
                             HashMap usersMap = new HashMap();
@@ -345,6 +349,11 @@ public class ProfilFragement extends Fragment {
                             usersRef.updateChildren(usersMap);
                         }
                     });
+
+                     */
+                    Toast.makeText(getContext(),"Photo de profil changé", Toast.LENGTH_LONG).show();
+                    Picasso.with(getContext()).load("https://firebasestorage.googleapis.com/v0/b/share-hit-52071.appspot.com/o/Pdp%2F"+mAuth.getCurrentUser().getUid()+"?alt=media&token=32f03c76-31a8-4ea2-8cac-8fa92bef6667").networkPolicy(NetworkPolicy.NO_CACHE).memoryPolicy(MemoryPolicy.NO_CACHE).fit().centerInside().into(pdp);
+
 
                 }
 

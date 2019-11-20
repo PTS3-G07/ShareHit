@@ -46,6 +46,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.MemoryPolicy;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 import com.taishi.library.Indicator;
 
@@ -70,7 +72,6 @@ public class FeedFragement extends Fragment {
     private DatabaseReference recosRef, usersRef;
     private FirebaseAuth mAuth;
     private String current_user_id;
-    public boolean CURRENT_LIKE,  test=false;
     private final static MediaPlayer mp = new MediaPlayer();
     private ProgressBar mSeekBarPlayer;
     private ImageButton stop;
@@ -169,6 +170,8 @@ public class FeedFragement extends Fragment {
 
                 final String[] keyBookmark = new String[tailleTableau[0]];
                 final boolean[] CURRENT_BOOKMARK = new boolean[tailleTableau[0]];
+                final String[] keyLike = new String[tailleTableau[0]];
+                final boolean[] CURRENT_LIKE = new boolean[tailleTableau[0]];
 
                 Picasso.with(getContext()).load(model.getImg()).fit().centerInside().into(recosViewHolder.getImg());
 
@@ -248,6 +251,7 @@ public class FeedFragement extends Fragment {
                     @Override public void onCancelled(@NonNull DatabaseError databaseError) { }
                 });
 
+                /*
                 recosRef.child(idReco).child("likeUsersUid").child(mAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -260,6 +264,8 @@ public class FeedFragement extends Fragment {
                     }
                     @Override public void onCancelled(@NonNull DatabaseError databaseError) { }
                 });
+
+                 */
 
 
                 usersRef.child(mAuth.getCurrentUser().getUid()).child("bookmarks").addValueEventListener(new ValueEventListener() {
@@ -288,6 +294,33 @@ public class FeedFragement extends Fragment {
                     }
                 });
 
+                recosRef.child(getRef(i).getKey()).child("likeUsersUid").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        boolean test = false;
+                        for(DataSnapshot ds: dataSnapshot.getChildren()){
+                            if(ds.getValue().equals(mAuth.getCurrentUser().getUid())){
+                                test = true;
+                                keyLike[i] = ds.getRef().getKey();
+                                //follow.setText("Ne plus suivre");
+                            }
+                        }
+                        if(test){
+                            recosViewHolder.getLikeButton().setImageResource(R.drawable.red_heart);
+                            CURRENT_LIKE[i] = true;
+                        } else {
+                            recosViewHolder.getLikeButton().setImageResource(R.drawable.heart);
+                            CURRENT_LIKE[i] = false;
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
 
 
 
@@ -295,12 +328,46 @@ public class FeedFragement extends Fragment {
                 recosViewHolder.getLikeButton().setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(CURRENT_LIKE == false){
+                        /*
+                        if(CURRENT_LIKE[i] == false){
                             getRef(i).child("likeUsersUid").child(mAuth.getCurrentUser().getUid()).child("like_done").setValue("yes");
                             CURRENT_LIKE=true;
                         } else if(CURRENT_LIKE == true){
                             getRef(i).child("likeUsersUid").child(mAuth.getCurrentUser().getUid()).removeValue();
                             CURRENT_LIKE=false;
+                        }
+
+                         */
+                        if(CURRENT_LIKE[i] == false){
+                            HashMap usersMap = new HashMap();
+                            usersMap.put(recosRef.child(getRef(i).getKey()).child("likeUsersUid").push().getKey(), mAuth.getCurrentUser().getUid());
+                            recosRef.child(getRef(i).getKey()).child("likeUsersUid").updateChildren(usersMap);
+                            recosRef.child(getRef(i).getKey()).child("likeUsersUid").addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    for(DataSnapshot ds: dataSnapshot.getChildren()){
+                                        if(ds.getValue().equals(mAuth.getCurrentUser().getUid())){
+                                            Log.e("Like key", ds.getRef().getKey());
+                                            keyLike[i] = ds.getRef().getKey();
+
+                                        }
+                                    }
+                                }
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
+                            //follow.setText("Ne plus suivre");
+                            recosViewHolder.getLikeButton().setImageResource(R.drawable.red_heart);
+                            CURRENT_LIKE[i] =true;
+
+                        } else if(CURRENT_LIKE[i] == true){
+                            recosRef.child(getRef(i).getKey()).child("likeUsersUid").child(keyLike[i]).removeValue();
+                            recosViewHolder.getLikeButton().setImageResource(R.drawable.heart);
+                            //follow.setText("Suivre");
+                            CURRENT_LIKE[i] =false;
+
                         }
 
                     }
@@ -311,12 +378,46 @@ public class FeedFragement extends Fragment {
                 final GestureDetector.SimpleOnGestureListener listener = new GestureDetector.SimpleOnGestureListener() {
                     @Override
                     public boolean onDoubleTap(MotionEvent e) {
+                        /*
                         if(CURRENT_LIKE == false){
                             getRef(i).child("likeUsersUid").child(mAuth.getCurrentUser().getUid()).child("like_done").setValue("yes");
                             CURRENT_LIKE=true;
                         } else if(CURRENT_LIKE == true){
                             getRef(i).child("likeUsersUid").child(mAuth.getCurrentUser().getUid()).removeValue();
                             CURRENT_LIKE=false;
+                        }
+
+                         */
+                        if(CURRENT_LIKE[i] == false){
+                            HashMap usersMap = new HashMap();
+                            usersMap.put(recosRef.child(getRef(i).getKey()).child("likeUsersUid").push().getKey(), mAuth.getCurrentUser().getUid());
+                            recosRef.child(getRef(i).getKey()).child("likeUsersUid").updateChildren(usersMap);
+                            recosRef.child(getRef(i).getKey()).child("likeUsersUid").addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    for(DataSnapshot ds: dataSnapshot.getChildren()){
+                                        if(ds.getValue().equals(mAuth.getCurrentUser().getUid())){
+                                            Log.e("Like key", ds.getRef().getKey());
+                                            keyLike[i] = ds.getRef().getKey();
+
+                                        }
+                                    }
+                                }
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
+                            //follow.setText("Ne plus suivre");
+                            recosViewHolder.getLikeButton().setImageResource(R.drawable.red_heart);
+                            CURRENT_LIKE[i] =true;
+
+                        } else if(CURRENT_LIKE[i] == true){
+                            recosRef.child(getRef(i).getKey()).child("likeUsersUid").child(keyLike[i]).removeValue();
+                            recosViewHolder.getLikeButton().setImageResource(R.drawable.heart);
+                            //follow.setText("Suivre");
+                            CURRENT_LIKE[i] =false;
+
                         }
                         return true;
                     }
@@ -416,14 +517,15 @@ public class FeedFragement extends Fragment {
                 });
 
 
+
+
+                Picasso.with(getContext()).load("https://firebasestorage.googleapis.com/v0/b/share-hit-52071.appspot.com/o/Pdp%2F"+model.getUserRecoUid()+"?alt=media&token=32f03c76-31a8-4ea2-8cac-8fa92bef6667").networkPolicy(NetworkPolicy.NO_CACHE).memoryPolicy(MemoryPolicy.NO_CACHE).fit().centerInside().into(recosViewHolder.getImgProfil());
+
                 usersRef.child(model.getUserRecoUid()).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         final String pseudo = dataSnapshot.child("pseudo").getValue().toString();
                         recosViewHolder.setTitre(pseudo + " a recommandé " + model.getType());
-                        if(dataSnapshot.child("pdpUrl").exists()){
-                            Picasso.with(getContext()).load(dataSnapshot.child("pdpUrl").getValue().toString()).fit().centerInside().into(recosViewHolder.getImgProfil());
-                        }
                         /*DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                         Date date_mini = dateFormat.format(timestamp.getTime());*/
 
@@ -700,6 +802,7 @@ public class FeedFragement extends Fragment {
 
 
     }
+
     private Runnable onEverySecond = new Runnable() {
         @Override
         public void run(){
