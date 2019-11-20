@@ -175,57 +175,58 @@ public class FeedFragement extends Fragment {
 
                 Picasso.with(getContext()).load(model.getImg()).fit().centerInside().into(recosViewHolder.getImg());
 
-                Log.e("testesto", model.getName()+" - "+model.getUrlPreview() );
-
                 recosViewHolder.setDesc(model.getName());
                 final String idReco = getRef(i).getKey();
-                recosViewHolder.autreComment.setHeight(0);
 
-                /*if(recosRef.child(idReco).child("likeUsersUid").child(mAuth.getCurrentUser().getUid()).child("like_done").equals("yes")){
-                    CURRENT_LIKE=true;
-                }else{
-                    CURRENT_LIKE=false;
-                }*/
+                //Log.e("testesto", model.getName()+" - "+model.getUrlPreview() +" - "+idReco);
 
-                Log.e(""+recosRef.child(idReco).toString(), "CURRENT_LIKE="+CURRENT_LIKE);
+                //Log.e(""+recosRef.child(idReco).toString(), "CURRENT_LIKE="+CURRENT_LIKE);
 
                 recosRef.child(idReco).child("Coms").limitToLast(1).addValueEventListener(new ValueEventListener(){
 
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        Log.e("letesta", ""+dataSnapshot );
                         if (!dataSnapshot.hasChildren()){
                             recosViewHolder.setPseudoCom("Aucun commentaire");
+                            recosViewHolder.setAutreComment("0");
+                            recosViewHolder.setNbrCom("");
                         }
-                        for (DataSnapshot child : dataSnapshot.getChildren()) {
-                            final String index = child.getKey();
-                            String idUsr = dataSnapshot.child(index).child("uid").getValue().toString();
-                            usersRef.child(idUsr).child("pseudo").addValueEventListener(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    recosViewHolder.setPseudoCom(dataSnapshot.getValue().toString()+" :");
-                                }
+                        else {
+                            for (DataSnapshot child : dataSnapshot.getChildren()) {
+                                if (child.child("com").exists()) {
 
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                                    recosViewHolder.setNbrCom(child.child("com").getValue().toString());
                                 }
-                            });
-                            recosRef.child(idReco).child("Coms").addValueEventListener(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    recosViewHolder.setAutreComment(""+dataSnapshot.getChildrenCount());
-                                    recosViewHolder.setNbrCom(dataSnapshot.child(index).child("com").getValue().toString());
-                                }
+                                final String index = child.getKey();
+                                String idUsr = dataSnapshot.child(index).child("uid").getValue().toString();
+                                usersRef.child(idUsr).child("pseudo").addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                        recosViewHolder.setPseudoCom(dataSnapshot.getValue().toString() + " :");
+                                    }
 
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                                }
-                            });
-                            //recosViewHolder.setNbrCom(dataSnapshot.child(index).child("com").getValue().toString());
+                                    }
+                                });
+                            }
                         }
+                    }
 
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
 
+                    }
+                });
+
+                recosRef.child(idReco).child("Coms").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if(dataSnapshot.exists()) {
+                            recosViewHolder.setAutreComment("" + dataSnapshot.getChildrenCount());
+                        }
                     }
 
                     @Override
