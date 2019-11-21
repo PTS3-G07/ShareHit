@@ -39,17 +39,14 @@
             android:textColor="@color/black"
             android:textSize="24sp" />
 
-        <ImageButton
-            android:id="@+id/upload"
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fb"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginTop="50dp"
-            android:layout_alignParentRight="true"
-            android:background="@android:color/transparent"
-            android:src="@drawable/button_settings"
-            android:text="logout" />
+            android:layout_gravity="bottom"
+            android:clickable="true"
+            android:layout_marginRight="20dp"
+            android:src="@drawable/button_settings" />
 
     </LinearLayout>
 
@@ -83,16 +80,7 @@
 
     </androidx.recyclerview.widget.RecyclerView>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fb"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginRight="20dp"
-        android:clickable="true"
-        android:src="@drawable/button_settings"
-        android:layout_marginBottom="20dp"/>
+
 
 
 </RelativeLayout>

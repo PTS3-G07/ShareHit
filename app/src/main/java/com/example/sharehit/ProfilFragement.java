@@ -171,8 +171,13 @@ public class ProfilFragement extends Fragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if(which == 0){
-                            pd.setMessage("Un truc");
-                        }else if (which == 1){
+                            pd.setMessage("Changer de photo de profil");
+                            showEditProfileDialog();
+                        }
+                        else if (which==1){
+                            pd.setMessage("Changer de pseudo");
+                            showNameUpdateDialog();
+                        } else if (which == 2){
                             pd.setMessage("Se déconnecter");
                             firebaseAuth.signOut();
                             startActivity(new Intent(getActivity(), LoginPage.class));
