@@ -793,6 +793,9 @@ public class FeedFragement extends Fragment {
         Indicator player;
         ImageView circle;
 
+        final LinearLayout layout;
+        final LinearLayout.LayoutParams params;
+
         public RecosViewHolder(View itemView) {
             super(itemView);
             this.mView = itemView;
@@ -809,6 +812,10 @@ public class FeedFragement extends Fragment {
 
             playButton.setVisibility(View.INVISIBLE);
             circle.setVisibility(View.INVISIBLE);
+            layout =(LinearLayout)itemView.findViewById(R.id.linearLayoutReco);
+            params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT);
+
         }
 
         public void setAutreComment(String autreComment1){
@@ -885,6 +892,11 @@ public class FeedFragement extends Fragment {
         public ImageButton getBookButton(){
             ImageButton img = (ImageButton) mView.findViewById(R.id.bookButton);
             return img;
+        }
+
+        public void layout_hide() {
+            layout.setVisibility(View.GONE);
+
         }
 
 

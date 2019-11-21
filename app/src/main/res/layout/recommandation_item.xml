@@ -8,6 +8,7 @@
     app:cardCornerRadius="10dp">
 
     <LinearLayout
+        android:id="@+id/linearLayoutReco"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -16,15 +17,15 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal"
+            android:paddingLeft="16dp"
             android:paddingTop="16dp"
-            android:paddingRight="16dp"
-            android:paddingLeft="16dp">
+            android:paddingRight="16dp">
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/imgProfil"
-                android:layout_gravity="center"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
+                android:layout_gravity="center"
                 android:layout_marginRight="10dp"
                 tools:srcCompat="@mipmap/ic_launcher" />
 
@@ -57,29 +58,30 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
+            android:background="@color/space_transparent"
             android:gravity="right"
-            android:text="TextView"
-            android:textSize="10sp"
             android:paddingRight="16dp"
-            android:background="@color/space_transparent"/>
+            android:text="TextView"
+            android:textSize="10sp" />
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-        <ImageButton
-            android:id="@+id/img_ar"
-            android:layout_width="match_parent"
-            android:layout_height="350dp"
-            android:scaleType="center"
-            android:background="@color/space_transparent"
-            android:src="@mipmap/ic_launcher" />
+
+            <ImageButton
+                android:id="@+id/img_ar"
+                android:layout_width="match_parent"
+                android:layout_height="350dp"
+                android:background="@color/space_transparent"
+                android:scaleType="center"
+                android:src="@mipmap/ic_launcher" />
 
             <ImageView
                 android:id="@+id/circle"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                app:srcCompat="@drawable/cercle"
-                android:layout_margin="15dp"/>
+                android:layout_margin="15dp"
+                app:srcCompat="@drawable/cercle" />
 
             <com.taishi.library.Indicator
                 android:id="@+id/player"
@@ -124,36 +126,36 @@
             android:layout_width="match_parent"
             android:layout_height="25dp"
             android:orientation="horizontal"
-            android:paddingRight="16dp"
             android:paddingLeft="16dp"
+            android:paddingRight="16dp"
             android:weightSum="3">
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:layout_gravity="center"
                 android:layout_weight="1"
-                android:weightSum="2"
-                android:layout_gravity="center">
+                android:weightSum="2">
 
                 <TextView
                     android:id="@+id/nbrLike"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginRight="20dp"
-                    android:textSize="15dp"
-                    android:textStyle="bold"
-                    android:textColor="@color/black"
+                    android:gravity="center"
                     android:text="0"
-                    android:gravity="center" />
+                    android:textColor="@color/black"
+                    android:textSize="15dp"
+                    android:textStyle="bold" />
 
                 <ImageButton
                     android:id="@+id/likeButton"
-                    android:layout_weight="1"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:layout_weight="1"
                     android:background="@android:color/transparent"
-                    android:src="@drawable/heart"
                     android:scaleType="fitStart"
+                    android:src="@drawable/heart"
                     android:text="LIKE" />
             </LinearLayout>
 
@@ -168,39 +170,40 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
-                android:text="Bookmark"
-                android:src="@drawable/bookmark"
+                android:paddingLeft="10dp"
                 android:scaleType="fitCenter"
-                android:paddingLeft="10dp"/>
+                android:src="@drawable/bookmark"
+                android:text="Bookmark" />
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:weightSum="2"
-                android:gravity="right">
+                android:gravity="right"
+                android:weightSum="2">
+
                 <ImageButton
                     android:id="@+id/commentButton"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:layout_marginRight="20dp"
                     android:layout_weight="1"
                     android:background="@android:color/transparent"
-                    android:src="@drawable/comment"
                     android:scaleType="fitEnd"
-                    android:layout_marginRight="20dp"
-                    android:text="COMM"/>
+                    android:src="@drawable/comment"
+                    android:text="COMM" />
+
                 <TextView
                     android:id="@+id/autreComment"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:textSize="15dp"
-                    android:textStyle="bold"
-                    android:textColor="@color/black"
+                    android:gravity="center"
                     android:text="0"
-                    android:gravity="center"/>
+                    android:textColor="@color/black"
+                    android:textSize="15dp"
+                    android:textStyle="bold" />
             </LinearLayout>
         </LinearLayout>
-
 
 
         <!--<TextView
@@ -217,22 +220,24 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:layout_marginLeft="16dp"
             android:layout_marginTop="5dp"
-            android:layout_marginBottom="10dp">
-        <TextView
-            android:id="@+id/pseudoComment"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=""
-            android:textStyle="bold"
-            android:layout_marginRight="5dp"/>
-        <TextView
-            android:id="@+id/nbrComment"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="" />
+            android:layout_marginBottom="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/pseudoComment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
+                android:text=""
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/nbrComment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="" />
         </LinearLayout>
 
     </LinearLayout>

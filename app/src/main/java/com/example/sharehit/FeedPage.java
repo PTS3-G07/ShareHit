@@ -75,7 +75,6 @@ import static com.example.sharehit.R.*;
 
 public class FeedPage extends AppCompatActivity {
 
-    TextView email;
     Button logout;
     SpaceNavigationView navigationView;
     FirebaseAuth firebaseAuth;
@@ -170,7 +169,6 @@ public class FeedPage extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
 
-        email = findViewById(id.showEmail);
         navigationView = findViewById(id.space);
         profilePicture = (CircleImageView) findViewById(id.itemProfilPicture);
         //Picasso.with(getApplicationContext()).load("https://firebasestorage.googleapis.com/v0/b/share-hit-52071.appspot.com/o/Pdp%2F"+mAuth.getCurrentUser().getUid()+"?alt=media&token=32f03c76-31a8-4ea2-8cac-8fa92bef6667").networkPolicy(NetworkPolicy.NO_CACHE).memoryPolicy(MemoryPolicy.NO_CACHE).fit().centerInside().into(profilePicture);
