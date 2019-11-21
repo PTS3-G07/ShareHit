@@ -595,7 +595,8 @@ public class ProfilPage extends AppCompatActivity {
                         recosViewHolder.setTitre(Html.fromHtml(sourceString));
 
                         long currentTimestamp = System.currentTimeMillis();
-                        long searchTimestamp = Long.parseLong(model.getTimestamp());
+                        double searchTimestampD = model.getTimestamp();
+                        long searchTimestamp = (long)searchTimestampD;
                         long difference = Math.abs(currentTimestamp - searchTimestamp);
                         if (TimeUnit.MILLISECONDS.toSeconds(currentTimestamp) == TimeUnit.MILLISECONDS.toSeconds(searchTimestamp)) {
                             recosViewHolder.setTime("À l'instant");

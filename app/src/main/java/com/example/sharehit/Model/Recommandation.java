@@ -2,13 +2,14 @@ package com.example.sharehit.Model;
 
 public class Recommandation {
 
-    String album, artist, id, timestamp, track, type, urlImage, urlPreview, userRecoUid;
+    String album, artist, id, track, type, urlImage, urlPreview, userRecoUid;
+    Double timestamp;
 
     public Recommandation(){
 
     }
 
-    public Recommandation(String album, String artist, String id, String timestamp, String track, String type, String urlImage, String urlPreview, String userRecoUid) {
+    public Recommandation(String album, String artist, String id, Double timestamp, String track, String type, String urlImage, String urlPreview, String userRecoUid) {
         this.album = album;
         this.artist = artist;
         this.id = id;
@@ -44,11 +45,11 @@ public class Recommandation {
         this.id = id;
     }
 
-    public String getTimestamp() {
+    public Double getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(String timestamp) {
+    public void setTimestamp(Double timestamp) {
         this.timestamp = timestamp;
     }
 

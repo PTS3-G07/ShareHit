@@ -64,7 +64,7 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.TypeViewHolder
     public void onBindViewHolder(@NonNull TypeViewHolder holder, int position) {
         Type currentItem = types.get(position);
         String imageUrl = currentItem.getImgUrl();
-        String name = "";
+        String name = currentItem.getName();
         String spec = currentItem.getSpec();
         /*if(currentItem instanceof Morceau){
             songUrl = ((Morceau) currentItem).getSongUrl();

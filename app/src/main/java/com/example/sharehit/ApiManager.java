@@ -442,11 +442,13 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
         post.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Long time = new Timestamp(System.currentTimeMillis()).getTime();
+                Double timestamp = time.doubleValue();
                 Recommandation recommandation = new Recommandation(
                         "",
                         "",
                         clickedItem.getLink(),
-                        Long.toString(new Timestamp(System.currentTimeMillis()).getTime()),
+                        timestamp,
                         "",
                         typeRecom,
                         clickedItem.getImgUrl(),
