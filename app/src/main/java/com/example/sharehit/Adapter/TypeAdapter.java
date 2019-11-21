@@ -64,7 +64,7 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.TypeViewHolder
     public void onBindViewHolder(@NonNull TypeViewHolder holder, int position) {
         Type currentItem = types.get(position);
         String imageUrl = currentItem.getImgUrl();
-        String name = currentItem.getName();
+        String name = "";
         String spec = currentItem.getSpec();
         /*if(currentItem instanceof Morceau){
             songUrl = ((Morceau) currentItem).getSongUrl();
@@ -96,7 +96,6 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.TypeViewHolder
         holder.mediaPlayer  = this.mediaPlayer;
         holder.name_ar.setText(name);
         holder.spec.setText(pre + spec);
-        Log.e("nique", ""+pre );
         Picasso.with(context).load(imageUrl).fit().centerInside().into(holder.img_ar);
     }
 

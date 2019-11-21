@@ -3,15 +3,21 @@ package com.example.sharehit.Model;
 public class Morceau extends Type {
 
     private String songUrl;
+    private String album;
 
-    public Morceau(String name, String artiste, String imgUrl, String songUrl, String link){
-        super(name, imgUrl, artiste, link);
+    public Morceau(String name, String album, String imgUrl, String songUrl, String id, String artiste){
+        super(name, imgUrl, artiste, id);
         this.songUrl = songUrl;
+        this.album = album;
         setCONST_NOMMAGE("Artiste: ");
     }
 
     public String getSongUrl() {
         return songUrl;
+    }
+
+    public String getAlbum() {
+        return album;
     }
 
     public String toString(){

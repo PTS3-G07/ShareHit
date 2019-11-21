@@ -6,17 +6,17 @@ public class Type {
     private String name;
     private String imgUrl;
     private String spec;
-    private String link;
+    private String id;
 
-    public Type(String name, String imgUrl, String spec, String link){
+    public Type(String name, String imgUrl, String spec, String id){
         this.imgUrl=imgUrl;
         this.name=name;
         this.spec=spec;
-        this.link=link;
+        this.id=id;
     }
 
     public String getLink() {
-        return link;
+        return id;
     }
 
     public String getImgUrl() {

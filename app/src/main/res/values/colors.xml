@@ -11,6 +11,7 @@
     <color name="likeblue">#1B8FFB</color>
     <color name="grisStyle">#939598</color>
     <color name="trans">#80000000</color>
+    <color name="transparent">#00000000</color>
     <array name="colorPagesViewPager">
         <item>#EDD9CF</item>
         <item>#BED4D6</item>

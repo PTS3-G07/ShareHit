@@ -104,27 +104,27 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
                 mExampleList.clear();
                 if(type == 1){
                     parseJSONartist(newText);
-                    typeRecom="un artiste";
+                    typeRecom="artist";
                 }
                 if(type == 2) {
                     parseJSONalbum(newText);
-                    typeRecom="un album";
+                    typeRecom="album";
                 }
                 if(type == 3) {
                     parseJSONtrack(newText);
-                    typeRecom="un morceau";
+                    typeRecom="track";
                 }
                 if(type == 4) {
                     parseJSONomdb(newText, "movie");
-                    typeRecom="un film";
+                    typeRecom="movie";
                 }
                 if(type == 5) {
                     parseJSONomdb(newText, "series");
-                    typeRecom="une série";
+                    typeRecom="serie";
                 }
                 if(type == 6) {
                     parseJSONomdb(newText,"game");
-                    typeRecom="un jeu vidéo";
+                    typeRecom="game";
                 }
 
                 return false;
@@ -147,7 +147,7 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
                         String name = data.getString("name");
                         String nbFan = data.getString("nb_fan");
                         String imgUrl = data.getString("picture_big");
-                        String link = data.getString("link");
+                        String link = data.getString("id");
                         String tracklist = data.getString("tracklist");
                         final Artist artiste = new Artist(name, nbFan, imgUrl, link);
                         parseJSONartistPreview(tracklist, artiste);
@@ -241,7 +241,7 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
                         JSONObject artiste = data.getJSONObject("artist");
                         String artistName = artiste.getString("name");
                         String imgUrl = data.getString("cover_big");
-                        String link = data.getString("link");
+                        String link = data.getString("id");
                         String tracklist = data.getString("tracklist");
                         Album album = new Album(artistName, name, imgUrl, link);
                         parseJSONalbumPreview(tracklist, album);
@@ -332,12 +332,14 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
                     for(int i = 0 ; jsonArray.length() > i; i++){
                         JSONObject data = jsonArray.getJSONObject(i);
                         JSONObject artist = data.getJSONObject("artist");
+                        JSONObject album = data.getJSONObject("album");
+                        String albumTitle = album.getString("title");
                         String title = data.getString("title");
-                        String albumTitle = artist.getString("name");
+                        String artistName = artist.getString("name");
                         String imgUrl = artist.getString("picture_big");
                         String previewUrl = data.getString("preview");
-                        String link = data.getString("link");
-                        Morceau m = new Morceau(title, albumTitle, imgUrl,previewUrl,link);
+                        String link = data.getString("id");
+                        Morceau m = new Morceau(title, albumTitle, imgUrl,previewUrl,link, artistName);
                         mExampleList.add(m);
                     }
 
@@ -386,8 +388,7 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
                         String year = data.getString("Year");
                         String imgUrl = data.getString("Poster");
                         String imdbID = data.getString("imdbID");
-                        String link = "https://www.imdb.com/title/"+imdbID+"/";
-                        mExampleList.add(new Video(title, year, imgUrl, link));
+                        mExampleList.add(new Video(title, year, imgUrl, imdbID));
                     }
 
                     mExampleAdapter = new TypeAdapter(ApiManager.this, mExampleList);
@@ -438,40 +439,54 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
         Button post = dialogView.findViewById(R.id.post_post_button);
         Button cancel = dialogView.findViewById(R.id.cancel_post_button);
 
-
-
-        final Type finalClickedItem = clickedItem;
         post.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Recommandation recommendation = new Recommandation(
+                Recommandation recommandation = new Recommandation(
                         "",
                         "",
-                        finalClickedItem.getLink(),
+                        clickedItem.getLink(),
                         Long.toString(new Timestamp(System.currentTimeMillis()).getTime()),
-                        finalClickedItem.getName(),
+                        "",
                         typeRecom,
-                        finalClickedItem.getImgUrl(),
-                        ((Morceau)clickedItem).getSongUrl(),
+                        clickedItem.getImgUrl(),
+                        "",
                         FirebaseAuth.getInstance().getCurrentUser().getUid()
                 );
-                /*
-                if(finalClickedItem instanceof Morceau){
-                    recommendation.setUrlPreview();
+                if(clickedItem instanceof Morceau){
+                    recommandation.setTrack(clickedItem.getName());
+                    recommandation.setUrlPreview(((Morceau)clickedItem).getSongUrl());
+                    recommandation.setAlbum(((Morceau) clickedItem).getAlbum());
+                    recommandation.setArtist(clickedItem.getSpec());
+                }
+                else if(clickedItem instanceof Artist){
+                    recommandation.setArtist(clickedItem.getName());
+                    recommandation.setUrlPreview(((Artist)clickedItem).getSongUrl());
+                }
+                else if(clickedItem instanceof Album){
+                    recommandation.setAlbum(clickedItem.getName());
+                    recommandation.setArtist(clickedItem.getSpec());
+                    recommandation.setUrlPreview(((Album)clickedItem).getSongUrl());
+                }else{
+                    recommandation.setArtist(clickedItem.getName());
+                }
 
-                }
-                else if(finalClickedItem instanceof Artist){
-                    recommendation.setUrlPreview(((Artist)clickedItem).getSongUrl());
-                }
-                else if(finalClickedItem instanceof Album){
-                    recommendation.setUrlPreview(((Album)clickedItem).getSongUrl());
-                }
 
-                 */
                 HashMap usersMap = new HashMap();
                 DatabaseReference recomRef = FirebaseDatabase.getInstance().getReference().child("recos");
+
+                /*usersMap.put("id",recommendation.getLink());
+                usersMap.put("timestamp", new Timestamp(System.currentTimeMillis()).getTime());
+                usersMap.put("track",recommendation.getName());
+                usersMap.put("type",recommendation.getType());
+                usersMap.put("urlImage", recommendation.getImg());
+                usersMap.put("urlPreview", "");
+                usersMap.put("userRecoUid", recommendation.getUserRecoUid());*/
+
+                //HashMap mapFinal = new HashMap<>();
+
                 String key = recomRef.push().getKey();
-                usersMap.put(key, recommendation);
+                usersMap.put(key,recommandation);
                 recomRef.updateChildren(usersMap);
                 startActivity(new Intent(ApiManager.this, FeedPage.class));
             }

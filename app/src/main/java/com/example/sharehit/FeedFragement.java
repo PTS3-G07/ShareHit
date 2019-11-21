@@ -68,6 +68,12 @@ public class FeedFragement extends Fragment {
     private Animation buttonClick;
 
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        mp.pause();
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -164,7 +170,17 @@ public class FeedFragement extends Fragment {
 
                 Picasso.with(getContext()).load(model.getUrlImage()).fit().centerInside().into(recosViewHolder.getImg());
 
-                recosViewHolder.setDesc(model.getTrack());
+                if(model.getType().equals("track")){
+                    String desc ="<b>"+model.getTrack()+"</b>"+" de "+"<b>"+model.getArtist()+"</b>";
+                    recosViewHolder.setDesc(Html.fromHtml(desc));
+                } else if(model.getType().equals("album")){
+                    String desc ="<b>"+model.getAlbum()+"</b>"+" de "+"<b>"+model.getArtist()+"</b>";
+                    recosViewHolder.setDesc(Html.fromHtml(desc));
+                } else {
+                    String desc ="<b>"+model.getArtist()+"</b>";
+                    recosViewHolder.setDesc(Html.fromHtml(desc));
+                }
+
                 final String idReco = getRef(i).getKey();
 
                 //Log.e("testesto", model.getName()+" - "+model.getUrlPreview() +" - "+idReco);
@@ -227,36 +243,10 @@ public class FeedFragement extends Fragment {
                 recosRef.child(idReco).child("likeUsersUid").addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        /*if(dataSnapshot.getChildrenCount()==0){
-                            recosViewHolder.setNbrLike("Personne n'aime ça");
-                        }
-                        else if(dataSnapshot.getChildrenCount()==1){
-                            recosViewHolder.setNbrLike("Aimé par 1 personne");
-                        }
-                        else{
-                            recosViewHolder.setNbrLike("Aimé par " + Long.toString(dataSnapshot.getChildrenCount()) + " personnes");
-                        }*/
                         recosViewHolder.setNbrLike(Long.toString(dataSnapshot.getChildrenCount()));
                     }
                     @Override public void onCancelled(@NonNull DatabaseError databaseError) { }
                 });
-
-                /*
-                recosRef.child(idReco).child("likeUsersUid").child(mAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if(dataSnapshot.exists()) {
-                            recosViewHolder.getLikeButton().setImageResource(R.drawable.red_heart);
-                        }
-                        else{
-                            recosViewHolder.getLikeButton().setImageResource(R.drawable.heart);
-                        }
-                    }
-                    @Override public void onCancelled(@NonNull DatabaseError databaseError) { }
-                });
-
-                 */
-
 
                 usersRef.child(mAuth.getCurrentUser().getUid()).child("bookmarks").addValueEventListener(new ValueEventListener() {
                     @Override
@@ -368,16 +358,6 @@ public class FeedFragement extends Fragment {
                 final GestureDetector.SimpleOnGestureListener listener = new GestureDetector.SimpleOnGestureListener() {
                     @Override
                     public boolean onDoubleTap(MotionEvent e) {
-                        /*
-                        if(CURRENT_LIKE == false){
-                            getRef(i).child("likeUsersUid").child(mAuth.getCurrentUser().getUid()).child("like_done").setValue("yes");
-                            CURRENT_LIKE=true;
-                        } else if(CURRENT_LIKE == true){
-                            getRef(i).child("likeUsersUid").child(mAuth.getCurrentUser().getUid()).removeValue();
-                            CURRENT_LIKE=false;
-                        }
-
-                         */
                         if(CURRENT_LIKE[i] == false){
                             HashMap usersMap = new HashMap();
                             usersMap.put(recosRef.child(getRef(i).getKey()).child("likeUsersUid").push().getKey(), mAuth.getCurrentUser().getUid());
@@ -414,10 +394,20 @@ public class FeedFragement extends Fragment {
 
                     public boolean onSingleTapConfirmed(MotionEvent e) {
 
+                        String link ="";
                         Log.e("testest",""+model.getId());
+                        if (model.getType().equals("track")){
+                            link="https://www.deezer.com/fr/track/"+model.getId();
+                        } else if (model.getType().equals("album")){
+                            link="https://www.deezer.com/fr/album/"+model.getId();
+                        }else if (model.getType().equals("artist")){
+                            link="https://www.deezer.com/fr/artist/"+model.getId();
+                        } else{
+                            link="https://www.imdb.com/title/"+model.getId();
+                        }
                         Intent viewIntent =
                                 new Intent("android.intent.action.VIEW",
-                                        Uri.parse(model.getId()));
+                                        Uri.parse(link));
                         startActivity(viewIntent);
 
                         return true;
@@ -490,7 +480,6 @@ public class FeedFragement extends Fragment {
                     @Override
                     public void onClick(View v) {
                         b.putString("key", getRef(i).getKey());
-                        Log.e("keyReco1", getRef(i).getKey());
                         intent1.putExtras(b);
                         startActivity(intent1);
 
@@ -514,13 +503,34 @@ public class FeedFragement extends Fragment {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         final String pseudo = dataSnapshot.child("pseudo").getValue().toString();
-                        final String sourceString = "<b>"+pseudo+"</b>"+ " a recommandé " +"<b>"+model.getType()+"</b>";
-                                recosViewHolder.setTitre(Html.fromHtml(sourceString));
+                        String typeReco="";
+                        Log.d("puiiiiiiiiiiiiii", ""+model.getType());
+                        if (model.getType().equals("track")) {
+                            typeReco = "un morceau";
+                        } else if (model.getType().equals("artist")){
+                            typeReco = "un artiste";
+                        } else if (model.getType().equals("album")){
+                            typeReco="un album";
+                        } else if (model.getType().equals("movie")){
+                            typeReco="un film";
+                        } else if (model.getType().equals("serie")){
+                            typeReco="une série";
+                        } else if (model.getType().equals("game")){
+                            typeReco="un jeu vidéo";
+                        }
+                        Log.d("puiiiiiiiiiiiiii", "qs"+typeReco);
+                        final String sourceString = "<b>"+pseudo+"</b>"+ " a recommandé " +"<b>"+typeReco+"</b>";
+
+                        recosViewHolder.setTitre(Html.fromHtml(sourceString));
 
                         long currentTimestamp = System.currentTimeMillis();
                         long searchTimestamp = Long.parseLong(model.getTimestamp());
                         long difference = Math.abs(currentTimestamp - searchTimestamp);
-                        recosViewHolder.setTime("Il y a " + convertTimeStampToBelleHeureSaMere(difference));
+                        if(TimeUnit.MILLISECONDS.toSeconds(currentTimestamp)==TimeUnit.MILLISECONDS.toSeconds(searchTimestamp)) {
+                            recosViewHolder.setTime("À l'instant");
+                        }else {
+                            recosViewHolder.setTime("Il y a " + convertTimeStampToBelleHeureSaMere(difference));
+                        }
 
                     }
 
@@ -549,10 +559,20 @@ public class FeedFragement extends Fragment {
                 recosViewHolder.getDesc().setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        String link ="";
                         Log.e("testest",""+model.getId());
+                        if (model.getType().equals("track")){
+                            link="https://www.deezer.com/fr/track/"+model.getId();
+                        } else if (model.getType().equals("album")){
+                            link="https://www.deezer.com/fr/album/"+model.getId();
+                        }else if (model.getType().equals("artiste")){
+                            link="https://www.deezer.com/fr/artist/"+model.getId();
+                        } else{
+                            link="https://www.imdb.com/title/"+model.getId();
+                        }
                         Intent viewIntent =
                                 new Intent("android.intent.action.VIEW",
-                                        Uri.parse(model.getId()));
+                                        Uri.parse(link));
                         startActivity(viewIntent);
                     }
                 });
@@ -561,8 +581,10 @@ public class FeedFragement extends Fragment {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                        if(dataSnapshot.exists()){
-                           recosViewHolder.playButton.setVisibility(View.VISIBLE);
-                           recosViewHolder.circle.setVisibility(View.VISIBLE);
+                           if (!dataSnapshot.getValue().toString().equals("")) {
+                               recosViewHolder.playButton.setVisibility(View.VISIBLE);
+                               recosViewHolder.circle.setVisibility(View.VISIBLE);
+                           }
                        }
                     }
                     @Override public void onCancelled(@NonNull DatabaseError databaseError) { }
@@ -692,9 +714,6 @@ public class FeedFragement extends Fragment {
 
 
         recyclerView.setAdapter(fireBaseRecyclerAdapter);
-
-
-
     }
 
     private String convertTimeStampToBelleHeureSaMere(long millis) {
@@ -804,7 +823,7 @@ public class FeedFragement extends Fragment {
             pseudoCom.setText(pseudo);
         }
 
-        public void setDesc(String desc){
+        public void setDesc(Spanned desc){
             descR.setText(desc);
         }
 
