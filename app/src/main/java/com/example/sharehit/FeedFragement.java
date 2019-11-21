@@ -1,32 +1,25 @@
 package com.example.sharehit;
 
 import android.app.ActionBar;
-import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.CountDownTimer;
-import android.provider.ContactsContract;
+import android.text.Html;
+import android.text.Spanned;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-import android.webkit.WebView;
-import android.widget.Button;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -34,12 +27,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.sharehit.Adapter.AdapterRecs;
-import com.example.sharehit.Model.Morceau;
 import com.example.sharehit.Model.Recommendation;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.google.android.material.resources.TextAppearance;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -52,15 +41,10 @@ import com.squareup.picasso.Picasso;
 import com.taishi.library.Indicator;
 
 import java.io.IOException;
-import java.sql.PreparedStatement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
-
-import javax.xml.datatype.Duration;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -80,13 +64,16 @@ public class FeedFragement extends Fragment {
     private TextView nameLect;
     private ImageView musicImg;
     private Bundle b;
-
+    private Animation buttonClick;
 
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ViewGroup root = (ViewGroup) inflater.inflate(R.layout.fragement_feed, null);
+
+        buttonClick = AnimationUtils.loadAnimation(getContext(), R.anim.click);
+
 
         mAuth = FirebaseAuth.getInstance();
         current_user_id = mAuth.getCurrentUser().getUid();
@@ -172,6 +159,7 @@ public class FeedFragement extends Fragment {
                 final boolean[] CURRENT_BOOKMARK = new boolean[tailleTableau[0]];
                 final String[] keyLike = new String[tailleTableau[0]];
                 final boolean[] CURRENT_LIKE = new boolean[tailleTableau[0]];
+
 
                 Picasso.with(getContext()).load(model.getImg()).fit().centerInside().into(recosViewHolder.getImg());
 
@@ -518,15 +506,14 @@ public class FeedFragement extends Fragment {
                 });
 
 
-
-
-                Picasso.with(getContext()).load("https://firebasestorage.googleapis.com/v0/b/share-hit-52071.appspot.com/o/Pdp%2F"+model.getUserRecoUid()+"?alt=media&token=32f03c76-31a8-4ea2-8cac-8fa92bef6667").networkPolicy(NetworkPolicy.NO_CACHE).memoryPolicy(MemoryPolicy.NO_CACHE).fit().centerInside().into(recosViewHolder.getImgProfil());
+                Picasso.with(getContext()).load("https://firebasestorage.googleapis.com/v0/b/share-hit-52071.appspot.com/o/Pdp%2F"+model.getUserRecoUid()+"?alt=media&token=32f03c76-31a8-4ea2-8cac-8fa92bef6667").fit().centerInside().into(recosViewHolder.getImgProfil());
 
                 usersRef.child(model.getUserRecoUid()).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         final String pseudo = dataSnapshot.child("pseudo").getValue().toString();
-                        recosViewHolder.setTitre(pseudo + " a recommandé " + model.getType());
+                        final String sourceString = "<b>"+pseudo+"</b>"+ " a recommandé " +"<b>"+model.getType()+"</b>";
+                                recosViewHolder.setTitre(Html.fromHtml(sourceString));
                         /*DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                         Date date_mini = dateFormat.format(timestamp.getTime());*/
 
@@ -569,16 +556,44 @@ public class FeedFragement extends Fragment {
                     }
                 });
 
-                if(model.getUrlPreview()!=null ) {
+                recosRef.child(idReco).child("urlPreview").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                       if(dataSnapshot.exists()){
+                           recosViewHolder.playButton.setVisibility(View.VISIBLE);
+                           recosViewHolder.circle.setVisibility(View.VISIBLE);
+                       }
+                    }
+                    @Override public void onCancelled(@NonNull DatabaseError databaseError) { }
+                });
+
+                /*Log.e("jhsvhx", recosViewHolder.getDesc().getText().toString().equals(nameLect.getText().toString())+"");
+
+                if(recosViewHolder.getDesc().getText().toString().equals(nameLect.getText().toString())){
+                    Log.e("jhsvhx", ""+recosViewHolder.getDesc().getText());
+                    recosViewHolder.playButton.setVisibility(View.INVISIBLE);
+                    recosViewHolder.player.setVisibility(View.VISIBLE);
+                }else{
                     recosViewHolder.playButton.setVisibility(View.VISIBLE);
-                    recosViewHolder.circle.setVisibility(View.VISIBLE);
-                }
+                    recosViewHolder.player.setVisibility(View.INVISIBLE);
+                }*/
+
+                /*recosViewHolder.playButton.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View view, MotionEvent motionEvent) {
+                        recosViewHolder.playButton.startAnimation(buttonClick);
+                        return true;
+                    }
+                });*/
 
                 recosViewHolder.playButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        recosViewHolder.playButton.setVisibility(View.INVISIBLE);
-                        recosViewHolder.player.setVisibility(View.VISIBLE);
+
+                        //playing = recyclerView.getChildViewHolder(view);
+                        mp.seekTo(mp.getDuration());
+                        Log.e("ultimaaaa", ""+mp.getDuration()+nameLect.getText().toString());
+
                         mp.reset();
                         if (lecteur.getVisibility()==View.INVISIBLE) {
                             lecteur.setVisibility(View.VISIBLE);
@@ -587,14 +602,18 @@ public class FeedFragement extends Fragment {
                             lecteur.setLayoutParams(params);
                         }
                         try{
-                            Log.e("testest", ""+model.getUrlPreview() );
-                            mp.setDataSource(model.getUrlPreview());
+                            Log.e("testest", ""+model.getUrlPreview() );mp.setDataSource(model.getUrlPreview());
                         }
                         catch (IOException ex){
                             Log.e("testest", "Can't found data:"+model.getUrlPreview());
                         }
 
+
                         nameLect.setText(model.getName());
+                        /*recosViewHolder.playButton.setVisibility(View.INVISIBLE);
+                        recosViewHolder.player.setVisibility(View.VISIBLE);*/
+
+
                         Picasso.with(getContext()).load(model.getImg()).fit().centerInside().into(musicImg);
                         mp.prepareAsync();
                         mp.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
@@ -607,12 +626,7 @@ public class FeedFragement extends Fragment {
                             }
                         });
 
-                        mSeekBarPlayer.setOnTouchListener(new View.OnTouchListener() {
-                            @Override
-                            public boolean onTouch(View view, MotionEvent motionEvent) {
-                                return false;
-                            }
-                        });
+                        recosViewHolder.playButton.startAnimation(buttonClick);
 
                         stop.setOnClickListener(new View.OnClickListener() {
 
@@ -623,13 +637,15 @@ public class FeedFragement extends Fragment {
                                 mp.reset();
                                 lecteur.setVisibility(View.INVISIBLE);
 
-                                recosViewHolder.playButton.setVisibility(View.VISIBLE);
-                                recosViewHolder.player.setVisibility(View.INVISIBLE);
+
+
+                                /*recosViewHolder.playButton.setVisibility(View.VISIBLE);
+                                recosViewHolder.playButton.setImageResource(R.drawable.ic_play);
+                                recosViewHolder.player.setVisibility(View.INVISIBLE);*/
 
                                 ViewGroup.LayoutParams params = lecteur.getLayoutParams();
                                 params.height=0;
                                 lecteur.setLayoutParams(params);
-
                             }
                         });
 
@@ -642,14 +658,15 @@ public class FeedFragement extends Fragment {
                                 if (mp.isPlaying()) {
                                     mp.pause();
                                     btnPause.setImageResource(R.drawable.ic_play);
-                                    recosViewHolder.playButton.setVisibility(View.VISIBLE);
-                                    recosViewHolder.player.setVisibility(View.INVISIBLE);
+                                    /*recosViewHolder.playButton.setVisibility(View.VISIBLE);
+                                    recosViewHolder.playButton.setImageResource(R.drawable.ic_pause);
+                                    recosViewHolder.player.setVisibility(View.INVISIBLE);*/
 
                                 }
                                 else {
                                     btnPause.setImageResource(R.drawable.ic_pause);
-                                    recosViewHolder.playButton.setVisibility(View.INVISIBLE);
-                                    recosViewHolder.player.setVisibility(View.VISIBLE);
+                                    /*recosViewHolder.playButton.setVisibility(View.INVISIBLE);
+                                    recosViewHolder.player.setVisibility(View.VISIBLE);*/
                                     try {
                                         mp.prepare();
                                     } catch (IllegalStateException e) {
@@ -717,12 +734,9 @@ public class FeedFragement extends Fragment {
 
             circle = mView.findViewById(R.id.circle);
             player.setVisibility(View.INVISIBLE);
+
             playButton.setVisibility(View.INVISIBLE);
             circle.setVisibility(View.INVISIBLE);
-            //pause = mView.findViewById(R.id.pauseButton);
-            //progressBar = mView.findViewById(R.id.timeProgressBar);
-            //pause.setVisibility(View.INVISIBLE);
-            //progressBar.setVisibility(View.INVISIBLE);
         }
 
         public void setAutreComment(String autreComment1){
@@ -746,7 +760,7 @@ public class FeedFragement extends Fragment {
             return descR;
         }
 
-        public void setTitre(String text){
+        public void setTitre(Spanned text){
             TextView nameR = (TextView) mView.findViewById(R.id.name);
             nameR.setText(text);
         }

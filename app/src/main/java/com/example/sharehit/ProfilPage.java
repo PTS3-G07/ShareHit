@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -371,7 +372,8 @@ public class ProfilPage extends AppCompatActivity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         final String pseudo = dataSnapshot.child("pseudo").getValue().toString();
-                        recosViewHolder.setTitre(pseudo + " a recommandé " + model.getType());
+                        final String sourceString = "<b>"+pseudo+"</b>"+ " a recommandé " +"<b>"+model.getType()+"</b>";
+                        recosViewHolder.setTitre(Html.fromHtml(sourceString));
                         if(dataSnapshot.child("pdpUrl").exists()){
                             Picasso.with(getApplicationContext()).load(dataSnapshot.child("pdpUrl").getValue().toString()).fit().centerInside().into(recosViewHolder.getImgProfil());
                         }

@@ -14,6 +14,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,6 +23,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -102,7 +104,6 @@ public class ProfilFragement extends Fragment {
     private final static MediaPlayer mp = new MediaPlayer();
 
 
-
     public boolean OnCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.singout_menu, menu);
         return true;
@@ -137,7 +138,8 @@ public class ProfilFragement extends Fragment {
         pd = new ProgressDialog(getActivity());
         mStorageRef = FirebaseStorage.getInstance().getReference();
 
-        Picasso.with(getContext()).load("https://firebasestorage.googleapis.com/v0/b/share-hit-52071.appspot.com/o/Pdp%2F"+mAuth.getCurrentUser().getUid()+"?alt=media&token=32f03c76-31a8-4ea2-8cac-8fa92bef6667").networkPolicy(NetworkPolicy.NO_CACHE).memoryPolicy(MemoryPolicy.NO_CACHE).fit().centerInside().into(pdp);
+        Picasso.with(getContext()).load("https://firebasestorage.googleapis.com/v0/b/share-hit-52071.appspot.com/o/Pdp%2F"+mAuth.getCurrentUser().getUid()+"?alt=media&token=32f03c76-31a8-4ea2-8cac-8fa92bef6667").fit().centerInside().into(pdp);
+
 
         usersRef.child(user.getUid()).addValueEventListener(new ValueEventListener() {
             @Override
@@ -352,7 +354,7 @@ public class ProfilFragement extends Fragment {
 
                      */
                     Toast.makeText(getContext(),"Photo de profil changé", Toast.LENGTH_LONG).show();
-                    Picasso.with(getContext()).load("https://firebasestorage.googleapis.com/v0/b/share-hit-52071.appspot.com/o/Pdp%2F"+mAuth.getCurrentUser().getUid()+"?alt=media&token=32f03c76-31a8-4ea2-8cac-8fa92bef6667").networkPolicy(NetworkPolicy.NO_CACHE).memoryPolicy(MemoryPolicy.NO_CACHE).fit().centerInside().into(pdp);
+                    Picasso.with(getContext()).load("https://firebasestorage.googleapis.com/v0/b/share-hit-52071.appspot.com/o/Pdp%2F"+mAuth.getCurrentUser().getUid()+"?alt=media&token=32f03c76-31a8-4ea2-8cac-8fa92bef6667").networkPolicy(NetworkPolicy.NO_CACHE).memoryPolicy(MemoryPolicy.NO_CACHE).centerInside().into(pdp);
 
 
                 }
@@ -576,7 +578,8 @@ public class ProfilFragement extends Fragment {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         final String pseudo = dataSnapshot.child("pseudo").getValue().toString();
-                        recosViewHolder.setTitre(pseudo + " a recommandé " + model.getType());
+                        final String sourceString = "<b>"+pseudo+"</b>"+ " a recommandé " +"<b>"+model.getType()+"</b>";
+                        recosViewHolder.setTitre(Html.fromHtml(sourceString));
                         if(dataSnapshot.child("pdpUrl").exists()){
                             Picasso.with(getContext()).load(dataSnapshot.child("pdpUrl").getValue().toString()).fit().centerInside().into(recosViewHolder.getImgProfil());
                         }
