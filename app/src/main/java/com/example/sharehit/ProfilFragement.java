@@ -92,7 +92,6 @@ public class ProfilFragement extends Fragment {
     TextView pseudo;
     FloatingActionButton fb;
     ProgressDialog pd;
-    ImageButton upload;
     private static final int CAMERA_REQUEST_CODE = 100;
     private static final int STORAGE_REQUEST_CODE = 200;
     private static final int IMAGE_PICK_GALLERY_CODE = 300;
@@ -121,7 +120,6 @@ public class ProfilFragement extends Fragment {
         myRef = database.getReference("users");
         pdp=  root.findViewById(R.id.pdp);
         pseudo= root.findViewById(R.id.pseudo);
-        upload= root.findViewById(R.id.upload);
         fb = root.findViewById(R.id.fb);
         final String userUID = firebaseAuth.getCurrentUser().getUid();
         recosRef = FirebaseDatabase.getInstance().getReference().child("recos");
@@ -160,11 +158,11 @@ public class ProfilFragement extends Fragment {
                 showEditProfileDialog();
             }
         });
-        upload.setOnClickListener(new View.OnClickListener() {
+        fb.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                String options[] = {"Un truc", "Se déconnecter"};
+                String options[] = {"Changer de photo de profil","Changer de pseudo", "Se déconnecter", };
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setTitle("Paramètres");
                 builder.setItems(options, new DialogInterface.OnClickListener() {
@@ -172,7 +170,11 @@ public class ProfilFragement extends Fragment {
                     public void onClick(DialogInterface dialog, int which) {
                         if(which == 0){
                             pd.setMessage("Changer de photo de profil");
-                            showEditProfileDialog();
+                            if(!checkStoragePermission()){
+                                requestStoragePermission();
+                            }else {
+                                pickFromGallery();
+                            }
                         }
                         else if (which==1){
                             pd.setMessage("Changer de pseudo");
