@@ -45,6 +45,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -449,7 +450,7 @@ public class FeedFragement extends Fragment {
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     for(DataSnapshot ds: dataSnapshot.getChildren()){
                                         if(ds.getValue().equals(b.getString("key"))){
-                                            Log.e("Followed key", ds.getRef().getKey());
+                                            Log.e("Bookmark key", ds.getRef().getKey());
                                             keyBookmark[i] = ds.getRef().getKey();
 
                                         }
@@ -514,12 +515,11 @@ public class FeedFragement extends Fragment {
                         final String pseudo = dataSnapshot.child("pseudo").getValue().toString();
                         final String sourceString = "<b>"+pseudo+"</b>"+ " a recommandé " +"<b>"+model.getType()+"</b>";
                                 recosViewHolder.setTitre(Html.fromHtml(sourceString));
-                        /*DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                        Date date_mini = dateFormat.format(timestamp.getTime());*/
 
-                        Date date=new Date(model.getTimeStamp());
-                        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy"+" à "+"H"+":"+"mm");
-                        recosViewHolder.setTime("Le "+dateFormat.format(date));
+                        long currentTimestamp = System.currentTimeMillis();
+                        long searchTimestamp = model.getTimeStamp();
+                        long difference = Math.abs(currentTimestamp - searchTimestamp);
+                        recosViewHolder.setTime("Il y a " + convertTimeStampToBelleHeureSaMere(difference));
 
                     }
 
@@ -694,6 +694,57 @@ public class FeedFragement extends Fragment {
 
 
 
+    }
+
+    private String convertTimeStampToBelleHeureSaMere(long millis) {
+        if(millis < 0) {
+            throw new IllegalArgumentException("Duration must be greater than zero!");
+        }
+
+        long days = TimeUnit.MILLISECONDS.toDays(millis);
+        millis -= TimeUnit.DAYS.toMillis(days);
+        long hours = TimeUnit.MILLISECONDS.toHours(millis);
+        millis -= TimeUnit.HOURS.toMillis(hours);
+        long minutes = TimeUnit.MILLISECONDS.toMinutes(millis);
+        millis -= TimeUnit.MINUTES.toMillis(minutes);
+        long seconds = TimeUnit.MILLISECONDS.toSeconds(millis);
+
+        StringBuilder sb = new StringBuilder(64);
+        if(days != 0){
+            if(days == 1){
+                sb.append(days);
+                sb.append(" jour ");
+            } else {
+                sb.append(days);
+                sb.append(" jours ");
+            }
+
+        } else if(hours != 0){
+            if(hours == 1){
+                sb.append(hours);
+                sb.append(" heure ");
+            } else {
+                sb.append(hours);
+                sb.append(" heures ");
+            }
+
+        } else if(minutes != 0){
+            if(minutes == 1){
+                sb.append(minutes);
+                sb.append(" minute ");
+            } else {
+                sb.append(minutes);
+                sb.append(" minutes ");
+            }
+        } else if(seconds != 0){
+            sb.append(seconds);
+            sb.append(" secondes");
+        }
+
+
+
+
+        return(sb.toString());
     }
 
     private boolean loadFragement(Fragment fragment){
