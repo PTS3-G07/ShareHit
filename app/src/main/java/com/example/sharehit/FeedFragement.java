@@ -788,7 +788,6 @@ public class FeedFragement extends Fragment {
         TextView pseudoCom;
         TextView autreComment;
         TextView descR;
-        ImageView pause;
         ImageView playButton;
         Indicator player;
         ImageView circle;
