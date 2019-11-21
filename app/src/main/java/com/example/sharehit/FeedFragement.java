@@ -504,7 +504,6 @@ public class FeedFragement extends Fragment {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         final String pseudo = dataSnapshot.child("pseudo").getValue().toString();
                         String typeReco="";
-                        Log.d("puiiiiiiiiiiiiii", ""+model.getType());
                         if (model.getType().equals("track")) {
                             typeReco = "un morceau";
                         } else if (model.getType().equals("artist")){
@@ -518,7 +517,6 @@ public class FeedFragement extends Fragment {
                         } else if (model.getType().equals("game")){
                             typeReco="un jeu vidéo";
                         }
-                        Log.d("puiiiiiiiiiiiiii", "qs"+typeReco);
                         final String sourceString = "<b>"+pseudo+"</b>"+ " a recommandé " +"<b>"+typeReco+"</b>";
 
                         recosViewHolder.setTitre(Html.fromHtml(sourceString));
@@ -613,10 +611,7 @@ public class FeedFragement extends Fragment {
                     @Override
                     public void onClick(View view) {
 
-                        //playing = recyclerView.getChildViewHolder(view);
                         mp.seekTo(mp.getDuration());
-                        Log.e("ultimaaaa", ""+mp.getDuration()+nameLect.getText().toString());
-
                         mp.reset();
                         if (lecteur.getVisibility()==View.INVISIBLE) {
                             lecteur.setVisibility(View.VISIBLE);
@@ -632,7 +627,12 @@ public class FeedFragement extends Fragment {
                         }
 
 
-                        nameLect.setText(model.getTrack());
+                        if(model.getType().equals("track"))
+                            nameLect.setText(model.getTrack());
+                        else if(model.getType().equals("artist"))
+                            nameLect.setText(model.getArtist());
+                        else if(model.getType().equals("album"))
+                            nameLect.setText(model.getAlbum());
                         /*recosViewHolder.playButton.setVisibility(View.INVISIBLE);
                         recosViewHolder.player.setVisibility(View.VISIBLE);*/
 
