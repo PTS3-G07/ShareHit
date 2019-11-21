@@ -27,7 +27,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.sharehit.Model.Recommendation;
+import com.example.sharehit.Model.Recommandation;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -145,16 +145,16 @@ public class FeedFragement extends Fragment {
             }
         });
 
-        FirebaseRecyclerAdapter<Recommendation, RecosViewHolder> fireBaseRecyclerAdapter = new FirebaseRecyclerAdapter<Recommendation, RecosViewHolder>
+        FirebaseRecyclerAdapter<Recommandation, RecosViewHolder> fireBaseRecyclerAdapter = new FirebaseRecyclerAdapter<Recommandation, RecosViewHolder>
                 (
-                        Recommendation.class,
+                        Recommandation.class,
                         R.layout.recommandation_item,
                         RecosViewHolder.class,
                         recosRef
                 ) {
 
             @Override
-            protected void populateViewHolder(final RecosViewHolder recosViewHolder, final Recommendation model, final int i) {
+            protected void populateViewHolder(final RecosViewHolder recosViewHolder, final Recommandation model, final int i) {
 
                 final String[] keyBookmark = new String[tailleTableau[0]];
                 final boolean[] CURRENT_BOOKMARK = new boolean[tailleTableau[0]];
@@ -162,9 +162,9 @@ public class FeedFragement extends Fragment {
                 final boolean[] CURRENT_LIKE = new boolean[tailleTableau[0]];
 
 
-                Picasso.with(getContext()).load(model.getImg()).fit().centerInside().into(recosViewHolder.getImg());
+                Picasso.with(getContext()).load(model.getUrlImage()).fit().centerInside().into(recosViewHolder.getImg());
 
-                recosViewHolder.setDesc(model.getName());
+                recosViewHolder.setDesc(model.getTrack());
                 final String idReco = getRef(i).getKey();
 
                 //Log.e("testesto", model.getName()+" - "+model.getUrlPreview() +" - "+idReco);
@@ -414,10 +414,10 @@ public class FeedFragement extends Fragment {
 
                     public boolean onSingleTapConfirmed(MotionEvent e) {
 
-                        Log.e("testest",""+model.getLink());
+                        Log.e("testest",""+model.getId());
                         Intent viewIntent =
                                 new Intent("android.intent.action.VIEW",
-                                        Uri.parse(model.getLink()));
+                                        Uri.parse(model.getId()));
                         startActivity(viewIntent);
 
                         return true;
@@ -490,6 +490,7 @@ public class FeedFragement extends Fragment {
                     @Override
                     public void onClick(View v) {
                         b.putString("key", getRef(i).getKey());
+                        Log.e("keyReco1", getRef(i).getKey());
                         intent1.putExtras(b);
                         startActivity(intent1);
 
@@ -517,7 +518,7 @@ public class FeedFragement extends Fragment {
                                 recosViewHolder.setTitre(Html.fromHtml(sourceString));
 
                         long currentTimestamp = System.currentTimeMillis();
-                        long searchTimestamp = model.getTimeStamp();
+                        long searchTimestamp = Long.parseLong(model.getTimestamp());
                         long difference = Math.abs(currentTimestamp - searchTimestamp);
                         recosViewHolder.setTime("Il y a " + convertTimeStampToBelleHeureSaMere(difference));
 
@@ -548,10 +549,10 @@ public class FeedFragement extends Fragment {
                 recosViewHolder.getDesc().setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Log.e("testest",""+model.getLink());
+                        Log.e("testest",""+model.getId());
                         Intent viewIntent =
                                 new Intent("android.intent.action.VIEW",
-                                        Uri.parse(model.getLink()));
+                                        Uri.parse(model.getId()));
                         startActivity(viewIntent);
                     }
                 });
@@ -609,12 +610,12 @@ public class FeedFragement extends Fragment {
                         }
 
 
-                        nameLect.setText(model.getName());
+                        nameLect.setText(model.getTrack());
                         /*recosViewHolder.playButton.setVisibility(View.INVISIBLE);
                         recosViewHolder.player.setVisibility(View.VISIBLE);*/
 
 
-                        Picasso.with(getContext()).load(model.getImg()).fit().centerInside().into(musicImg);
+                        Picasso.with(getContext()).load(model.getUrlImage()).fit().centerInside().into(musicImg);
                         mp.prepareAsync();
                         mp.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                             @Override

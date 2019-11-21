@@ -32,7 +32,7 @@ import com.example.sharehit.Adapter.TypeAdapter;
 import com.example.sharehit.Model.Album;
 import com.example.sharehit.Model.Artist;
 import com.example.sharehit.Model.Morceau;
-import com.example.sharehit.Model.Recommendation;
+import com.example.sharehit.Model.Recommandation;
 import com.example.sharehit.Model.Type;
 import com.example.sharehit.Model.Video;
 import com.google.firebase.auth.FirebaseAuth;
@@ -444,17 +444,20 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
         post.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Recommendation recommendation = new Recommendation(
-                        typeRecom,
-                        FirebaseAuth.getInstance().getCurrentUser().getUid(),
+                Recommandation recommendation = new Recommandation(
+                        "",
+                        "",
+                        finalClickedItem.getLink(),
+                        Long.toString(new Timestamp(System.currentTimeMillis()).getTime()),
                         finalClickedItem.getName(),
+                        typeRecom,
                         finalClickedItem.getImgUrl(),
-                        null,
-                        new Timestamp(System.currentTimeMillis()).getTime(),
-                        finalClickedItem.getLink()
+                        ((Morceau)clickedItem).getSongUrl(),
+                        FirebaseAuth.getInstance().getCurrentUser().getUid()
                 );
+                /*
                 if(finalClickedItem instanceof Morceau){
-                    recommendation.setUrlPreview(((Morceau)clickedItem).getSongUrl());
+                    recommendation.setUrlPreview();
 
                 }
                 else if(finalClickedItem instanceof Artist){
@@ -463,6 +466,8 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
                 else if(finalClickedItem instanceof Album){
                     recommendation.setUrlPreview(((Album)clickedItem).getSongUrl());
                 }
+
+                 */
                 HashMap usersMap = new HashMap();
                 DatabaseReference recomRef = FirebaseDatabase.getInstance().getReference().child("recos");
                 String key = recomRef.push().getKey();
