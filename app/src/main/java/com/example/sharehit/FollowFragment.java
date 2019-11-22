@@ -2,7 +2,6 @@ package com.example.sharehit;
 
 import android.app.ActionBar;
 import android.content.Intent;
-import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -20,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -28,24 +28,21 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sharehit.Model.Recommandation;
+import com.example.sharehit.Utilities.OnSwipeTouchListener;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
-public class SearchFragement extends Fragment {
+public class FollowFragment extends Fragment {
 
 
     RecyclerView recyclerView;
@@ -60,6 +57,7 @@ public class SearchFragement extends Fragment {
     private LinearLayout lecteur;
     private TextView nameLect;
     private ImageView musicImg;
+    private MyListenerFollow callBack;
 
     private Animation buttonClick;
 
@@ -73,6 +71,23 @@ public class SearchFragement extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ViewGroup root = (ViewGroup) inflater.inflate(R.layout.fragement_search, null);
+
+        callBack = (MyListenerFollow) getActivity();
+
+        root.setOnTouchListener(new OnSwipeTouchListener(getContext()) {
+
+            public void onSwipeLeft() {
+                Fragment fragment = new BookmarkFragment();
+                loadFragement(fragment);
+                callBack.onSwipeLeftFollow();
+            }
+            public void onSwipeRight() {
+                Fragment fragment = new FeedFragment();
+                loadFragement(fragment);
+                callBack.onSwipeRightFollow();
+            }
+
+        });
 
         buttonClick = AnimationUtils.loadAnimation(getContext(), R.anim.click);
 
@@ -179,16 +194,16 @@ public class SearchFragement extends Fragment {
             }
         });
 
-        FirebaseRecyclerAdapter<Recommandation, FeedFragement.RecosViewHolder> fireBaseRecyclerAdapter = new FirebaseRecyclerAdapter<Recommandation, FeedFragement.RecosViewHolder>
+        FirebaseRecyclerAdapter<Recommandation, FeedFragment.RecosViewHolder> fireBaseRecyclerAdapter = new FirebaseRecyclerAdapter<Recommandation, FeedFragment.RecosViewHolder>
                 (
                         Recommandation.class,
                         R.layout.recommandation_item,
-                        FeedFragement.RecosViewHolder.class,
+                        FeedFragment.RecosViewHolder.class,
                         recosRef
                 ) {
 
             @Override
-            protected void populateViewHolder(final FeedFragement.RecosViewHolder recosViewHolder, final Recommandation model, final int i) {
+            protected void populateViewHolder(final FeedFragment.RecosViewHolder recosViewHolder, final Recommandation model, final int i) {
 
 
                 followRef.addValueEventListener(new ValueEventListener() {
@@ -583,7 +598,7 @@ public class SearchFragement extends Fragment {
                                 @Override
                                 public void onClick(View v) {
                                     if(mAuth.getCurrentUser().getUid().equals(model.getUserRecoUid())){
-                                        Fragment fragment = new ProfilFragement();
+                                        Fragment fragment = new ProfilFragment();
                                         loadFragement(fragment);
 
                                     } else {
@@ -795,4 +810,9 @@ public class SearchFragement extends Fragment {
             }
         }
     };
+
+    public interface MyListenerFollow{
+        public void onSwipeLeftFollow();
+        public void onSwipeRightFollow();
+    }
 }

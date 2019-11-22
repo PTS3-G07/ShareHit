@@ -1,4 +1,4 @@
-package com.example.sharehit;
+/*package com.example.sharehit;
 
 import android.app.Service;
 import android.content.Intent;
@@ -21,11 +21,12 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
           OPTIONAL: If you want to send messages to this application instance
           or manage this apps subscriptions on the server side,
           you can send this token to your server.
-        */
-        String token = FirebaseInstanceId.getInstance().getToken();
+
+        Sting token = FirebaseInstanceId.getInstance().getToken();
 
         // Once the token is generated, subscribe to topic with the userId
         FirebaseMessaging.getInstance().subscribeToTopic(SUBSCRIBE_TO);
         Log.i(TAG, "onTokenRefresh completed with token: " + token);
     }
 }
+*/

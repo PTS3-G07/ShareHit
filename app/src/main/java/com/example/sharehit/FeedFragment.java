@@ -1,124 +1,70 @@
 package com.example.sharehit;
 
-import android.Manifest;
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.ProgressDialog;
-import android.content.ContentValues;
-import android.content.DialogInterface;
+import android.app.ActionBar;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.text.Html;
-import android.text.TextUtils;
+import android.text.Spanned;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.content.ContentResolver;
-import android.content.Context;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sharehit.Model.Recommandation;
+import com.example.sharehit.Utilities.OnSwipeTouchListener;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
-import com.squareup.picasso.MemoryPolicy;
-import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
-import com.theartofdev.edmodo.cropper.CropImage;
-import com.theartofdev.edmodo.cropper.CropImageView;
+import com.taishi.library.Indicator;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-import static androidx.core.provider.FontsContractCompat.FontRequestCallback.RESULT_OK;
+public class FeedFragment extends Fragment {
 
+    public static final String EXTRA_PREVIEW = "userUrlPreview";
 
-public class ProfilFragement extends Fragment {
-
-
-    FirebaseAuth firebaseAuth, mAuth;
-    FirebaseUser user;
-    DatabaseReference myRef, usersRef, recosRef;
-    FirebaseDatabase database;
-    private StorageReference mStorageRef;
-    public Uri imguri;
-    private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1888;
-    ImageView pdp;
-    TextView pseudo;
-    FloatingActionButton fb;
-    ProgressDialog pd;
-    private static final int CAMERA_REQUEST_CODE = 100;
-    private static final int STORAGE_REQUEST_CODE = 200;
-    private static final int IMAGE_PICK_GALLERY_CODE = 300;
-    private static final int PICK_IMAGE_REQUEST = 111;
-    String cameraPermissions[];
-    String storagePermissions[];
-    public boolean CURRENT_LIKE;
-    private RecyclerView post;
+    RecyclerView recyclerView;
+    private DatabaseReference recosRef, usersRef;
+    private FirebaseAuth mAuth;
+    private String current_user_id;
     private final static MediaPlayer mp = new MediaPlayer();
-
     private ProgressBar mSeekBarPlayer;
     private ImageButton stop;
     private ImageButton btnPause;
     private LinearLayout lecteur;
     private TextView nameLect;
     private ImageView musicImg;
-
+    private Bundle b;
     private Animation buttonClick;
+    private MyListenerFeed callBack;
 
-
-    public boolean OnCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.singout_menu, menu);
-        return true;
-    }
 
     @Override
     public void onPause() {
@@ -129,26 +75,25 @@ public class ProfilFragement extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        ViewGroup root = (ViewGroup) inflater.inflate(R.layout.fragement_profil, null);
-        firebaseAuth = FirebaseAuth.getInstance();
-        user = firebaseAuth.getCurrentUser();
-        mAuth = FirebaseAuth.getInstance();
-        database = FirebaseDatabase.getInstance();
-        usersRef = database.getReference().child("users");
-        myRef = database.getReference("users");
-        pdp=  root.findViewById(R.id.pdp);
-        pseudo= root.findViewById(R.id.pseudo);
-        fb = root.findViewById(R.id.fb);
-        final String userUID = firebaseAuth.getCurrentUser().getUid();
-        recosRef = FirebaseDatabase.getInstance().getReference().child("recos");
-
-        post = (RecyclerView) root.findViewById(R.id.postIudRecyclerView);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-        layoutManager.setStackFromEnd(true);
-        layoutManager.setReverseLayout(true);
-        post.setLayoutManager(layoutManager);
+        ViewGroup root = (ViewGroup) inflater.inflate(R.layout.fragement_feed, null);
 
         buttonClick = AnimationUtils.loadAnimation(getContext(), R.anim.click);
+        callBack=(MyListenerFeed) getActivity();
+
+        root.setOnTouchListener(new OnSwipeTouchListener(getContext()) {
+
+            public void onSwipeLeft() {
+                Fragment fragment = new FollowFragment();
+                loadFragement(fragment);
+                callBack.onSwipeLeftFeed();
+            }
+
+        });
+
+        mAuth = FirebaseAuth.getInstance();
+        current_user_id = mAuth.getCurrentUser().getUid();
+        recosRef = FirebaseDatabase.getInstance().getReference().child("recos");
+        usersRef = FirebaseDatabase.getInstance().getReference().child("users");
 
         lecteur = root.findViewById(R.id.lecteur);
         stop = root.findViewById(R.id.button1);
@@ -163,260 +108,46 @@ public class ProfilFragement extends Fragment {
         params.height=0;
         lecteur.setLayoutParams(params);
 
-        cameraPermissions = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
-        storagePermissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
-        mStorageRef = FirebaseStorage.getInstance().getReference();
-        pd = new ProgressDialog(getActivity());
-        mStorageRef = FirebaseStorage.getInstance().getReference();
-
-        Picasso.with(getContext()).load("https://firebasestorage.googleapis.com/v0/b/share-hit-52071.appspot.com/o/Pdp%2F"+mAuth.getCurrentUser().getUid()+"?alt=media&token=32f03c76-31a8-4ea2-8cac-8fa92bef6667").fit().centerInside().into(pdp);
 
 
-        usersRef.child(user.getUid()).addValueEventListener(new ValueEventListener() {
+
+        recyclerView = root.findViewById(R.id.postRecyclerView);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        layoutManager.setStackFromEnd(true);
+        layoutManager.setReverseLayout(true);
+        recyclerView.setLayoutManager(layoutManager);
+
+
+        displayAllRecos();
+
+        class MyGestureListener extends GestureDetector.SimpleOnGestureListener {
+            private static final String DEBUG_TAG = "Gestures";
+
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                pseudo.setText(dataSnapshot.child("pseudo").getValue().toString());
-
+            public boolean onDown(MotionEvent event) {
+                Log.d(DEBUG_TAG,"onDown: " + event.toString());
+                return true;
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
+            public boolean onFling(MotionEvent event1, MotionEvent event2,
+                                   float velocityX, float velocityY) {
+                Log.d(DEBUG_TAG, "onFling: " + event1.toString() + event2.toString());
+                return true;
             }
-        });
-
-        fb.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showEditProfileDialog();
-            }
-        });
-        fb.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                String options[] = {"Changer de photo de profil","Changer de pseudo", "Se déconnecter", };
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setTitle("Paramètres");
-                builder.setItems(options, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if(which == 0){
-                            pd.setMessage("Changer de photo de profil");
-                            if(!checkStoragePermission()){
-                                requestStoragePermission();
-                            }else {
-                                pickFromGallery();
-                            }
-                        }
-                        else if (which==1){
-                            pd.setMessage("Changer de pseudo");
-                            showNameUpdateDialog();
-                        } else if (which == 2){
-                            pd.setMessage("Se déconnecter");
-                            firebaseAuth.signOut();
-                            startActivity(new Intent(getActivity(), LoginPage.class));
-                        }
-                    }
-                });
-                builder.create().show();
-
-
-
-
-                /*
-
-                Intent intent = YouTubeStandalonePlayer.createVideoIntent(getActivity(), "AIzaSyBYORHRvvvzDdhukXCf24orxzFXhoIURr8", "aJ7BoNG-r2c", 0, true, false);
-                startActivity(intent);
-
-                 */
-
-
-            }
-        });
-
-        displayAllPostUid();
-
+        }
 
         return root;
     }
 
 
-
-
-
-
-    private boolean checkStoragePermission(){
-        boolean result = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                == (PackageManager.PERMISSION_GRANTED);
-        return  result;
-    }
-
-    private void requestStoragePermission(){
-        ActivityCompat.requestPermissions(getActivity(), storagePermissions, STORAGE_REQUEST_CODE);
-
-    }
-
-    private boolean checkCameraPermission(){
-
-        boolean result = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA)
-                == (PackageManager.PERMISSION_GRANTED);
-
-        boolean result1 = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                == (PackageManager.PERMISSION_GRANTED);
-        return  result && result1;
-    }
-
-    private void requestCameraPermission(){
-        ActivityCompat.requestPermissions(getActivity(), cameraPermissions, CAMERA_REQUEST_CODE);
-
-    }
-
-    private void showEditProfileDialog() {
-
-        String options[] = {"Changer de photo de profil", "Changer de pseudo"};
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Edition du profil");
-        builder.setItems(options, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if(which == 0){
-                    pd.setMessage("Changement de la photo de profil");
-                    if(!checkStoragePermission()){
-                        requestStoragePermission();
-                    }else {
-                        pickFromGallery();
-                    }
-                }else if (which == 1){
-                    pd.setMessage("Changement de pseudo");
-                    showNameUpdateDialog();
-                }
-            }
-        });
-        builder.create().show();
-
-    }
-
-    private void showNameUpdateDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Changer de pseudo");
-        LinearLayout linearLayout = new LinearLayout(getActivity());
-        linearLayout.setPadding(10,10,10,10);
-        linearLayout.setOrientation(LinearLayout.VERTICAL);
-        final EditText editText = new EditText(getActivity());
-        editText.setHint("Nouveau pseudo...");
-        linearLayout.addView(editText);
-        builder.setView(linearLayout);
-        builder.setPositiveButton("Changer", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-              String value = editText.getText().toString().trim();
-              if(!TextUtils.isEmpty(value)){
-                 //  pd.show();
-                 HashMap reslt = new HashMap();
-                  reslt.put("pseudo", value);
-                  DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid());
-                  usersRef.updateChildren(reslt);
-              }else {
-                  editText.setError("Entrer un pseudo");
-              }
-            }
-        });
-        builder.setNegativeButton("Annuler", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-            }
-        });
-
-        builder.create().show();
-    }
-
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-
-        switch (requestCode){
-            case STORAGE_REQUEST_CODE:{
-
-
-                if(grantResults.length >0){
-                    boolean writeStorageAccepted = grantResults[1] == PackageManager.PERMISSION_GRANTED;
-                    if(writeStorageAccepted){
-                        pickFromGallery();
-                    }else {
-                        Toast.makeText(getActivity(), "Veuillez autoriser l'accès à la galerie", Toast.LENGTH_SHORT);
-
-                    }
-                }
-
-            }
-
-
-        }
-
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
-
-
-
-    private void pickFromGallery() {
-
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_PICK);
-        startActivityForResult(intent, PICK_IMAGE_REQUEST);
-
-    }
-
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null && data.getData() != null) {
-            imguri = data.getData();
-            final StorageReference filepath = mStorageRef.child("Pdp").child(user.getUid());
-            filepath.putFile(imguri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                    //Picasso.with(getContext()).load(imguri).resize(180, 180).into(pdp);
-                    /*
-                    filepath.getDownloadUrl().addOnSuccessListener(    new OnSuccessListener<Uri>() {
-                        @Override
-                        public void onSuccess(Uri uri) {
-                            HashMap usersMap = new HashMap();
-                            DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid());
-                            usersMap.put("pdpUrl", String.valueOf(uri));
-                            usersRef.updateChildren(usersMap);
-                        }
-                    });
-
-                     */
-                    Toast.makeText(getContext(),"Photo de profil changé", Toast.LENGTH_LONG).show();
-                    Picasso.with(getContext()).load("https://firebasestorage.googleapis.com/v0/b/share-hit-52071.appspot.com/o/Pdp%2F"+mAuth.getCurrentUser().getUid()+"?alt=media&token=32f03c76-31a8-4ea2-8cac-8fa92bef6667").networkPolicy(NetworkPolicy.NO_CACHE).memoryPolicy(MemoryPolicy.NO_CACHE).centerInside().into(pdp);
-
-
-                }
-
-            });
-
-        }
-
-
-    }
-
-
-    private void displayAllPostUid() {
-
+    private void displayAllRecos() {
         final Intent intent1 = new Intent(getContext(), ListLikePage.class);
         final Intent intent2 = new Intent(getContext(), CommentPage.class);
+        final Intent intent3 = new Intent(getContext(), ProfilPage.class);
         final Bundle b = new Bundle();
-
-        Query myPost = recosRef.orderByChild("userRecoUid").startAt(user.getUid()).endAt(user.getUid()+"\uf8ff");
-
         final int[] tailleTableau = new int[1];
-        myPost.addValueEventListener(new ValueEventListener() {
+        recosRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 tailleTableau[0] = (int) dataSnapshot.getChildrenCount();
@@ -428,16 +159,17 @@ public class ProfilFragement extends Fragment {
             }
         });
 
-        FirebaseRecyclerAdapter<Recommandation, FeedFragement.RecosViewHolder> fireBaseRecyclerAdapter = new FirebaseRecyclerAdapter<Recommandation, FeedFragement.RecosViewHolder>
+        FirebaseRecyclerAdapter<Recommandation, RecosViewHolder> fireBaseRecyclerAdapter = new FirebaseRecyclerAdapter<Recommandation, RecosViewHolder>
                 (
                         Recommandation.class,
                         R.layout.recommandation_item,
-                        FeedFragement.RecosViewHolder.class,
-                        myPost
+                        RecosViewHolder.class,
+                        recosRef
                 ) {
 
             @Override
-            protected void populateViewHolder(final FeedFragement.RecosViewHolder recosViewHolder, final Recommandation model, final int i) {
+            protected void populateViewHolder(final RecosViewHolder recosViewHolder, final Recommandation model, final int i) {
+
                 final String[] keyBookmark = new String[tailleTableau[0]];
                 final boolean[] CURRENT_BOOKMARK = new boolean[tailleTableau[0]];
                 final String[] keyLike = new String[tailleTableau[0]];
@@ -446,14 +178,14 @@ public class ProfilFragement extends Fragment {
 
                 Picasso.with(getContext()).load(model.getUrlImage()).fit().centerInside().into(recosViewHolder.getImg());
 
-                if (model.getType().equals("track")) {
-                    String desc = "<b>" + model.getTrack() + "</b>" + " de " + "<b>" + model.getArtist() + "</b>";
+                if(model.getType().equals("track")){
+                    String desc ="<b>"+model.getTrack()+"</b>"+" de "+"<b>"+model.getArtist()+"</b>";
                     recosViewHolder.setDesc(Html.fromHtml(desc));
-                } else if (model.getType().equals("album")) {
-                    String desc = "<b>" + model.getAlbum() + "</b>" + " de " + "<b>" + model.getArtist() + "</b>";
+                } else if(model.getType().equals("album")){
+                    String desc ="<b>"+model.getAlbum()+"</b>"+" de "+"<b>"+model.getArtist()+"</b>";
                     recosViewHolder.setDesc(Html.fromHtml(desc));
                 } else {
-                    String desc = "<b>" + model.getArtist() + "</b>";
+                    String desc ="<b>"+model.getArtist()+"</b>";
                     recosViewHolder.setDesc(Html.fromHtml(desc));
                 }
 
@@ -463,16 +195,17 @@ public class ProfilFragement extends Fragment {
 
                 //Log.e(""+recosRef.child(idReco).toString(), "CURRENT_LIKE="+CURRENT_LIKE);
 
-                recosRef.child(idReco).child("Coms").limitToLast(1).addValueEventListener(new ValueEventListener() {
+                recosRef.child(idReco).child("Coms").limitToLast(1).addValueEventListener(new ValueEventListener(){
 
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        Log.e("letesta", "" + dataSnapshot);
-                        if (!dataSnapshot.hasChildren()) {
+                        Log.e("letesta", ""+dataSnapshot );
+                        if (!dataSnapshot.hasChildren()){
                             recosViewHolder.setPseudoCom("Aucun commentaire");
                             recosViewHolder.setAutreComment("0");
                             recosViewHolder.setNbrCom("");
-                        } else {
+                        }
+                        else {
                             for (DataSnapshot child : dataSnapshot.getChildren()) {
                                 if (child.child("com").exists()) {
 
@@ -504,7 +237,7 @@ public class ProfilFragement extends Fragment {
                 recosRef.child(idReco).child("Coms").addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.exists()) {
+                        if(dataSnapshot.exists()) {
                             recosViewHolder.setAutreComment("" + dataSnapshot.getChildrenCount());
                         }
                     }
@@ -520,24 +253,21 @@ public class ProfilFragement extends Fragment {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         recosViewHolder.setNbrLike(Long.toString(dataSnapshot.getChildrenCount()));
                     }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                    }
+                    @Override public void onCancelled(@NonNull DatabaseError databaseError) { }
                 });
 
                 usersRef.child(mAuth.getCurrentUser().getUid()).child("bookmarks").addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         boolean test = false;
-                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                            if (ds.getValue().equals(getRef(i).getKey())) {
+                        for(DataSnapshot ds: dataSnapshot.getChildren()){
+                            if(ds.getValue().equals(getRef(i).getKey())){
                                 test = true;
                                 keyBookmark[i] = ds.getRef().getKey();
                                 //follow.setText("Ne plus suivre");
                             }
                         }
-                        if (test) {
+                        if(test){
                             recosViewHolder.getBookButton().setImageResource(R.drawable.bookmark_ok);
                             CURRENT_BOOKMARK[i] = true;
                         } else {
@@ -556,14 +286,14 @@ public class ProfilFragement extends Fragment {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         boolean test = false;
-                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                            if (ds.getValue().equals(mAuth.getCurrentUser().getUid())) {
+                        for(DataSnapshot ds: dataSnapshot.getChildren()){
+                            if(ds.getValue().equals(mAuth.getCurrentUser().getUid())){
                                 test = true;
                                 keyLike[i] = ds.getRef().getKey();
                                 //follow.setText("Ne plus suivre");
                             }
                         }
-                        if (test) {
+                        if(test){
                             recosViewHolder.getLikeButton().setImageResource(R.drawable.red_heart);
                             CURRENT_LIKE[i] = true;
                         } else {
@@ -580,6 +310,9 @@ public class ProfilFragement extends Fragment {
                 });
 
 
+
+
+
                 recosViewHolder.getLikeButton().setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -593,22 +326,21 @@ public class ProfilFragement extends Fragment {
                         }
 
                          */
-                        if (CURRENT_LIKE[i] == false) {
+                        if(CURRENT_LIKE[i] == false){
                             HashMap usersMap = new HashMap();
                             usersMap.put(recosRef.child(getRef(i).getKey()).child("likeUsersUid").push().getKey(), mAuth.getCurrentUser().getUid());
                             recosRef.child(getRef(i).getKey()).child("likeUsersUid").updateChildren(usersMap);
                             recosRef.child(getRef(i).getKey()).child("likeUsersUid").addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                                        if (ds.getValue().equals(mAuth.getCurrentUser().getUid())) {
+                                    for(DataSnapshot ds: dataSnapshot.getChildren()){
+                                        if(ds.getValue().equals(mAuth.getCurrentUser().getUid())){
                                             Log.e("Like key", ds.getRef().getKey());
                                             keyLike[i] = ds.getRef().getKey();
 
                                         }
                                     }
                                 }
-
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError databaseError) {
 
@@ -616,13 +348,13 @@ public class ProfilFragement extends Fragment {
                             });
                             //follow.setText("Ne plus suivre");
                             recosViewHolder.getLikeButton().setImageResource(R.drawable.red_heart);
-                            CURRENT_LIKE[i] = true;
+                            CURRENT_LIKE[i] =true;
 
-                        } else if (CURRENT_LIKE[i] == true) {
+                        } else if(CURRENT_LIKE[i] == true){
                             recosRef.child(getRef(i).getKey()).child("likeUsersUid").child(keyLike[i]).removeValue();
                             recosViewHolder.getLikeButton().setImageResource(R.drawable.heart);
                             //follow.setText("Suivre");
-                            CURRENT_LIKE[i] = false;
+                            CURRENT_LIKE[i] =false;
 
                         }
 
@@ -634,22 +366,21 @@ public class ProfilFragement extends Fragment {
                 final GestureDetector.SimpleOnGestureListener listener = new GestureDetector.SimpleOnGestureListener() {
                     @Override
                     public boolean onDoubleTap(MotionEvent e) {
-                        if (CURRENT_LIKE[i] == false) {
+                        if(CURRENT_LIKE[i] == false){
                             HashMap usersMap = new HashMap();
                             usersMap.put(recosRef.child(getRef(i).getKey()).child("likeUsersUid").push().getKey(), mAuth.getCurrentUser().getUid());
                             recosRef.child(getRef(i).getKey()).child("likeUsersUid").updateChildren(usersMap);
                             recosRef.child(getRef(i).getKey()).child("likeUsersUid").addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                                        if (ds.getValue().equals(mAuth.getCurrentUser().getUid())) {
+                                    for(DataSnapshot ds: dataSnapshot.getChildren()){
+                                        if(ds.getValue().equals(mAuth.getCurrentUser().getUid())){
                                             Log.e("Like key", ds.getRef().getKey());
                                             keyLike[i] = ds.getRef().getKey();
 
                                         }
                                     }
                                 }
-
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError databaseError) {
 
@@ -657,13 +388,13 @@ public class ProfilFragement extends Fragment {
                             });
                             //follow.setText("Ne plus suivre");
                             recosViewHolder.getLikeButton().setImageResource(R.drawable.red_heart);
-                            CURRENT_LIKE[i] = true;
+                            CURRENT_LIKE[i] =true;
 
-                        } else if (CURRENT_LIKE[i] == true) {
+                        } else if(CURRENT_LIKE[i] == true){
                             recosRef.child(getRef(i).getKey()).child("likeUsersUid").child(keyLike[i]).removeValue();
                             recosViewHolder.getLikeButton().setImageResource(R.drawable.heart);
                             //follow.setText("Suivre");
-                            CURRENT_LIKE[i] = false;
+                            CURRENT_LIKE[i] =false;
 
                         }
                         return true;
@@ -671,16 +402,16 @@ public class ProfilFragement extends Fragment {
 
                     public boolean onSingleTapConfirmed(MotionEvent e) {
 
-                        String link = "";
-                        Log.e("testest", "" + model.getId());
-                        if (model.getType().equals("track")) {
-                            link = "https://www.deezer.com/fr/track/" + model.getId();
-                        } else if (model.getType().equals("album")) {
-                            link = "https://www.deezer.com/fr/album/" + model.getId();
-                        } else if (model.getType().equals("artist")) {
-                            link = "https://www.deezer.com/fr/artist/" + model.getId();
-                        } else {
-                            link = "https://www.imdb.com/title/" + model.getId();
+                        String link ="";
+                        Log.e("testest",""+model.getId());
+                        if (model.getType().equals("track")){
+                            link="https://www.deezer.com/fr/track/"+model.getId();
+                        } else if (model.getType().equals("album")){
+                            link="https://www.deezer.com/fr/album/"+model.getId();
+                        }else if (model.getType().equals("artist")){
+                            link="https://www.deezer.com/fr/artist/"+model.getId();
+                        } else{
+                            link="https://www.imdb.com/title/"+model.getId();
                         }
                         Intent viewIntent =
                                 new Intent("android.intent.action.VIEW",
@@ -690,6 +421,7 @@ public class ProfilFragement extends Fragment {
                         return true;
                     }
                 };
+
 
 
                 final GestureDetector detector = new GestureDetector(listener);
@@ -707,22 +439,21 @@ public class ProfilFragement extends Fragment {
                 recosViewHolder.getBookButton().setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (CURRENT_BOOKMARK[i] == false) {
+                        if(CURRENT_BOOKMARK[i] == false){
                             HashMap usersMap = new HashMap();
                             usersMap.put(usersRef.child(mAuth.getCurrentUser().getUid()).child("bookmarks").push().getKey(), getRef(i).getKey());
                             usersRef.child(mAuth.getCurrentUser().getUid()).child("bookmarks").updateChildren(usersMap);
                             usersRef.child(mAuth.getCurrentUser().getUid()).child("bookmarks").addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                                        if (ds.getValue().equals(b.getString("key"))) {
+                                    for(DataSnapshot ds: dataSnapshot.getChildren()){
+                                        if(ds.getValue().equals(b.getString("key"))){
                                             Log.e("Bookmark key", ds.getRef().getKey());
                                             keyBookmark[i] = ds.getRef().getKey();
 
                                         }
                                     }
                                 }
-
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError databaseError) {
 
@@ -730,16 +461,16 @@ public class ProfilFragement extends Fragment {
                             });
                             //follow.setText("Ne plus suivre");
                             recosViewHolder.getBookButton().setImageResource(R.drawable.bookmark_ok);
-                            CURRENT_BOOKMARK[i] = true;
+                            CURRENT_BOOKMARK[i] =true;
 
-                        } else if (CURRENT_BOOKMARK[i] == true) {
+                        } else if(CURRENT_BOOKMARK[i] == true){
                             usersRef.child(mAuth.getCurrentUser().getUid()).child("bookmarks").child(keyBookmark[i]).removeValue();
                             recosViewHolder.getBookButton().setImageResource(R.drawable.bookmark);
                             //follow.setText("Suivre");
-                            CURRENT_BOOKMARK[i] = false;
+                            CURRENT_BOOKMARK[i] =false;
 
                         }
-
+                        
 
                     }
                 });
@@ -774,27 +505,27 @@ public class ProfilFragement extends Fragment {
                 });
 
 
-                Picasso.with(getContext()).load("https://firebasestorage.googleapis.com/v0/b/share-hit-52071.appspot.com/o/Pdp%2F" + model.getUserRecoUid() + "?alt=media&token=32f03c76-31a8-4ea2-8cac-8fa92bef6667").fit().centerInside().into(recosViewHolder.getImgProfil());
+                Picasso.with(getContext()).load("https://firebasestorage.googleapis.com/v0/b/share-hit-52071.appspot.com/o/Pdp%2F"+model.getUserRecoUid()+"?alt=media&token=32f03c76-31a8-4ea2-8cac-8fa92bef6667").fit().centerInside().into(recosViewHolder.getImgProfil());
 
                 usersRef.child(model.getUserRecoUid()).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         final String pseudo = dataSnapshot.child("pseudo").getValue().toString();
-                        String typeReco = "";
+                        String typeReco="";
                         if (model.getType().equals("track")) {
                             typeReco = "un morceau";
-                        } else if (model.getType().equals("artist")) {
+                        } else if (model.getType().equals("artist")){
                             typeReco = "un artiste";
-                        } else if (model.getType().equals("album")) {
-                            typeReco = "un album";
-                        } else if (model.getType().equals("movie")) {
-                            typeReco = "un film";
-                        } else if (model.getType().equals("serie")) {
-                            typeReco = "une série";
-                        } else if (model.getType().equals("game")) {
-                            typeReco = "un jeu vidéo";
+                        } else if (model.getType().equals("album")){
+                            typeReco="un album";
+                        } else if (model.getType().equals("movie")){
+                            typeReco="un film";
+                        } else if (model.getType().equals("serie")){
+                            typeReco="une série";
+                        } else if (model.getType().equals("game")){
+                            typeReco="un jeu vidéo";
                         }
-                        final String sourceString = "<b>" + pseudo + "</b>" + " a recommandé " + "<b>" + typeReco + "</b>";
+                        final String sourceString = "<b>"+pseudo+"</b>"+ " a recommandé " +"<b>"+typeReco+"</b>";
 
                         recosViewHolder.setTitre(Html.fromHtml(sourceString));
 
@@ -802,9 +533,9 @@ public class ProfilFragement extends Fragment {
                         double searchTimestampD = model.getTimestamp();
                         long searchTimestamp = (long)searchTimestampD;
                         long difference = Math.abs(currentTimestamp - searchTimestamp);
-                        if (TimeUnit.MILLISECONDS.toSeconds(currentTimestamp) == TimeUnit.MILLISECONDS.toSeconds(searchTimestamp)) {
+                        if(TimeUnit.MILLISECONDS.toSeconds(currentTimestamp)==TimeUnit.MILLISECONDS.toSeconds(searchTimestamp)) {
                             recosViewHolder.setTime("À l'instant");
-                        } else {
+                        }else {
                             recosViewHolder.setTime("Il y a " + convertTimeStampToBelleHeureSaMere(difference));
                         }
 
@@ -816,19 +547,36 @@ public class ProfilFragement extends Fragment {
                     }
                 });
 
+                recosViewHolder.getImgProfil().setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if(mAuth.getCurrentUser().getUid().equals(model.getUserRecoUid())){
+                            Fragment fragment = new ProfilFragment();
+                            callBack.onProfilClicked();
+                            loadFragement(fragment);
+
+                        } else {
+                            b.putString("key", model.getUserRecoUid());
+                            intent3.putExtras(b);
+                            startActivity(intent3);
+                        }
+
+                    }
+                });
+
                 recosViewHolder.getDesc().setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        String link = "";
-                        Log.e("testest", "" + model.getId());
-                        if (model.getType().equals("track")) {
-                            link = "https://www.deezer.com/fr/track/" + model.getId();
-                        } else if (model.getType().equals("album")) {
-                            link = "https://www.deezer.com/fr/album/" + model.getId();
-                        } else if (model.getType().equals("artiste")) {
-                            link = "https://www.deezer.com/fr/artist/" + model.getId();
-                        } else {
-                            link = "https://www.imdb.com/title/" + model.getId();
+                        String link ="";
+                        Log.e("testest",""+model.getId());
+                        if (model.getType().equals("track")){
+                            link="https://www.deezer.com/fr/track/"+model.getId();
+                        } else if (model.getType().equals("album")){
+                            link="https://www.deezer.com/fr/album/"+model.getId();
+                        }else if (model.getType().equals("artiste")){
+                            link="https://www.deezer.com/fr/artist/"+model.getId();
+                        } else{
+                            link="https://www.imdb.com/title/"+model.getId();
                         }
                         Intent viewIntent =
                                 new Intent("android.intent.action.VIEW",
@@ -840,17 +588,14 @@ public class ProfilFragement extends Fragment {
                 recosRef.child(idReco).child("urlPreview").addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.exists()) {
-                            if (!dataSnapshot.getValue().toString().equals("")) {
-                                recosViewHolder.playButton.setVisibility(View.VISIBLE);
-                                recosViewHolder.circle.setVisibility(View.VISIBLE);
-                            }
-                        }
+                       if(dataSnapshot.exists()){
+                           if (!dataSnapshot.getValue().toString().equals("")) {
+                               recosViewHolder.playButton.setVisibility(View.VISIBLE);
+                               recosViewHolder.circle.setVisibility(View.VISIBLE);
+                           }
+                       }
                     }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                    }
+                    @Override public void onCancelled(@NonNull DatabaseError databaseError) { }
                 });
 
                 /*Log.e("jhsvhx", recosViewHolder.getDesc().getText().toString().equals(nameLect.getText().toString())+"");
@@ -878,25 +623,25 @@ public class ProfilFragement extends Fragment {
 
                         mp.seekTo(mp.getDuration());
                         mp.reset();
-                        if (lecteur.getVisibility() == View.INVISIBLE) {
+                        if (lecteur.getVisibility()==View.INVISIBLE) {
                             lecteur.setVisibility(View.VISIBLE);
                             ViewGroup.LayoutParams params = lecteur.getLayoutParams();
-                            params.height = android.app.ActionBar.LayoutParams.WRAP_CONTENT;
+                            params.height = ActionBar.LayoutParams.WRAP_CONTENT;
                             lecteur.setLayoutParams(params);
                         }
-                        try {
-                            Log.e("testest", "" + model.getUrlPreview());
-                            mp.setDataSource(model.getUrlPreview());
-                        } catch (IOException ex) {
-                            Log.e("testest", "Can't found data:" + model.getUrlPreview());
+                        try{
+                            Log.d("testest", ""+model.getUrlPreview() );mp.setDataSource(model.getUrlPreview());
+                        }
+                        catch (IOException ex){
+                            Log.e("testest", "Can't found data:"+model.getUrlPreview());
                         }
 
 
-                        if (model.getType().equals("track"))
+                        if(model.getType().equals("track"))
                             nameLect.setText(model.getTrack());
-                        else if (model.getType().equals("artist"))
+                        else if(model.getType().equals("artist"))
                             nameLect.setText(model.getArtist());
-                        else if (model.getType().equals("album"))
+                        else if(model.getType().equals("album"))
                             nameLect.setText(model.getAlbum());
                         /*recosViewHolder.playButton.setVisibility(View.INVISIBLE);
                         recosViewHolder.player.setVisibility(View.VISIBLE);*/
@@ -932,7 +677,7 @@ public class ProfilFragement extends Fragment {
                                 recosViewHolder.player.setVisibility(View.INVISIBLE);*/
 
                                 ViewGroup.LayoutParams params = lecteur.getLayoutParams();
-                                params.height = 0;
+                                params.height=0;
                                 lecteur.setLayoutParams(params);
                             }
                         });
@@ -950,7 +695,8 @@ public class ProfilFragement extends Fragment {
                                     recosViewHolder.playButton.setImageResource(R.drawable.ic_pause);
                                     recosViewHolder.player.setVisibility(View.INVISIBLE);*/
 
-                                } else {
+                                }
+                                else {
                                     btnPause.setImageResource(R.drawable.ic_pause);
                                     /*recosViewHolder.playButton.setVisibility(View.INVISIBLE);
                                     recosViewHolder.player.setVisibility(View.VISIBLE);*/
@@ -977,11 +723,11 @@ public class ProfilFragement extends Fragment {
         };
 
 
-        post.setAdapter(fireBaseRecyclerAdapter);
+        recyclerView.setAdapter(fireBaseRecyclerAdapter);
     }
 
     private String convertTimeStampToBelleHeureSaMere(long millis) {
-        if (millis < 0) {
+        if(millis < 0) {
             throw new IllegalArgumentException("Duration must be greater than zero!");
         }
 
@@ -994,8 +740,8 @@ public class ProfilFragement extends Fragment {
         long seconds = TimeUnit.MILLISECONDS.toSeconds(millis);
 
         StringBuilder sb = new StringBuilder(64);
-        if (days != 0) {
-            if (days == 1) {
+        if(days != 0){
+            if(days == 1){
                 sb.append(days);
                 sb.append(" jour ");
             } else {
@@ -1003,8 +749,8 @@ public class ProfilFragement extends Fragment {
                 sb.append(" jours ");
             }
 
-        } else if (hours != 0) {
-            if (hours == 1) {
+        } else if(hours != 0){
+            if(hours == 1){
                 sb.append(hours);
                 sb.append(" heure ");
             } else {
@@ -1012,21 +758,156 @@ public class ProfilFragement extends Fragment {
                 sb.append(" heures ");
             }
 
-        } else if (minutes != 0) {
-            if (minutes == 1) {
+        } else if(minutes != 0){
+            if(minutes == 1){
                 sb.append(minutes);
                 sb.append(" minute ");
             } else {
                 sb.append(minutes);
                 sb.append(" minutes ");
             }
-        } else if (seconds != 0) {
+        } else if(seconds != 0){
             sb.append(seconds);
             sb.append(" secondes");
         }
 
 
-        return (sb.toString());
+
+
+        return(sb.toString());
+    }
+
+    private boolean loadFragement(Fragment fragment){
+        if(fragment != null){
+            getFragmentManager().beginTransaction().replace(R.id.container, fragment)
+                    .commit();
+
+            return true;
+        }
+        return false;
+    }
+
+
+
+    public static class RecosViewHolder extends RecyclerView.ViewHolder{
+
+        View mView;
+        TextView nbrlike;
+        TextView nbrCom;
+        TextView pseudoCom;
+        TextView autreComment;
+        TextView descR;
+        ImageView playButton;
+        Indicator player;
+        ImageView circle;
+
+        final LinearLayout layout;
+        final LinearLayout.LayoutParams params;
+
+        public RecosViewHolder(View itemView) {
+            super(itemView);
+            this.mView = itemView;
+            nbrlike = (TextView) mView.findViewById(R.id.nbrLike);
+            nbrCom = (TextView) mView.findViewById(R.id.nbrComment);
+            pseudoCom = mView.findViewById(R.id.pseudoComment);
+            autreComment = mView.findViewById(R.id.autreComment);
+            descR = (TextView) mView.findViewById(R.id.desc);
+            playButton = mView.findViewById(R.id.playButton);
+            player = mView.findViewById(R.id.player);
+
+            circle = mView.findViewById(R.id.circle);
+            player.setVisibility(View.INVISIBLE);
+
+            playButton.setVisibility(View.INVISIBLE);
+            circle.setVisibility(View.INVISIBLE);
+            layout =(LinearLayout)itemView.findViewById(R.id.linearLayoutReco);
+            params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        }
+
+        public void setAutreComment(String autreComment1){
+            autreComment.setText(autreComment1);
+        }
+
+        public void setTime(String timeText){
+            TextView time = (TextView) mView.findViewById(R.id.time);
+            time.setText(timeText);
+        }
+
+        public void setPseudoCom(String pseudo){
+            pseudoCom.setText(pseudo);
+        }
+
+        public void setDesc(Spanned desc){
+            descR.setText(desc);
+        }
+
+        public TextView getDesc(){
+            return descR;
+        }
+
+        public void setTitre(Spanned text){
+            TextView nameR = (TextView) mView.findViewById(R.id.name);
+            nameR.setText(text);
+        }
+
+        public ImageButton getImg() {
+            ImageButton imgR = (ImageButton) mView.findViewById(R.id.img_ar);
+            return imgR;
+        }
+
+        public void setmView(View mView) {
+            this.mView = mView;
+        }
+
+        public CircleImageView getImgProfil(){
+            CircleImageView imgProfil = (CircleImageView) mView.findViewById(R.id.imgProfil);
+            return imgProfil;
+        }
+
+        public ImageButton getLikeButton(){
+            ImageButton imgButton = (ImageButton) mView.findViewById(R.id.likeButton);
+            return imgButton;
+        }
+
+        public void setNbrLike(String text){
+            nbrlike.setText(text);
+        }
+
+        public void setNbrCom(String text){
+            nbrCom.setText(text);
+        }
+
+        public String getNbrLike(){
+            return nbrlike.getText().toString();
+        }
+
+        public String getNbrComment(){
+            return nbrCom.getText().toString();
+        }
+
+        public TextView getListLike(){
+            TextView nbrLikeBut = (TextView) mView.findViewById(R.id.nbrLike);
+            return  nbrLikeBut;
+        }
+
+        public ImageButton getCommentButton(){
+            ImageButton button = (ImageButton) mView.findViewById(R.id.commentButton);
+            return button;
+        }
+
+        public ImageButton getBookButton(){
+            ImageButton img = (ImageButton) mView.findViewById(R.id.bookButton);
+            return img;
+        }
+
+        public void layout_hide() {
+            layout.setVisibility(View.GONE);
+
+        }
+
+
     }
 
     private Runnable onEverySecond = new Runnable() {
@@ -1044,11 +925,9 @@ public class ProfilFragement extends Fragment {
             }
         }
     };
-
+    public interface MyListenerFeed {
+        public void onSwipeLeftFeed();
+        public void onProfilClicked();
+    }
 }
-
-
-
-
-
 

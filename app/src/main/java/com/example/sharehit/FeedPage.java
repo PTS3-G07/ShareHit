@@ -1,6 +1,5 @@
 package com.example.sharehit;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,7 +15,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -24,31 +22,19 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.messaging.FirebaseMessaging;
 import com.luseen.spacenavigation.SpaceItem;
 import com.luseen.spacenavigation.SpaceNavigationView;
 import com.luseen.spacenavigation.SpaceOnClickListener;
-import com.squareup.picasso.MemoryPolicy;
-import com.squareup.picasso.NetworkPolicy;
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -60,23 +46,15 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-import static com.example.sharehit.ApiManager.EXTRA_ID;
-import static com.example.sharehit.ApiManager.EXTRA_LINK;
-import static com.example.sharehit.ApiManager.EXTRA_NAME;
-import static com.example.sharehit.ApiManager.EXTRA_PREVIEW;
-import static com.example.sharehit.ApiManager.EXTRA_TYPE;
-import static com.example.sharehit.ApiManager.EXTRA_URL;
-
 import static com.example.sharehit.R.*;
 
-public class FeedPage extends AppCompatActivity {
+public class FeedPage extends AppCompatActivity implements FeedFragment.MyListenerFeed, FollowFragment.MyListenerFollow, BookmarkFragment.MyListenerBookmark, ProfilFragment.MyListenerProfil {
 
     Button logout;
-    SpaceNavigationView navigationView;
+    public SpaceNavigationView navigationView;
     FirebaseAuth firebaseAuth;
     Dialog myDialog;
     ImageButton artiste;
@@ -85,6 +63,7 @@ public class FeedPage extends AppCompatActivity {
     ImageButton jeuVideo;
     ImageButton serie;
     ImageButton film;
+    FrameLayout container;
 
     ImageButton notification;
 
@@ -102,6 +81,27 @@ public class FeedPage extends AppCompatActivity {
     String NOTIFICATION_TITLE;
     String NOTIFICATION_MESSAGE;
     String TOPIC;
+
+    public void onSwipeLeftFeed(){
+        navigationView.changeCurrentItem(1);
+    }
+
+    public void onSwipeLeftFollow(){
+        navigationView.changeCurrentItem(2);
+    }
+    public void onSwipeRightFollow(){
+        navigationView.changeCurrentItem(0);
+    }
+
+    public void onSwipeLeftBookmark(){
+        navigationView.changeCurrentItem(3);
+    }
+    public void onSwipeRightBookmark(){
+        navigationView.changeCurrentItem(1);
+    }
+    public void onSwipeRightProfil(){ navigationView.changeCurrentItem(2); }
+    public void onProfilClicked(){ navigationView.changeCurrentItem(3); }
+
 
     @Override
     protected void onStart() {
@@ -167,11 +167,11 @@ public class FeedPage extends AppCompatActivity {
         actionBar.hide();
 
         mAuth = FirebaseAuth.getInstance();
-
-
+        container = findViewById(id.container);
         navigationView = findViewById(id.space);
         profilePicture = (CircleImageView) findViewById(id.itemProfilPicture);
         //Picasso.with(getApplicationContext()).load("https://firebasestorage.googleapis.com/v0/b/share-hit-52071.appspot.com/o/Pdp%2F"+mAuth.getCurrentUser().getUid()+"?alt=media&token=32f03c76-31a8-4ea2-8cac-8fa92bef6667").networkPolicy(NetworkPolicy.NO_CACHE).memoryPolicy(MemoryPolicy.NO_CACHE).fit().centerInside().into(profilePicture);
+
 
         navigationView.initWithSaveInstanceState(savedInstanceState);
         navigationView.addSpaceItem(new SpaceItem("", drawable.time_icon));
@@ -260,10 +260,10 @@ public class FeedPage extends AppCompatActivity {
 
 
         if(b == null){
-            Fragment fragment = new FeedFragement();
+            Fragment fragment = new FeedFragment();
             loadFragement(fragment);
         } else {
-            Fragment fragment = new ProfilFragement();
+            Fragment fragment = new ProfilFragment();
             loadFragement(fragment);
         }
 
@@ -362,16 +362,16 @@ public class FeedPage extends AppCompatActivity {
             @Override
             public void onItemClick(int itemIndex, String itemName) {
                 if(itemIndex == 0){
-                    fragment = new FeedFragement();
+                    fragment = new FeedFragment();
                     loadFragement(fragment);
                 }else if (itemIndex == 1){
-                    fragment = new SearchFragement();
+                    fragment = new FollowFragment();
                     loadFragement(fragment);
                 }else if(itemIndex == 2){
-                    fragment = new NotifFragement();
+                    fragment = new BookmarkFragment();
                     loadFragement(fragment);
                 }else if(itemIndex == 3){
-                    fragment = new ProfilFragement();
+                    fragment = new ProfilFragment();
                     loadFragement(fragment);
                 }
                // Toast.makeText(FeedPage.this, itemIndex + " " + itemName, Toast.LENGTH_SHORT).show();

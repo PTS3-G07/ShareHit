@@ -38,7 +38,8 @@
         </service>
 
         <activity android:name=".SplashScreen"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen">
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -49,14 +50,12 @@
         <activity android:name=".CommentPage" />
         <activity android:name=".ListLikePage" />
         <activity
-            android:name=".PostRec"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".ApiManager"
             android:screenOrientation="portrait" />
         <activity
             android:name=".FeedPage"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            />
         <activity
             android:name=".SignUp"
             android:screenOrientation="portrait" />

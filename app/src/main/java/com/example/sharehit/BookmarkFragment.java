@@ -27,6 +27,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sharehit.Model.Recommandation;
+import com.example.sharehit.Utilities.OnSwipeTouchListener;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -40,7 +41,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
-public class NotifFragement extends Fragment {
+public class BookmarkFragment extends Fragment {
 
     RecyclerView recyclerView;
     private DatabaseReference recosRef, bookRef, usersRef;
@@ -54,7 +55,7 @@ public class NotifFragement extends Fragment {
     private LinearLayout lecteur;
     private TextView nameLect;
     private ImageView musicImg;
-
+    private MyListenerBookmark callBack;
     private Animation buttonClick;
 
     @Override
@@ -66,6 +67,24 @@ public class NotifFragement extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         ViewGroup root = (ViewGroup) inflater.inflate(R.layout.fragement_notif, null);
+
+
+        callBack = (MyListenerBookmark) getActivity();
+
+        root.setOnTouchListener(new OnSwipeTouchListener(getContext()) {
+
+            public void onSwipeLeft() {
+                Fragment fragment = new ProfilFragment();
+                loadFragement(fragment);
+                callBack.onSwipeLeftBookmark();
+            }
+            public void onSwipeRight() {
+                Fragment fragment = new FollowFragment();
+                loadFragement(fragment);
+                callBack.onSwipeRightBookmark();
+            }
+
+        });
 
         buttonClick = AnimationUtils.loadAnimation(getContext(), R.anim.click);
 
@@ -172,16 +191,16 @@ public class NotifFragement extends Fragment {
             }
         });
 
-        FirebaseRecyclerAdapter<Recommandation, FeedFragement.RecosViewHolder> fireBaseRecyclerAdapter = new FirebaseRecyclerAdapter<Recommandation, FeedFragement.RecosViewHolder>
+        FirebaseRecyclerAdapter<Recommandation, FeedFragment.RecosViewHolder> fireBaseRecyclerAdapter = new FirebaseRecyclerAdapter<Recommandation, FeedFragment.RecosViewHolder>
                 (
                         Recommandation.class,
                         R.layout.recommandation_item,
-                        FeedFragement.RecosViewHolder.class,
+                        FeedFragment.RecosViewHolder.class,
                         recosRef
                 ) {
 
             @Override
-            protected void populateViewHolder(final FeedFragement.RecosViewHolder recosViewHolder, final Recommandation model, final int i) {
+            protected void populateViewHolder(final FeedFragment.RecosViewHolder recosViewHolder, final Recommandation model, final int i) {
 
 
                 bookRef.addValueEventListener(new ValueEventListener() {
@@ -575,7 +594,7 @@ public class NotifFragement extends Fragment {
                                 @Override
                                 public void onClick(View v) {
                                     if(mAuth.getCurrentUser().getUid().equals(model.getUserRecoUid())){
-                                        Fragment fragment = new ProfilFragement();
+                                        Fragment fragment = new ProfilFragment();
                                         loadFragement(fragment);
 
                                     } else {
@@ -785,4 +804,9 @@ public class NotifFragement extends Fragment {
             }
         }
     };
+
+    public interface MyListenerBookmark{
+        public void onSwipeLeftBookmark();
+        public void onSwipeRightBookmark();
+    }
 }
