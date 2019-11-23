@@ -74,13 +74,9 @@ public class BookmarkFragment extends Fragment {
         root.setOnTouchListener(new OnSwipeTouchListener(getContext()) {
 
             public void onSwipeLeft() {
-                Fragment fragment = new ProfilFragment();
-                loadFragement(fragment);
                 callBack.onSwipeLeftBookmark();
             }
             public void onSwipeRight() {
-                Fragment fragment = new FollowFragment();
-                loadFragement(fragment);
                 callBack.onSwipeRightBookmark();
             }
 

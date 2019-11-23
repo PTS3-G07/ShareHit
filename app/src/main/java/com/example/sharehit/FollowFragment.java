@@ -24,6 +24,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -77,13 +78,9 @@ public class FollowFragment extends Fragment {
         root.setOnTouchListener(new OnSwipeTouchListener(getContext()) {
 
             public void onSwipeLeft() {
-                Fragment fragment = new BookmarkFragment();
-                loadFragement(fragment);
                 callBack.onSwipeLeftFollow();
             }
             public void onSwipeRight() {
-                Fragment fragment = new FeedFragment();
-                loadFragement(fragment);
                 callBack.onSwipeRightFollow();
             }
 
@@ -787,9 +784,6 @@ public class FollowFragment extends Fragment {
 
     private boolean loadFragement(Fragment fragment){
         if(fragment != null){
-            getFragmentManager().beginTransaction().replace(R.id.container, fragment)
-                    .commit();
-
             return true;
         }
         return false;

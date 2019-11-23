@@ -120,8 +120,6 @@ public class ProfilFragment extends Fragment {
         root.setOnTouchListener(new OnSwipeTouchListener(getContext()) {
 
             public void onSwipeRight() {
-                Fragment fragment = new BookmarkFragment();
-                loadFragement(fragment);
                 callBack.onSwipeRightProfil();
             }
 

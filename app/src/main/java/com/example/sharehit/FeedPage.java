@@ -4,6 +4,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -17,6 +18,8 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -54,7 +57,7 @@ import static com.example.sharehit.R.*;
 public class FeedPage extends AppCompatActivity implements FeedFragment.MyListenerFeed, FollowFragment.MyListenerFollow, BookmarkFragment.MyListenerBookmark, ProfilFragment.MyListenerProfil {
 
     Button logout;
-    public SpaceNavigationView navigationView;
+    SpaceNavigationView navigationView;
     FirebaseAuth firebaseAuth;
     Dialog myDialog;
     ImageButton artiste;
@@ -64,7 +67,7 @@ public class FeedPage extends AppCompatActivity implements FeedFragment.MyListen
     ImageButton serie;
     ImageButton film;
     FrameLayout container;
-
+    int currentItem=0;
     ImageButton notification;
 
     private FirebaseAuth mAuth;
@@ -83,44 +86,70 @@ public class FeedPage extends AppCompatActivity implements FeedFragment.MyListen
     String TOPIC;
 
     public void onSwipeLeftFeed(){
+        loadFragement(new FollowFragment(),true);
         navigationView.changeCurrentItem(1);
     }
 
     public void onSwipeLeftFollow(){
+        loadFragement(new BookmarkFragment(),true);
         navigationView.changeCurrentItem(2);
     }
     public void onSwipeRightFollow(){
+        loadFragement(new FeedFragment(),false);
         navigationView.changeCurrentItem(0);
     }
 
     public void onSwipeLeftBookmark(){
+        loadFragement(new ProfilFragment(),true);
         navigationView.changeCurrentItem(3);
     }
     public void onSwipeRightBookmark(){
+        loadFragement(new FollowFragment(),false);
         navigationView.changeCurrentItem(1);
-    }
-    public void onSwipeRightProfil(){ navigationView.changeCurrentItem(2); }
-    public void onProfilClicked(){ navigationView.changeCurrentItem(3); }
 
+    }
+
+    public void onSwipeRightProfil(){
+        loadFragement(new BookmarkFragment(),false);
+        navigationView.changeCurrentItem(2);
+    }
+
+    public void onProfilClicked(){ navigationView.changeCurrentItem(3); }
 
     @Override
     protected void onStart() {
         super.onStart();
         firebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser user = firebaseAuth.getCurrentUser();
-        if(user == null){
+        if(user == null) {
             startActivity(new Intent(FeedPage.this, MainActivity.class));
         }
     }
 
+    private boolean loadFragement(Fragment fragment, boolean left){
+        if(fragment != null){
+            //getSupportFragmentManager().beginTransaction().replace(id.container, fragment).commit();
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            if(left==true){
+                transaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_left);
+            }else {
+                transaction.setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right, R.anim.enter_from_right, R.anim.exit_to_right );
+            }
+            transaction.replace(R.id.container, fragment);
+            transaction.addToBackStack("test");
+            transaction.commit();
 
-
-
+            return true;
+        }
+        return false;
+    }
 
     private boolean loadFragement(Fragment fragment){
         if(fragment != null){
-            getSupportFragmentManager().beginTransaction().replace(id.container, fragment)
-                    .commit();
+            //getSupportFragmentManager().beginTransaction().replace(id.container, fragment).commit();
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.container, fragment);
+            transaction.commit();
 
             return true;
         }
@@ -181,8 +210,6 @@ public class FeedPage extends AppCompatActivity implements FeedFragment.MyListen
         navigationView.showIconOnly();
 
         notification = (ImageButton) findViewById(id.notification_button);
-
-
         notification.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -216,33 +243,11 @@ public class FeedPage extends AppCompatActivity implements FeedFragment.MyListen
                                     Toast.makeText(getApplicationContext(), "Veuillez saisir une demande de plus de 3 caractères", Toast.LENGTH_LONG).show();
                                 }
 
-
                             }
                         });
                 builder.create().show();
             }
         });
-
-        //checkUserStatus();
-        /*
-        logout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                firebaseAuth = FirebaseAuth.getInstance();
-                firebaseAuth.signOut();
-                checkUserStatus();
-            }
-        });
-         */
-
-
-/*
-        myDialog=new Dialog(this, style.DialogTheme);
-        Window window = myDialog.getWindow();
-        WindowManager.LayoutParams wlp = window.getAttributes();
-        wlp.gravity = Gravity.BOTTOM;
-        /*wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
-        wlp.width = WindowManager.LayoutParams.MATCH_PARENT;*/
 
         final Dialog d = new Dialog(this, R.style.DialogTheme);
         d.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -261,10 +266,10 @@ public class FeedPage extends AppCompatActivity implements FeedFragment.MyListen
 
         if(b == null){
             Fragment fragment = new FeedFragment();
-            loadFragement(fragment);
+            loadFragement(fragment,true);
         } else {
             Fragment fragment = new ProfilFragment();
-            loadFragement(fragment);
+            loadFragement(fragment,false);
         }
 
         navigationView.setSpaceOnClickListener(new SpaceOnClickListener() {
@@ -346,35 +351,29 @@ public class FeedPage extends AppCompatActivity implements FeedFragment.MyListen
                         //finish();
                     }
                 });
-                //int height = (int)(getResources().getDisplayMetrics().heightPixels*0.4);
 
-                /*
-                myDialog.setContentView(R.layout.new_recommendation);
-                //Toast.makeText(FeedPage.this,"onCentreButtonClick", Toast.LENGTH_SHORT).show();
-                myDialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT,WindowManager.LayoutParams.WRAP_CONTENT);
-                myDialog.show();
 
-                 */
-                /*fragment = new NewRecommendationFragment();
-                loadFragement(fragment);*/
             }
 
             @Override
             public void onItemClick(int itemIndex, String itemName) {
-                if(itemIndex == 0){
+                int anciennePage = currentItem;
+               if(itemIndex == 0){
                     fragment = new FeedFragment();
-                    loadFragement(fragment);
                 }else if (itemIndex == 1){
                     fragment = new FollowFragment();
-                    loadFragement(fragment);
                 }else if(itemIndex == 2){
                     fragment = new BookmarkFragment();
-                    loadFragement(fragment);
+                    //
                 }else if(itemIndex == 3){
                     fragment = new ProfilFragment();
-                    loadFragement(fragment);
                 }
-               // Toast.makeText(FeedPage.this, itemIndex + " " + itemName, Toast.LENGTH_SHORT).show();
+                if(currentItem>itemIndex){
+                    loadFragement(fragment,false);
+                } else{
+                    loadFragement(fragment,true);
+                }
+               currentItem=itemIndex;
             }
 
             @Override

@@ -25,6 +25,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -777,11 +778,8 @@ public class FeedFragment extends Fragment {
         return(sb.toString());
     }
 
-    private boolean loadFragement(Fragment fragment){
+   private boolean loadFragement(Fragment fragment){
         if(fragment != null){
-            getFragmentManager().beginTransaction().replace(R.id.container, fragment)
-                    .commit();
-
             return true;
         }
         return false;
