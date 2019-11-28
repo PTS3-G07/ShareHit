@@ -1,51 +1,42 @@
 {
   "project_info": {
-    "project_number": "1023164006695",
-    "firebase_url": "https://share-hit-52071.firebaseio.com",
-    "project_id": "share-hit-52071",
-    "storage_bucket": "share-hit-52071.appspot.com"
+    "project_number": "756914004922",
+    "firebase_url": "https://share-hit.firebaseio.com",
+    "project_id": "share-hit",
+    "storage_bucket": "share-hit.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1023164006695:android:8d1dc8dc38635d557d2902",
+        "mobilesdk_app_id": "1:756914004922:android:b7e4334fdf3dd4203a7383",
         "android_client_info": {
           "package_name": "com.example.sharehit"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1023164006695-3ufpq5f7l0qolkh2ogdadbsj26ph5cjg.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.sharehit",
-            "certificate_hash": "bcf64d244dbe457757a6d8bb74beca623071d996"
-          }
-        },
-        {
-          "client_id": "1023164006695-nvlshcj4vqe5o7slm7hu2cb1i7b53nk1.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.sharehit",
-            "certificate_hash": "3aefcc85f570518c688bb1353c1af6b3821228cc"
-          }
-        },
-        {
-          "client_id": "1023164006695-005imr4r3s01rvnb13vn4boodmi0v714.apps.googleusercontent.com",
+          "client_id": "756914004922-d2bhgojarhg9q8pvs556vhuqndvnv1gm.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCrtWNxWm6u2FvCSnSR-kijO2vWnO9A6r4"
+          "current_key": "AIzaSyC3a7q9eLaP2wRcS4ENAHqQxLeGP2x9yJg"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "1023164006695-005imr4r3s01rvnb13vn4boodmi0v714.apps.googleusercontent.com",
+              "client_id": "756914004922-d2bhgojarhg9q8pvs556vhuqndvnv1gm.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "756914004922-qu2lnc6nhi9k2i0unov3rj88kgraa5pn.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "fr.iutlaval.depinfo.shareit"
+              }
             }
           ]
         }

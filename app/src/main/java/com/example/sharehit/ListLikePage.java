@@ -106,7 +106,6 @@ public class ListLikePage extends AppCompatActivity {
                             Picasso.with(getApplicationContext()).load("https://firebasestorage.googleapis.com/v0/b/share-hit-52071.appspot.com/o/Pdp%2F"+getRef(i).getKey()+"?alt=media&token=32f03c76-31a8-4ea2-8cac-8fa92bef6667").fit().centerInside().into(userViewHolder.getImgProfil());
                         } else {
                             userViewHolder.layout_hide();
-
                         }
 
                     }
@@ -149,7 +148,6 @@ public class ListLikePage extends AppCompatActivity {
         }
         private void layout_hide() {
             layout.setVisibility(View.GONE);
-
         }
 
     }

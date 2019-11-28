@@ -82,8 +82,7 @@ public class SignUp extends AppCompatActivity {
                                                     public void onComplete(@NonNull Task<AuthResult> task) {
                                                         if(task.isSuccessful()){
                                                             User user = new User(
-                                                                    pseudo,
-                                                                    email
+                                                                    pseudo
                                                             );
                                                             String userUID = mAuth.getCurrentUser().getUid();
                                                             HashMap usersMap = new HashMap();
