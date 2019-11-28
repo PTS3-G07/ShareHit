@@ -171,7 +171,7 @@ public class ProfilPage extends AppCompatActivity {
             }
         });
 
-        Picasso.with(getApplicationContext()).load("https://firebasestorage.googleapis.com/v0/b/share-hit-52071.appspot.com/o/Pdp%2F" + b.getString("key") + "?alt=media&token=32f03c76-31a8-4ea2-8cac-8fa92bef6667").networkPolicy(NetworkPolicy.NO_CACHE).memoryPolicy(MemoryPolicy.NO_CACHE).fit().centerInside().into(pdp);
+        Picasso.with(getApplicationContext()).load("https://firebasestorage.googleapis.com/v0/b/share-hit.appspot.com/o/"+b.getString("key")+"?alt=media&token=1d93f69f-a530-455a-83d2-929ce42c3667").fit().centerInside().into(pdp);
 
         usersRef.child(b.getString("key")).addValueEventListener(new ValueEventListener() {
             @Override
@@ -565,7 +565,7 @@ public class ProfilPage extends AppCompatActivity {
                 });
 
 
-                Picasso.with(getApplicationContext()).load("https://firebasestorage.googleapis.com/v0/b/share-hit-52071.appspot.com/o/Pdp%2F" + model.getUserRecoUid() + "?alt=media&token=32f03c76-31a8-4ea2-8cac-8fa92bef6667").fit().centerInside().into(recosViewHolder.getImgProfil());
+                Picasso.with(getApplicationContext()).load("https://firebasestorage.googleapis.com/v0/b/share-hit.appspot.com/o/"+model.getUserRecoUid()+"?alt=media&token=1d93f69f-a530-455a-83d2-929ce42c3667").fit().centerInside().into(recosViewHolder.getImgProfil());
 
                 usersRef.child(model.getUserRecoUid()).addValueEventListener(new ValueEventListener() {
                     @Override

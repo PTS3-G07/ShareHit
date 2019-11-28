@@ -27,6 +27,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.MemoryPolicy;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.sql.Timestamp;
@@ -119,15 +121,13 @@ public class CommentPage extends AppCompatActivity {
                 Date date=new Date(comment.getTimestamp());
                 DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy"+" à "+"H-mm");
                 commentViewHolder.setTime("Le "+dateFormat.format(date));
+                Picasso.with(getApplicationContext()).load("https://firebasestorage.googleapis.com/v0/b/share-hit.appspot.com/o/"+comment.getUid()+"?alt=media&token=1d93f69f-a530-455a-83d2-929ce42c3667").fit().centerInside().into(commentViewHolder.getImgProfilComment());
 
                 usersRef.child(comment.getUid()).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                         commentViewHolder.setPseudoComment(dataSnapshot.child("pseudo").getValue().toString());
-                        if(dataSnapshot.child("pdpUrl").exists()){
-                            Picasso.with(getApplicationContext()).load(dataSnapshot.child("pdpUrl").getValue().toString()).fit().centerInside().into(commentViewHolder.getImgProfilComment());
-                        }
 
                     }
 

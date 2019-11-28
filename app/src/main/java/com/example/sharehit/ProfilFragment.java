@@ -164,7 +164,7 @@ public class ProfilFragment extends Fragment {
         pd = new ProgressDialog(getActivity());
         mStorageRef = FirebaseStorage.getInstance().getReference();
 
-        Picasso.with(getContext()).load("https://firebasestorage.googleapis.com/v0/b/share-hit-52071.appspot.com/o/Pdp%2F"+mAuth.getCurrentUser().getUid()+"?alt=media&token=32f03c76-31a8-4ea2-8cac-8fa92bef6667").fit().centerInside().into(pdp);
+        Picasso.with(getContext()).load("https://firebasestorage.googleapis.com/v0/b/share-hit.appspot.com/o/"+mAuth.getCurrentUser().getUid()+"?alt=media&token=1d93f69f-a530-455a-83d2-929ce42c3667").into(pdp);
 
 
         usersRef.child(user.getUid()).addValueEventListener(new ValueEventListener() {
@@ -371,7 +371,7 @@ public class ProfilFragment extends Fragment {
 
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null && data.getData() != null) {
             imguri = data.getData();
-            final StorageReference filepath = mStorageRef.child("Pdp").child(user.getUid());
+            final StorageReference filepath = mStorageRef.child(user.getUid());
             filepath.putFile(imguri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
@@ -389,7 +389,7 @@ public class ProfilFragment extends Fragment {
 
                      */
                     Toast.makeText(getContext(),"Photo de profil changé", Toast.LENGTH_LONG).show();
-                    Picasso.with(getContext()).load("https://firebasestorage.googleapis.com/v0/b/share-hit-52071.appspot.com/o/Pdp%2F"+mAuth.getCurrentUser().getUid()+"?alt=media&token=32f03c76-31a8-4ea2-8cac-8fa92bef6667").networkPolicy(NetworkPolicy.NO_CACHE).memoryPolicy(MemoryPolicy.NO_CACHE).centerInside().into(pdp);
+                    Picasso.with(getContext()).load("https://firebasestorage.googleapis.com/v0/b/share-hit.appspot.com/o/"+mAuth.getCurrentUser().getUid()+"?alt=media&token=1d93f69f-a530-455a-83d2-929ce42c3667").networkPolicy(NetworkPolicy.NO_CACHE).memoryPolicy(MemoryPolicy.NO_CACHE).fit().centerInside().into(pdp);
 
 
                 }
