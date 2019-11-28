@@ -769,6 +769,7 @@ public class ProfilFragment extends Fragment {
                 });
 
 
+                //BufferedImage img = ImageIO.read(new ByteArrayInputStream(bytes));
                 Picasso.with(getContext()).load("https://firebasestorage.googleapis.com/v0/b/share-hit-52071.appspot.com/o/Pdp%2F" + model.getUserRecoUid() + "?alt=media&token=32f03c76-31a8-4ea2-8cac-8fa92bef6667").fit().centerInside().into(recosViewHolder.getImgProfil());
 
                 usersRef.child(model.getUserRecoUid()).addValueEventListener(new ValueEventListener() {
