@@ -51,5 +51,6 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.aar', '*.jar'], exclude: [])
     implementation 'com.taishi-y:musicindicator:0.1.0'
     implementation 'com.google.firebase:firebase-messaging:20.0.1'
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
 }
 apply plugin: 'com.google.gms.google-services'

@@ -60,4 +60,8 @@ public class Bookmark {
     public void setArtist(String artist) {
         this.artist = artist;
     }
+
+    public String toString(){
+        return this.keyBookmark + " " + this.keyReco + " " + this.imgUrl + " " + this.titre + " " + this.artist;
+    }
 }
