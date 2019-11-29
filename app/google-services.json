@@ -1,50 +1,35 @@
 {
   "project_info": {
-    "project_number": "756914004922",
-    "firebase_url": "https://share-hit.firebaseio.com",
-    "project_id": "share-hit",
-    "storage_bucket": "share-hit.appspot.com"
+    "project_number": "686738327584",
+    "firebase_url": "https://sharehit-37e93.firebaseio.com",
+    "project_id": "sharehit-37e93",
+    "storage_bucket": "sharehit-37e93.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:756914004922:android:5e3e85dffea087093a7383",
+        "mobilesdk_app_id": "1:686738327584:android:a3a6f36402a9a88920d445",
         "android_client_info": {
           "package_name": "com.example.sharehit"
         }
       },
       "oauth_client": [
         {
-          "client_id": "756914004922-n7ns8l1hpkq3tqgnq60lsf5t44cb4s25.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.sharehit",
-            "certificate_hash": "81bd7b620f084500d7a87ea2937e6d1a567f92b8"
-          }
-        },
-        {
-          "client_id": "756914004922-d2bhgojarhg9q8pvs556vhuqndvnv1gm.apps.googleusercontent.com",
+          "client_id": "686738327584-8t0ama832ip5r95e0hbp4jel7ebh7d16.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyC3a7q9eLaP2wRcS4ENAHqQxLeGP2x9yJg"
+          "current_key": "AIzaSyCUCFY7Kn0aoBLsIwSbOx_rcYd8xhdGxGs"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "756914004922-d2bhgojarhg9q8pvs556vhuqndvnv1gm.apps.googleusercontent.com",
+              "client_id": "686738327584-8t0ama832ip5r95e0hbp4jel7ebh7d16.apps.googleusercontent.com",
               "client_type": 3
-            },
-            {
-              "client_id": "756914004922-qu2lnc6nhi9k2i0unov3rj88kgraa5pn.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "fr.iutlaval.depinfo.shareit"
-              }
             }
           ]
         }
