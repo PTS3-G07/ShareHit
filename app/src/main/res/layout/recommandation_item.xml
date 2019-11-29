@@ -110,13 +110,20 @@
             <com.taishi.library.Indicator
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_alignStart="@+id/circle"
-                android:layout_alignLeft="@+id/circle"
-                android:layout_alignTop="@+id/circle"
-                android:layout_alignEnd="@+id/circle"
-                android:layout_alignRight="@+id/circle"
-                android:layout_alignBottom="@+id/circle"
-                app:bar_color="@color/black_transparent" />
+                android:layout_alignStart="@+id/playButton"
+                android:layout_alignLeft="@+id/playButton"
+                android:layout_alignTop="@+id/playButton"
+                android:layout_alignEnd="@+id/playButton"
+                android:layout_alignRight="@+id/playButton"
+                android:layout_alignBottom="@+id/playButton"
+                android:layout_marginStart="30dp"
+                android:layout_marginLeft="30dp"
+                android:layout_marginTop="30dp"
+                android:layout_marginEnd="30dp"
+                android:layout_marginRight="30dp"
+                android:layout_marginBottom="30dp"
+                app:bar_color="@color/white"
+                android:visibility="invisible"/>
         </RelativeLayout>
 
 
