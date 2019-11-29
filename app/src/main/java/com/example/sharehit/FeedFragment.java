@@ -75,6 +75,12 @@ public class FeedFragment extends Fragment {
         mp.pause();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -591,12 +597,16 @@ public class FeedFragment extends Fragment {
                 recosRef.child(idReco).child("urlPreview").addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                       if(dataSnapshot.exists()){
-                           if (!dataSnapshot.getValue().toString().equals("")) {
-                               recosViewHolder.playButton.setVisibility(View.VISIBLE);
-                               recosViewHolder.circle.setVisibility(View.VISIBLE);
-                           }
-                       }
+                        if(dataSnapshot.exists()){
+                            if (!dataSnapshot.getValue().toString().equals("") && recosViewHolder.playButton!=null) {
+                                recosViewHolder.playButton.setVisibility(View.VISIBLE);
+                                recosViewHolder.circle.setVisibility(View.VISIBLE);
+                            }
+                            else {
+                                recosViewHolder.playButton = null;
+                                recosViewHolder.playButton = null;
+                            }
+                        }
                     }
                     @Override public void onCancelled(@NonNull DatabaseError databaseError) { }
                 });
@@ -620,58 +630,59 @@ public class FeedFragment extends Fragment {
                     }
                 });*/
 
-                recosViewHolder.playButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
+                if (recosViewHolder.playButton!=null) {
+                    recosViewHolder.playButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
 
-                        mp.seekTo(mp.getDuration());
-                        mp.reset();
-                        if (lecteur.getVisibility()==View.INVISIBLE) {
-                            lecteur.setVisibility(View.VISIBLE);
-                            ViewGroup.LayoutParams params = lecteur.getLayoutParams();
-                            params.height = ActionBar.LayoutParams.WRAP_CONTENT;
-                            lecteur.setLayoutParams(params);
-                        }
-                        try{
-                            Log.d("testest", ""+model.getUrlPreview() );mp.setDataSource(model.getUrlPreview());
-                        }
-                        catch (IOException ex){
-                            Log.e("testest", "Can't found data:"+model.getUrlPreview());
-                        }
+                            mp.seekTo(mp.getDuration());
+                            mp.reset();
+                            if (lecteur.getVisibility() == View.INVISIBLE) {
+                                lecteur.setVisibility(View.VISIBLE);
+                                ViewGroup.LayoutParams params = lecteur.getLayoutParams();
+                                params.height = ActionBar.LayoutParams.WRAP_CONTENT;
+                                lecteur.setLayoutParams(params);
+                            }
+                            try {
+                                Log.d("testest", "" + model.getUrlPreview());
+                                mp.setDataSource(model.getUrlPreview());
+                            } catch (IOException ex) {
+                                Log.e("testest", "Can't found data:" + model.getUrlPreview());
+                            }
 
 
-                        if(model.getType().equals("track"))
-                            nameLect.setText(model.getTrack());
-                        else if(model.getType().equals("artist"))
-                            nameLect.setText(model.getArtist());
-                        else if(model.getType().equals("album"))
-                            nameLect.setText(model.getAlbum());
+                            if (model.getType().equals("track"))
+                                nameLect.setText(model.getTrack());
+                            else if (model.getType().equals("artist"))
+                                nameLect.setText(model.getArtist());
+                            else if (model.getType().equals("album"))
+                                nameLect.setText(model.getAlbum());
                         /*recosViewHolder.playButton.setVisibility(View.INVISIBLE);
                         recosViewHolder.player.setVisibility(View.VISIBLE);*/
 
 
-                        Picasso.with(getContext()).load(model.getUrlImage()).fit().centerInside().into(musicImg);
-                        mp.prepareAsync();
-                        mp.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                            @Override
-                            public void onPrepared(MediaPlayer mp) {
-                                int duration = mp.getDuration();
-                                mSeekBarPlayer.setMax(duration);
-                                mp.start();
-                                mSeekBarPlayer.postDelayed(onEverySecond, 500);
-                            }
-                        });
+                            Picasso.with(getContext()).load(model.getUrlImage()).fit().centerInside().into(musicImg);
+                            mp.prepareAsync();
+                            mp.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                                @Override
+                                public void onPrepared(MediaPlayer mp) {
+                                    int duration = mp.getDuration();
+                                    mSeekBarPlayer.setMax(duration);
+                                    mp.start();
+                                    mSeekBarPlayer.postDelayed(onEverySecond, 500);
+                                }
+                            });
 
-                        recosViewHolder.playButton.startAnimation(buttonClick);
+                            recosViewHolder.playButton.startAnimation(buttonClick);
 
-                        stop.setOnClickListener(new View.OnClickListener() {
+                            stop.setOnClickListener(new View.OnClickListener() {
 
-                            @Override
-                            public void onClick(View v) {
+                                @Override
+                                public void onClick(View v) {
 
-                                mp.stop();
-                                mp.reset();
-                                lecteur.setVisibility(View.INVISIBLE);
+                                    mp.stop();
+                                    mp.reset();
+                                    lecteur.setVisibility(View.INVISIBLE);
 
 
 
@@ -679,47 +690,47 @@ public class FeedFragment extends Fragment {
                                 recosViewHolder.playButton.setImageResource(R.drawable.ic_play);
                                 recosViewHolder.player.setVisibility(View.INVISIBLE);*/
 
-                                ViewGroup.LayoutParams params = lecteur.getLayoutParams();
-                                params.height=0;
-                                lecteur.setLayoutParams(params);
-                            }
-                        });
+                                    ViewGroup.LayoutParams params = lecteur.getLayoutParams();
+                                    params.height = 0;
+                                    lecteur.setLayoutParams(params);
+                                }
+                            });
 
 
-                        btnPause.setOnClickListener(new View.OnClickListener() {
+                            btnPause.setOnClickListener(new View.OnClickListener() {
 
 
-                            @Override
-                            public void onClick(View v) {
-                                if (mp.isPlaying()) {
-                                    mp.pause();
-                                    btnPause.setImageResource(R.drawable.ic_play);
+                                @Override
+                                public void onClick(View v) {
+                                    if (mp.isPlaying()) {
+                                        mp.pause();
+                                        btnPause.setImageResource(R.drawable.ic_play);
                                     /*recosViewHolder.playButton.setVisibility(View.VISIBLE);
                                     recosViewHolder.playButton.setImageResource(R.drawable.ic_pause);
                                     recosViewHolder.player.setVisibility(View.INVISIBLE);*/
 
-                                }
-                                else {
-                                    btnPause.setImageResource(R.drawable.ic_pause);
+                                    } else {
+                                        btnPause.setImageResource(R.drawable.ic_pause);
                                     /*recosViewHolder.playButton.setVisibility(View.INVISIBLE);
                                     recosViewHolder.player.setVisibility(View.VISIBLE);*/
-                                    try {
-                                        mp.prepare();
-                                    } catch (IllegalStateException e) {
-                                        // TODO Auto-generated catch block
-                                        e.printStackTrace();
-                                    } catch (IOException e) {
-                                        // TODO Auto-generated catch block
-                                        e.printStackTrace();
+                                        try {
+                                            mp.prepare();
+                                        } catch (IllegalStateException e) {
+                                            // TODO Auto-generated catch block
+                                            e.printStackTrace();
+                                        } catch (IOException e) {
+                                            // TODO Auto-generated catch block
+                                            e.printStackTrace();
+                                        }
+                                        mp.start();
+                                        mSeekBarPlayer.postDelayed(onEverySecond, 1000);
                                     }
-                                    mp.start();
-                                    mSeekBarPlayer.postDelayed(onEverySecond, 1000);
-                                }
 
-                            }
-                        });
-                    }
-                });
+                                }
+                            });
+                        }
+                    });
+                }
 
 
             }
@@ -798,7 +809,6 @@ public class FeedFragment extends Fragment {
         TextView autreComment;
         TextView descR;
         ImageView playButton;
-        Indicator player;
         ImageView circle;
 
         final LinearLayout layout;
@@ -813,10 +823,9 @@ public class FeedFragment extends Fragment {
             autreComment = mView.findViewById(R.id.autreComment);
             descR = (TextView) mView.findViewById(R.id.desc);
             playButton = mView.findViewById(R.id.playButton);
-            player = mView.findViewById(R.id.player);
+            //player = mView.findViewById(R.id.player);
 
             circle = mView.findViewById(R.id.circle);
-            player.setVisibility(View.INVISIBLE);
 
             playButton.setVisibility(View.INVISIBLE);
             circle.setVisibility(View.INVISIBLE);

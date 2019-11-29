@@ -45,6 +45,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -442,7 +443,7 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
         post.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Long time = new Timestamp(System.currentTimeMillis()).getTime();
+                Long time = new Date(System.currentTimeMillis()).getTime();
                 Double timestamp = time.doubleValue();
                 Recommandation recommandation = new Recommandation(
                         "",

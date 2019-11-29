@@ -19,7 +19,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-    aaptOptions{
+    aaptOptions {
         additionalParameters "--no-version-vectors"
     }
 }
@@ -36,6 +36,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-database:19.1.0'
     implementation 'com.google.firebase:firebase-storage:19.1.0'
     implementation 'com.google.firebase:firebase-messaging:17.3.4'
+    implementation 'com.google.firebase:firebase-core:16.0.4'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
@@ -51,5 +52,4 @@ dependencies {
     implementation 'com.taishi-y:musicindicator:0.1.0'
     implementation 'com.google.firebase:firebase-messaging:20.0.1'
 }
-
 apply plugin: 'com.google.gms.google-services'

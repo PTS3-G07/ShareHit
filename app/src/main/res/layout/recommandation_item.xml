@@ -66,7 +66,9 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center">
 
             <ImageButton
                 android:id="@+id/img_ar"
@@ -80,24 +82,14 @@
                 android:id="@+id/circle"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_margin="15dp"
+                android:layout_alignTop="@+id/img_ar"
+                android:layout_alignEnd="@+id/img_ar"
+                android:layout_alignRight="@+id/img_ar"
+                android:layout_alignBottom="@+id/img_ar"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_margin="125dp"
                 app:srcCompat="@drawable/cercle" />
-
-            <com.taishi.library.Indicator
-                android:id="@+id/player"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_alignStart="@+id/circle"
-                android:layout_alignLeft="@+id/circle"
-                android:layout_alignTop="@+id/circle"
-                android:layout_alignEnd="@+id/circle"
-                android:layout_alignRight="@+id/circle"
-                android:layout_alignBottom="@+id/circle"
-                android:layout_margin="15dp"
-                app:bar_color="#939598"
-                app:bar_num="3"
-                app:duration="3000"
-                app:step_num="10" />
 
             <ImageView
                 android:id="@+id/playButton"
@@ -109,11 +101,22 @@
                 android:layout_alignEnd="@+id/circle"
                 android:layout_alignRight="@+id/circle"
                 android:layout_alignBottom="@+id/circle"
-                android:paddingLeft="12dp"
-                android:paddingTop="15dp"
-                android:paddingRight="9dp"
-                android:paddingBottom="15dp"
-                app:srcCompat="@drawable/ic_play" />
+                android:paddingLeft="24dp"
+                android:paddingTop="30dp"
+                android:paddingRight="18dp"
+                android:paddingBottom="30dp"
+                app:srcCompat="@drawable/ic_play_white" />
+
+            <com.taishi.library.Indicator
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_alignStart="@+id/circle"
+                android:layout_alignLeft="@+id/circle"
+                android:layout_alignTop="@+id/circle"
+                android:layout_alignEnd="@+id/circle"
+                android:layout_alignRight="@+id/circle"
+                android:layout_alignBottom="@+id/circle"
+                app:bar_color="@color/black_transparent" />
         </RelativeLayout>
 
 

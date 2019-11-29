@@ -5,6 +5,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.viewpager.widget.ViewPager;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -18,8 +19,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -138,7 +137,6 @@ public class FeedPage extends AppCompatActivity implements FeedFragment.MyListen
             transaction.replace(R.id.container, fragment);
             transaction.addToBackStack("test");
             transaction.commit();
-
             return true;
         }
         return false;
@@ -194,6 +192,7 @@ public class FeedPage extends AppCompatActivity implements FeedFragment.MyListen
         setContentView(layout.activity_feed_page);
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
+
 
         mAuth = FirebaseAuth.getInstance();
         container = findViewById(id.container);
