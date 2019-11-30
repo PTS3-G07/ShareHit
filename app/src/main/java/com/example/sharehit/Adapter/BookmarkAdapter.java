@@ -3,6 +3,7 @@ package com.example.sharehit.Adapter;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.core.graphics.drawable.RoundedBitmapDrawable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sharehit.Model.Bookmark;
@@ -48,13 +51,36 @@ public class BookmarkAdapter extends
     @Override
     public void onBindViewHolder(BookmarkAdapter.ViewHolder viewHolder, final int position) {
         final Bookmark bookmark = mBookmark.get(position);
+        final String newLine = System.getProperty("line.separator");
 
         TextView textView = viewHolder.titreBookmark;
         textView.setText(bookmark.getTitre());
         TextView textView2 = viewHolder.sousTitreBookmark;
         textView2.setText(bookmark.getArtist());
         TextView textView3 = viewHolder.typeBookmark;
-        textView3.setText(bookmark.getType());
+        switch (bookmark.getType()){
+            case "artist":
+                textView3.setText("Artiste");
+                break;
+            case "album":
+                textView3.setText("Album");
+                break;
+            case "track":
+                textView3.setText("Morceau");
+                break;
+            case "game":
+                textView3.setText("Jeu vidéo");
+                break;
+            case "serie":
+                textView3.setText("Série");
+                break;
+            case "movie":
+                textView3.setText("Film");
+                break;
+            default:
+                throw new IllegalStateException("Bug");
+        }
+
         ImageView imageView = viewHolder.imgBookmark;
         if(!bookmark.getImgUrl().equals("")) Picasso.with(context).load(bookmark.getImgUrl()).fit().centerInside().into(imageView);
         LinearLayout linearLayout = viewHolder.bookmarkMain;
@@ -63,7 +89,7 @@ public class BookmarkAdapter extends
             public void onClick(View v) {
                 AlertDialog alertDialog = new AlertDialog.Builder(context)
                         .setTitle("Supprimer ?")
-                        .setMessage(bookmark.getTitre())
+                        .setMessage(bookmark.getArtist())
                         .setPositiveButton("Supprimer", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 FirebaseDatabase.getInstance().getReference().child("users").child(mAuth.getCurrentUser().getUid()).child("bookmarks").child(bookmark.getKeyBookmark()).removeValue();
