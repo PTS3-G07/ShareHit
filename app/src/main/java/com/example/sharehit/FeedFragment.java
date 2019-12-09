@@ -545,7 +545,7 @@ public class FeedFragment extends Fragment {
                         if(TimeUnit.MILLISECONDS.toSeconds(currentTimestamp)==TimeUnit.MILLISECONDS.toSeconds(searchTimestamp)) {
                             recosViewHolder.setTime("À l'instant");
                         }else {
-                            recosViewHolder.setTime("Il y a " + convertTimeStampToBelleHeureSaMere(difference));
+                            recosViewHolder.setTime("Il y a " + convertTimeStampToHour(difference));
                         }
 
                     }
@@ -740,7 +740,7 @@ public class FeedFragment extends Fragment {
         recyclerView.setAdapter(fireBaseRecyclerAdapter);
     }
 
-    private String convertTimeStampToBelleHeureSaMere(long millis) {
+    private String convertTimeStampToHour(long millis) {
         if(millis < 0) {
             throw new IllegalArgumentException("Duration must be greater than zero!");
         }

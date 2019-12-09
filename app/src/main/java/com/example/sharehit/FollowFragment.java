@@ -859,7 +859,7 @@ public class FollowFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot child : dataSnapshot.getChildren()){
-                    if(userRecoIsFollow(child.child("userRecoUid").getValue().toString())){
+                    //if(userRecoIsFollow(child.child("userRecoUid").getValue().toString())){
                         Recommandation recommandation = new Recommandation(
                                 child.child("album").getValue().toString(),
                                 child.child("artist").getValue().toString(),
@@ -873,7 +873,7 @@ public class FollowFragment extends Fragment {
                                 child.getKey());
                         list.add(recommandation);
                         Log.e("isFollow", "true");
-                    }
+                    //}
                     Log.e("isFollow", "false");
 
 
