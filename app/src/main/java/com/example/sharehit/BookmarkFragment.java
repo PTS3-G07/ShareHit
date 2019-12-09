@@ -78,6 +78,7 @@ public class BookmarkFragment extends Fragment {
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                adapter.notifyDataSetChanged();
                 if(!tri){
                     chargerRecyclerView(chargerListBookmark());
                 } else {
@@ -153,9 +154,6 @@ public class BookmarkFragment extends Fragment {
             }
         });
 
-
-
-
         chargerRecyclerView(chargerListBookmark());
 
 
@@ -209,7 +207,6 @@ public class BookmarkFragment extends Fragment {
             }
         }
 
-
         return listBookmark;
 
     }
@@ -252,5 +249,6 @@ public class BookmarkFragment extends Fragment {
         recyclerview.setLayoutManager(layoutManager);
         adapter.notifyDataSetChanged();
         recyclerview.setAdapter(adapter);
+        recyclerview.setVisibility(View.VISIBLE);
     }
 }

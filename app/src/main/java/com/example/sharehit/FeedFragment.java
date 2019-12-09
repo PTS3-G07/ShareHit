@@ -934,6 +934,7 @@ public class FeedFragment extends Fragment {
             }
         }
     };
+
     public interface MyListenerFeed {
         public void onSwipeLeftFeed();
         public void onProfilClicked();

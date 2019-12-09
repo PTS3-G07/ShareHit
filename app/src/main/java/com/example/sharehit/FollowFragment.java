@@ -27,8 +27,12 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.example.sharehit.Adapter.ListLikeAdapter;
+import com.example.sharehit.Adapter.RecommandationAdapter;
 import com.example.sharehit.Model.Recommandation;
+import com.example.sharehit.Model.User;
 import com.example.sharehit.Utilities.OnSwipeTouchListener;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
@@ -42,7 +46,9 @@ import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class FollowFragment extends Fragment {
@@ -64,6 +70,9 @@ public class FollowFragment extends Fragment {
 
     private Animation buttonClick;
 
+    private RecommandationAdapter adapter;
+    private SwipeRefreshLayout swipeContainer;
+
     @Override
     public void onPause() {
         super.onPause();
@@ -74,8 +83,25 @@ public class FollowFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ViewGroup root = (ViewGroup) inflater.inflate(R.layout.fragement_search, null);
+        recyclerView = root.findViewById(R.id.postFollowRecyclerView);
+        swipeContainer = (SwipeRefreshLayout) root.findViewById(R.id.swipeContainerFollow);
 
         callBack = (MyListenerFollow) getActivity();
+
+        // Création du swipe up pour refresh
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                adapter.notifyDataSetChanged();
+                chargerRecyclerView(chargerListRecommandation());
+                swipeContainer.setRefreshing(false);
+            }
+        });
+
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
 
         root.setOnTouchListener(new OnSwipeTouchListener(getContext()) {
 
@@ -109,7 +135,8 @@ public class FollowFragment extends Fragment {
         params.height=0;
         lecteur.setLayoutParams(params);
 
-        recyclerView = root.findViewById(R.id.postFollowRecyclerView);
+
+        /*
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setStackFromEnd(true);
         layoutManager.setReverseLayout(true);
@@ -117,6 +144,10 @@ public class FollowFragment extends Fragment {
 
 
         displayAllRecosFollow();
+
+         */
+
+        chargerRecyclerView(chargerListRecommandation());
 
         return root;
     }
@@ -170,6 +201,16 @@ public class FollowFragment extends Fragment {
 
 
         return(sb.toString());
+    }
+
+    public void chargerRecyclerView(List<Recommandation> list){
+        adapter = new RecommandationAdapter(list);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        layoutManager.setStackFromEnd(true);
+        layoutManager.setReverseLayout(true);
+        recyclerView.setLayoutManager(layoutManager);
+        adapter.notifyDataSetChanged();
+        recyclerView.setAdapter(adapter);
     }
 
     private void displayAllRecosFollow() {
@@ -810,5 +851,63 @@ public class FollowFragment extends Fragment {
     public interface MyListenerFollow{
         public void onSwipeLeftFollow();
         public void onSwipeRightFollow();
+    }
+
+    public List<Recommandation> chargerListRecommandation(){
+        final List<Recommandation> list = new ArrayList<>();
+        recosRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot child : dataSnapshot.getChildren()){
+                    if(userRecoIsFollow(child.child("userRecoUid").getValue().toString())){
+                        Recommandation recommandation = new Recommandation(
+                                child.child("album").getValue().toString(),
+                                child.child("artist").getValue().toString(),
+                                child.child("id").getValue().toString(),
+                                Double.parseDouble(child.child("timestamp").getValue().toString()),
+                                child.child("track").getValue().toString(),
+                                child.child("type").getValue().toString(),
+                                child.child("urlImage").getValue().toString(),
+                                child.child("urlPreview").getValue().toString(),
+                                child.child("userRecoUid").getValue().toString(),
+                                child.getKey());
+                        list.add(recommandation);
+                        Log.e("isFollow", "true");
+                    }
+                    Log.e("isFollow", "false");
+
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+        return list;
+
+    }
+
+
+
+    private boolean userRecoIsFollow(final String userId){
+        final boolean[] isFollow = {false};
+        followRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot child : dataSnapshot.getChildren()){
+                    if(child.getValue().toString().equals(userId)){
+                        isFollow[0] = true;
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+        return isFollow[0];
     }
 }

@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -22,6 +23,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class BookmarkAdapter extends
@@ -36,6 +38,8 @@ public class BookmarkAdapter extends
         this.mBookmark = bookmarks;
         mAuth = FirebaseAuth.getInstance();
     }
+
+
 
     @Override
     public BookmarkAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -94,6 +98,7 @@ public class BookmarkAdapter extends
                             public void onClick(DialogInterface dialog, int which) {
                                 FirebaseDatabase.getInstance().getReference().child("users").child(mAuth.getCurrentUser().getUid()).child("bookmarks").child(bookmark.getKeyBookmark()).removeValue();
                                 mBookmark.remove(bookmark);
+                                notifyDataSetChanged();
                             }
                         })
                         .setNegativeButton("Annuler", null)
@@ -120,8 +125,6 @@ public class BookmarkAdapter extends
         mBookmark.addAll(list);
         notifyDataSetChanged();
     }
-
-
 
 
 

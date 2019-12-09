@@ -11,15 +11,19 @@ import java.util.ListIterator;
 
 public class User {
 
-    public String pseudo;
+    public String pseudo, userId;
 
 
     public User(){
-
     }
 
     public User(String pseudo) {
         this.pseudo = pseudo;
+    }
+
+    public User(String pseudo, String userId) {
+        this.pseudo = pseudo;
+        this.userId = userId;
     }
 
     public String getPseudo() {

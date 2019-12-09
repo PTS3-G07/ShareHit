@@ -2,7 +2,7 @@ package com.example.sharehit.Model;
 
 public class Recommandation {
 
-    String album, artist, id, track, type, urlImage, urlPreview, userRecoUid;
+    String album, artist, id, track, type, urlImage, urlPreview, userRecoUid, cleReco;
     Double timestamp;
 
     public Recommandation(){
@@ -19,6 +19,19 @@ public class Recommandation {
         this.urlImage = urlImage;
         this.urlPreview = urlPreview;
         this.userRecoUid = userRecoUid;
+    }
+
+    public Recommandation(String album, String artist, String id, Double timestamp, String track, String type, String urlImage, String urlPreview, String userRecoUid, String cleReco) {
+        this.album = album;
+        this.artist = artist;
+        this.id = id;
+        this.timestamp = timestamp;
+        this.track = track;
+        this.type = type;
+        this.urlImage = urlImage;
+        this.urlPreview = urlPreview;
+        this.userRecoUid = userRecoUid;
+        this.cleReco = cleReco;
     }
 
     public String getAlbum() {
@@ -91,5 +104,13 @@ public class Recommandation {
 
     public void setUserRecoUid(String userRecoUid) {
         this.userRecoUid = userRecoUid;
+    }
+
+    public String getCleReco() {
+        return cleReco;
+    }
+
+    public void setCleReco(String cleReco) {
+        this.cleReco = cleReco;
     }
 }

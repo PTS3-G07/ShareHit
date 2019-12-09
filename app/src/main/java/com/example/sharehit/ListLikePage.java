@@ -5,6 +5,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -13,6 +14,9 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.sharehit.Adapter.BookmarkAdapter;
+import com.example.sharehit.Adapter.ListLikeAdapter;
+import com.example.sharehit.Model.Bookmark;
 import com.example.sharehit.Model.User;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
@@ -37,40 +41,66 @@ public class ListLikePage extends AppCompatActivity {
 
     private DatabaseReference recosRef, usersRef;
     private FirebaseAuth mAuth;
-    private String current_user_id;
     public RecyclerView recyclerLike;
-    private List<String> list;
+
+    public ListLikeAdapter adapter;
+    private SwipeRefreshLayout swipeContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_like_page);
 
+        // Initialisation page ListLike
+        recyclerLike = (RecyclerView) findViewById(R.id.likeRecyclerView);
+        swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainerListlike);
+
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
-
         Bundle b = getIntent().getExtras();
-        list = new ArrayList<String>();
 
-        recyclerLike = (RecyclerView) findViewById(R.id.likeRecyclerView);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
-        layoutManager.setStackFromEnd(true);
-        layoutManager.setReverseLayout(true);
-        recyclerLike.setLayoutManager(layoutManager);
-
+        //Initialisation des références Firebase
         mAuth = FirebaseAuth.getInstance();
-        current_user_id = mAuth.getCurrentUser().getUid();
-        Log.e("keyReco2", b.getString("key"));
         recosRef = FirebaseDatabase.getInstance().getReference().child("recos").child(b.getString("key")).child("likeUsersUid");
         usersRef = FirebaseDatabase.getInstance().getReference().child("users");
 
-        displayAllUserLike();
+        // Création du swipe up pour refresh
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                adapter.notifyDataSetChanged();
+                chargerRecyclerView(chargerListUser());
+                swipeContainer.setRefreshing(false);
+            }
+        });
+
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+
+        chargerRecyclerView(chargerListUser());
+
+    }
+
+    private List<User> chargerListUser() {
+        final List<User> listUser = new ArrayList<>();
 
         recosRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for(DataSnapshot child : dataSnapshot.getChildren()){
-                    list.add(child.getValue().toString());
+                for (final DataSnapshot child : dataSnapshot.getChildren()){
+                    usersRef.child(child.getValue().toString()).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            User user = new User(dataSnapshot.child("pseudo").getValue().toString(), child.getValue().toString());
+                            listUser.add(user);
+                        }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
                 }
             }
 
@@ -79,78 +109,19 @@ public class ListLikePage extends AppCompatActivity {
 
             }
         });
-
-
-    }
-
-    private void displayAllUserLike() {
-        FirebaseRecyclerAdapter<User, UserViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<User, UserViewHolder>
-                (
-                        User.class,
-                        R.layout.like_user_profil_display,
-                        UserViewHolder.class,
-                        usersRef
-                ) {
-            @Override
-            protected void populateViewHolder(final UserViewHolder userViewHolder, final User user, final int i) {
-                recosRef.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        boolean test = false;
-                        for(DataSnapshot data : dataSnapshot.getChildren()){
-                            if(data.getValue().equals(getRef(i).getKey())){
-                                test = true;
-
-                            }
-                        }
-                        if(test){
-                            userViewHolder.setPseudoListLike(user.getPseudo());
-                            Picasso.with(getApplicationContext()).load("https://firebasestorage.googleapis.com/v0/b/share-hit.appspot.com/o/"+getRef(i).getKey()+"?alt=media&token=1d93f69f-a530-455a-83d2-929ce42c3667").fit().centerInside().into(userViewHolder.getImgProfil());
-                        } else {
-                            userViewHolder.layout_hide();
-                        }
-
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
-
-
-
-            }
-        };
-        recyclerLike.setAdapter(firebaseRecyclerAdapter);
-    }
-
-    public static class UserViewHolder extends RecyclerView.ViewHolder {
-        final LinearLayout layout;
-        final LinearLayout.LayoutParams params;
-        View mView;
-
-
-        public UserViewHolder(View itemView) {
-            super(itemView);
-            this.mView = itemView;
-            layout =(LinearLayout)itemView.findViewById(R.id.linearLayoutListLike);
-            params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT);
-        }
-
-        public CircleImageView getImgProfil(){
-            CircleImageView img = (CircleImageView) mView.findViewById(R.id.imageProfilListLike);
-            return img;
-        }
-
-        public void setPseudoListLike(String name){
-            TextView tx = (TextView) mView.findViewById(R.id.pseudoProfilListLike);
-            tx.setText(name);
-        }
-        private void layout_hide() {
-            layout.setVisibility(View.GONE);
-        }
+        return listUser;
 
     }
+
+    public void chargerRecyclerView(List<User> list){
+        adapter = new ListLikeAdapter(list);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
+        layoutManager.setStackFromEnd(true);
+        layoutManager.setReverseLayout(true);
+        recyclerLike.setLayoutManager(layoutManager);
+        adapter.notifyDataSetChanged();
+        recyclerLike.setAdapter(adapter);
+    }
+
+
 }
