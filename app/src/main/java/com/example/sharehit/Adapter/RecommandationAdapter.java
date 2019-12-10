@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Bundle;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.Log;
@@ -13,6 +14,8 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -22,9 +25,13 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.sharehit.CommentPage;
+import com.example.sharehit.FollowFragment;
+import com.example.sharehit.ListLikePage;
 import com.example.sharehit.Model.Recommandation;
 import com.example.sharehit.Model.User;
 import com.example.sharehit.ProfilFragment;
+import com.example.sharehit.ProfilPage;
 import com.example.sharehit.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -47,8 +54,11 @@ public class RecommandationAdapter extends
     Context context;
     private DatabaseReference recosRef, usersRef;
     private FirebaseAuth mAuth;
+    private Bundle b;
     private int[] tailleTableau;
     List<Recommandation> mRecommandation;
+    private Animation buttonClick;
+    private MusicLauncher musicLauncher;
 
     public RecommandationAdapter(List<Recommandation> recommandations) {
         this.mRecommandation = recommandations;
@@ -59,10 +69,28 @@ public class RecommandationAdapter extends
         context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
 
+        //musicLauncher = (MusicLauncher) context;
+
+        buttonClick = AnimationUtils.loadAnimation(context, R.anim.click);
+
         mAuth = FirebaseAuth.getInstance();
 
         usersRef = FirebaseDatabase.getInstance().getReference().child("users");
         recosRef = FirebaseDatabase.getInstance().getReference().child("recos");
+
+        final int[] tailleTableau = new int[1];
+        recosRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                tailleTableau[0] = (int) dataSnapshot.getChildrenCount();
+                Log.e("testest", ""+ tailleTableau[0]);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
         View recommandationView = inflater.inflate(R.layout.recommandation_item, parent, false);
 
@@ -75,23 +103,35 @@ public class RecommandationAdapter extends
     public void onBindViewHolder(final RecommandationAdapter.ViewHolder viewHolder, final int position) {
         final Recommandation recommandation = mRecommandation.get(position);
 
-        //Initialisation des item de la recommandation
-        /*TextView descRecommandation = viewHolder.descRecommandation;
-        TextView nbrlike = viewHolder.nbrlike;
-        TextView nbrCom = viewHolder.nbrCom;
-        TextView pseudoCom = viewHolder.pseudoCom;
-        TextView autreComment = viewHolder.autreComment;
-        ImageButton commentButton = viewHolder.commentButton;
-        ImageButton bookmarkButton = viewHolder.bookmarkButton;
-        ImageButton likeButton = viewHolder.likeButton;
-        ImageButton pictureRecommandation = viewHolder.pictureRecommandation;
-        TextView timeRecommandation = viewHolder.timeRecommandation;
-        TextView nomRecommandation = viewHolder.nomRecommandation;
-        CircleImageView pictureUserRecommandation = viewHolder.pictureUserRecommandation;
-        ImageView playButton =viewHolder.playButton;
-        ImageView circle = viewHolder.circle;*/
+        final Intent intent1 = new Intent(context, ListLikePage.class);
+        final Intent intent2 = new Intent(context, CommentPage.class);
+        final Intent intent3 = new Intent(context, ProfilPage.class);
 
-        String idReco = recommandation.getCleReco();
+        final int[] tailleTableau = new int[1];
+        recosRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                tailleTableau[0] = (int) dataSnapshot.getChildrenCount();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        final String[] keyBookmark = new String[mRecommandation.size()];
+        final boolean[] CURRENT_BOOKMARK = new boolean[mRecommandation.size()];
+        final String[] keyLike = new String[mRecommandation.size()];
+        final boolean[] CURRENT_LIKE = new boolean[mRecommandation.size()];
+        Log.e("testest", "keyBookmark "+keyBookmark.length);
+        Log.e("testest", "CURRENT_BOOKMARK "+CURRENT_BOOKMARK.length);
+        Log.e("testest", "keyLike "+keyLike.length);
+        Log.e("testest", "CURRENT_LIKE "+CURRENT_LIKE.length);
+
+        final Bundle b = new Bundle();
+
+        final String idReco = recommandation.getCleReco();
 
         String desc = "";
         if(recommandation.getType().equals("track")){
@@ -104,9 +144,6 @@ public class RecommandationAdapter extends
         viewHolder.setDesc(Html.fromHtml(desc));
 
         Picasso.with(context).load(recommandation.getUrlImage()).fit().centerInside().into(viewHolder.pictureRecommandation);
-        
-        //c'est la merde
-
 
         recosRef.child(idReco).child("Coms").limitToLast(1).addValueEventListener(new ValueEventListener(){
 
@@ -228,24 +265,25 @@ public class RecommandationAdapter extends
             }
             @Override public void onCancelled(@NonNull DatabaseError databaseError) { }
         });
+
         //INTREACTION AVEC LA RECOMMANDATION
 
-        /*usersRef.child(mAuth.getCurrentUser().getUid()).child("bookmarks").addValueEventListener(new ValueEventListener() {
+        usersRef.child(mAuth.getCurrentUser().getUid()).child("bookmarks").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 boolean test = false;
                 for(DataSnapshot ds: dataSnapshot.getChildren()){
-                    if(ds.getValue().equals(getRef(i).getKey())){
+                    if(ds.getValue().equals(idReco)){
                         test = true;
-                        keyBookmark[i] = ds.getRef().getKey();
+                        keyBookmark[position] = ds.getRef().getKey();
                         //follow.setText("Ne plus suivre");
                     }
                 }
                 if(test){
                     viewHolder.getBookButton().setImageResource(R.drawable.bookmark_ok);
-                    CURRENT_BOOKMARK[i] = true;
+                    CURRENT_BOOKMARK[position] = true;
                 } else {
-                    CURRENT_BOOKMARK[i] = false;
+                    CURRENT_BOOKMARK[position] = false;
                 }
 
             }
@@ -254,25 +292,64 @@ public class RecommandationAdapter extends
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
-        });*/
+        });
 
-        /*recosRef.child(getRef(i).getKey()).child("likeUsersUid").addValueEventListener(new ValueEventListener() {
+        viewHolder.getBookButton().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(CURRENT_BOOKMARK[position] == false){
+                    HashMap usersMap = new HashMap();
+                    usersMap.put(usersRef.child(mAuth.getCurrentUser().getUid()).child("bookmarks").push().getKey(), idReco);
+                    usersRef.child(mAuth.getCurrentUser().getUid()).child("bookmarks").updateChildren(usersMap);
+                    usersRef.child(mAuth.getCurrentUser().getUid()).child("bookmarks").addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            for(DataSnapshot ds: dataSnapshot.getChildren()){
+                                if(ds.getValue().equals(b.getString("key"))){
+                                    Log.e("Bookmark key", ds.getRef().getKey());
+                                    keyBookmark[position] = ds.getRef().getKey();
+
+                                }
+                            }
+                        }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+                    //follow.setText("Ne plus suivre");
+                    viewHolder.getBookButton().setImageResource(R.drawable.bookmark_ok);
+                    CURRENT_BOOKMARK[position] =true;
+
+                } else if(CURRENT_BOOKMARK[position] == true){
+                    usersRef.child(mAuth.getCurrentUser().getUid()).child("bookmarks").child(keyBookmark[position]).removeValue();
+                    viewHolder.getBookButton().setImageResource(R.drawable.bookmark);
+                    //follow.setText("Suivre");
+                    CURRENT_BOOKMARK[position] =false;
+
+                }
+
+
+            }
+        });
+
+        recosRef.child(idReco).child("likeUsersUid").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 boolean test = false;
                 for(DataSnapshot ds: dataSnapshot.getChildren()){
                     if(ds.getValue().equals(mAuth.getCurrentUser().getUid())){
                         test = true;
-                        keyLike[i] = ds.getRef().getKey();
+                        keyLike[position] = ds.getRef().getKey();
                         //follow.setText("Ne plus suivre");
                     }
                 }
                 if(test){
                     viewHolder.getLikeButton().setImageResource(R.drawable.red_heart);
-                    CURRENT_LIKE[i] = true;
+                    CURRENT_LIKE[position] = true;
                 } else {
                     viewHolder.getLikeButton().setImageResource(R.drawable.heart);
-                    CURRENT_LIKE[i] = false;
+                    CURRENT_LIKE[position] = false;
                 }
 
             }
@@ -281,34 +358,32 @@ public class RecommandationAdapter extends
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
-        });*/
+        });
 
 
-
-        /*viewHolder.getLikeButton().setOnClickListener(new View.OnClickListener() {
+        viewHolder.getLikeButton().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                        /*
-                        if(CURRENT_LIKE[i] == false){
-                            getRef(i).child("likeUsersUid").child(mAuth.getCurrentUser().getUid()).child("like_done").setValue("yes");
-                            CURRENT_LIKE=true;
-                        } else if(CURRENT_LIKE == true){
-                            getRef(i).child("likeUsersUid").child(mAuth.getCurrentUser().getUid()).removeValue();
-                            CURRENT_LIKE=false;
-                        }
+                        /*if(CURRENT_LIKE[position] == false){
+                            recosRef.child("likeUsersUid").child(mAuth.getCurrentUser().getUid()).child("like_done").setValue("yes");
+                            CURRENT_LIKE[position]=true;
+                        } else if(CURRENT_LIKE[position] == true){
+                            recosRef.child("likeUsersUid").child(mAuth.getCurrentUser().getUid()).removeValue();
+                            CURRENT_LIKE[position]=false;
+                        }*/
 
 
-                if(CURRENT_LIKE[i] == false){
+                if(CURRENT_LIKE[position] == false){
                     HashMap usersMap = new HashMap();
-                    usersMap.put(recosRef.child(getRef(i).getKey()).child("likeUsersUid").push().getKey(), mAuth.getCurrentUser().getUid());
-                    recosRef.child(getRef(i).getKey()).child("likeUsersUid").updateChildren(usersMap);
-                    recosRef.child(getRef(i).getKey()).child("likeUsersUid").addValueEventListener(new ValueEventListener() {
+                    usersMap.put(recosRef.child(idReco).child("likeUsersUid").push().getKey(), mAuth.getCurrentUser().getUid());
+                    recosRef.child(idReco).child("likeUsersUid").updateChildren(usersMap);
+                    recosRef.child(idReco).child("likeUsersUid").addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             for(DataSnapshot ds: dataSnapshot.getChildren()){
                                 if(ds.getValue().equals(mAuth.getCurrentUser().getUid())){
                                     Log.e("Like key", ds.getRef().getKey());
-                                    keyLike[i] = ds.getRef().getKey();
+                                    keyLike[position] = ds.getRef().getKey();
 
                                 }
                             }
@@ -320,13 +395,13 @@ public class RecommandationAdapter extends
                     });
                     //follow.setText("Ne plus suivre");
                     viewHolder.getLikeButton().setImageResource(R.drawable.red_heart);
-                    CURRENT_LIKE[i] =true;
+                    CURRENT_LIKE[position] =true;
 
-                } else if(CURRENT_LIKE[i] == true){
-                    recosRef.child(getRef(i).getKey()).child("likeUsersUid").child(keyLike[i]).removeValue();
+                } else if(CURRENT_LIKE[position] == true){
+                    recosRef.child(idReco).child("likeUsersUid").child(keyLike[position]).removeValue();
                     viewHolder.getLikeButton().setImageResource(R.drawable.heart);
                     //follow.setText("Suivre");
-                    CURRENT_LIKE[i] =false;
+                    CURRENT_LIKE[position] =false;
 
                 }
 
@@ -334,22 +409,20 @@ public class RecommandationAdapter extends
 
         });
 
-        /*
-
         final GestureDetector.SimpleOnGestureListener listener = new GestureDetector.SimpleOnGestureListener() {
             @Override
             public boolean onDoubleTap(MotionEvent e) {
-                if(CURRENT_LIKE[i] == false){
+                if(CURRENT_LIKE[position] == false){
                     HashMap usersMap = new HashMap();
-                    usersMap.put(recosRef.child(getRef(i).getKey()).child("likeUsersUid").push().getKey(), mAuth.getCurrentUser().getUid());
-                    recosRef.child(getRef(i).getKey()).child("likeUsersUid").updateChildren(usersMap);
-                    recosRef.child(getRef(i).getKey()).child("likeUsersUid").addValueEventListener(new ValueEventListener() {
+                    usersMap.put(recosRef.child(idReco).child("likeUsersUid").push().getKey(), mAuth.getCurrentUser().getUid());
+                    recosRef.child(idReco).child("likeUsersUid").updateChildren(usersMap);
+                    recosRef.child(idReco).child("likeUsersUid").addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             for(DataSnapshot ds: dataSnapshot.getChildren()){
                                 if(ds.getValue().equals(mAuth.getCurrentUser().getUid())){
                                     Log.e("Like key", ds.getRef().getKey());
-                                    keyLike[i] = ds.getRef().getKey();
+                                    keyLike[position] = ds.getRef().getKey();
 
                                 }
                             }
@@ -361,13 +434,13 @@ public class RecommandationAdapter extends
                     });
                     //follow.setText("Ne plus suivre");
                     viewHolder.getLikeButton().setImageResource(R.drawable.red_heart);
-                    CURRENT_LIKE[i] =true;
+                    CURRENT_LIKE[position] =true;
 
-                } else if(CURRENT_LIKE[i] == true){
-                    recosRef.child(getRef(i).getKey()).child("likeUsersUid").child(keyLike[i]).removeValue();
+                } else if(CURRENT_LIKE[position] == true){
+                    recosRef.child(idReco).child("likeUsersUid").child(keyLike[position]).removeValue();
                     viewHolder.getLikeButton().setImageResource(R.drawable.heart);
                     //follow.setText("Suivre");
-                    CURRENT_LIKE[i] =false;
+                    CURRENT_LIKE[position] =false;
 
                 }
                 return true;
@@ -376,20 +449,20 @@ public class RecommandationAdapter extends
             public boolean onSingleTapConfirmed(MotionEvent e) {
 
                 String link ="";
-                Log.e("testest",""+model.getId());
-                if (model.getType().equals("track")){
-                    link="https://www.deezer.com/fr/track/"+model.getId();
-                } else if (model.getType().equals("album")){
-                    link="https://www.deezer.com/fr/album/"+model.getId();
-                }else if (model.getType().equals("artist")){
-                    link="https://www.deezer.com/fr/artist/"+model.getId();
+                Log.e("testest",""+recommandation.getId());
+                if (recommandation.getType().equals("track")){
+                    link="https://www.deezer.com/fr/track/"+recommandation.getId();
+                } else if (recommandation.getType().equals("album")){
+                    link="https://www.deezer.com/fr/album/"+recommandation.getId();
+                }else if (recommandation.getType().equals("artist")){
+                    link="https://www.deezer.com/fr/artist/"+recommandation.getId();
                 } else{
-                    link="https://www.imdb.com/title/"+model.getId();
+                    link="https://www.imdb.com/title/"+recommandation.getId();
                 }
                 Intent viewIntent =
                         new Intent("android.intent.action.VIEW",
                                 Uri.parse(link));
-                startActivity(viewIntent);
+                context.startActivity(viewIntent);
 
                 return true;
             }
@@ -409,6 +482,14 @@ public class RecommandationAdapter extends
             }
         });
 
+        viewHolder.playButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                viewHolder.playButton.startAnimation(buttonClick);
+                //musicLauncher.lancerMusique(recommandation);
+
+            }
+        });
         /*viewHolder.getBookButton().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -478,25 +559,24 @@ public class RecommandationAdapter extends
         });*/
 
 
-
         /*viewHolder.getImgProfil().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mAuth.getCurrentUser().getUid().equals(model.getUserRecoUid())){
+                if(mAuth.getCurrentUser().getUid().equals(recommandation.getUserRecoUid())){
                     Fragment fragment = new ProfilFragment();
                     callBack.onProfilClicked();
                     loadFragement(fragment);
 
                 } else {
-                    b.putString("key", model.getUserRecoUid());
+                    b.putString("key", recommandation.getUserRecoUid());
                     intent3.putExtras(b);
-                    startActivity(intent3);
+                    context.startActivity(intent3);
                 }
 
             }
         });*/
 
-        /*viewHolder.getDesc().setOnClickListener(new View.OnClickListener() {
+        viewHolder.getDesc().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String link ="";
@@ -513,29 +593,39 @@ public class RecommandationAdapter extends
                 Intent viewIntent =
                         new Intent("android.intent.action.VIEW",
                                 Uri.parse(link));
-                startActivity(viewIntent);
+                context.startActivity(viewIntent);
             }
-        });*/
+        });
 
 
-                /*Log.e("jhsvhx", viewHolder.getDesc().getText().toString().equals(nameLect.getText().toString())+"");
+        viewHolder.autreComment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                b.putString("key",idReco);
+                intent2.putExtras(b);
+                context.startActivity(intent2);
+            }
+        });
 
-                if(viewHolder.getDesc().getText().toString().equals(nameLect.getText().toString())){
-                    Log.e("jhsvhx", ""+viewHolder.getDesc().getText());
-                    viewHolder.playButton.setVisibility(View.INVISIBLE);
-                    viewHolder.player.setVisibility(View.VISIBLE);
-                }else{
-                    viewHolder.playButton.setVisibility(View.VISIBLE);
-                    viewHolder.player.setVisibility(View.INVISIBLE);
-                }*/
+        viewHolder.getListLike().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                b.putString("key",idReco);
+                intent1.putExtras(b);
+                context.startActivity(intent1);
 
-                /*viewHolder.playButton.setOnTouchListener(new View.OnTouchListener() {
-                    @Override
-                    public boolean onTouch(View view, MotionEvent motionEvent) {
-                        viewHolder.playButton.startAnimation(buttonClick);
-                        return true;
-                    }
-                });*/
+            }
+        });
+
+        viewHolder.getCommentButton().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                b.putString("key", idReco);
+                intent2.putExtras(b);
+                context.startActivity(intent2);
+
+            }
+        });
 
         /*if (viewHolder.playButton!=null) {
             viewHolder.playButton.setOnClickListener(new View.OnClickListener() {
@@ -656,8 +746,6 @@ public class RecommandationAdapter extends
         mRecommandation.addAll(list);
         notifyDataSetChanged();
     }
-
-
 
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -845,5 +933,9 @@ public class RecommandationAdapter extends
 
 
         return(sb.toString());
+    }
+
+    public interface MusicLauncher{
+        void lancerMusique(Recommandation recommandation);
     }
 }

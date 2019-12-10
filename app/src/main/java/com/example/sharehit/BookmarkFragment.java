@@ -222,6 +222,7 @@ public class BookmarkFragment extends Fragment {
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             Bookmark bookmark = new Bookmark(child.getKey(), child.getValue().toString(), dataSnapshot.child("type").getValue().toString(), dataSnapshot.child("urlImage").getValue().toString(), dataSnapshot.child("track").getValue().toString(), dataSnapshot.child("artist").getValue().toString());
                             listBookmark.add(bookmark);
+                            chargerRecyclerView(listBookmark);
                         }
                         @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) {

@@ -264,7 +264,7 @@ public class FeedPage extends AppCompatActivity implements FeedFragment.MyListen
 
 
         if(b == null){
-            Fragment fragment = new FeedFragment();
+            Fragment fragment = new FollowFragment();
             loadFragement(fragment,true);
         } else {
             Fragment fragment = new ProfilFragment();

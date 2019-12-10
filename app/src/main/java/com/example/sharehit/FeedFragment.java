@@ -187,10 +187,10 @@ public class FeedFragment extends Fragment {
 
                 Picasso.with(getContext()).load(model.getUrlImage()).fit().centerInside().into(recosViewHolder.getImg());
 
-                if(model.getType().equals("track")){
+                if(model.getType()!=null && model.getType().equals("track")){
                     String desc ="<b>"+model.getTrack()+"</b>"+" de "+"<b>"+model.getArtist()+"</b>";
                     recosViewHolder.setDesc(Html.fromHtml(desc));
-                } else if(model.getType().equals("album")){
+                } else if(model.getType()!=null && model.getType().equals("album")){
                     String desc ="<b>"+model.getAlbum()+"</b>"+" de "+"<b>"+model.getArtist()+"</b>";
                     recosViewHolder.setDesc(Html.fromHtml(desc));
                 } else {
