@@ -1,9 +1,7 @@
 package com.example.sharehit.Adapter;
 
-import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Html;
@@ -26,10 +24,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sharehit.CommentPage;
-import com.example.sharehit.FollowFragment;
 import com.example.sharehit.ListLikePage;
 import com.example.sharehit.Model.Recommandation;
-import com.example.sharehit.Model.User;
 import com.example.sharehit.ProfilFragment;
 import com.example.sharehit.ProfilPage;
 import com.example.sharehit.R;
@@ -41,7 +37,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -58,7 +53,7 @@ public class RecommandationAdapter extends
     private int[] tailleTableau;
     List<Recommandation> mRecommandation;
     private Animation buttonClick;
-    private MusicLauncher musicLauncher;
+    private MusicListener musicListener;
 
     public RecommandationAdapter(List<Recommandation> recommandations) {
         this.mRecommandation = recommandations;
@@ -69,7 +64,7 @@ public class RecommandationAdapter extends
         context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
 
-        //musicLauncher = (MusicLauncher) context;
+        musicListener = (MusicListener) context;
 
         buttonClick = AnimationUtils.loadAnimation(context, R.anim.click);
 
@@ -83,7 +78,6 @@ public class RecommandationAdapter extends
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 tailleTableau[0] = (int) dataSnapshot.getChildrenCount();
-                Log.e("testest", ""+ tailleTableau[0]);
             }
 
             @Override
@@ -124,10 +118,6 @@ public class RecommandationAdapter extends
         final boolean[] CURRENT_BOOKMARK = new boolean[mRecommandation.size()];
         final String[] keyLike = new String[mRecommandation.size()];
         final boolean[] CURRENT_LIKE = new boolean[mRecommandation.size()];
-        Log.e("testest", "keyBookmark "+keyBookmark.length);
-        Log.e("testest", "CURRENT_BOOKMARK "+CURRENT_BOOKMARK.length);
-        Log.e("testest", "keyLike "+keyLike.length);
-        Log.e("testest", "CURRENT_LIKE "+CURRENT_LIKE.length);
 
         final Bundle b = new Bundle();
 
@@ -449,7 +439,6 @@ public class RecommandationAdapter extends
             public boolean onSingleTapConfirmed(MotionEvent e) {
 
                 String link ="";
-                Log.e("testest",""+recommandation.getId());
                 if (recommandation.getType().equals("track")){
                     link="https://www.deezer.com/fr/track/"+recommandation.getId();
                 } else if (recommandation.getType().equals("album")){
@@ -486,101 +475,25 @@ public class RecommandationAdapter extends
             @Override
             public void onClick(View view) {
                 viewHolder.playButton.startAnimation(buttonClick);
-                //musicLauncher.lancerMusique(recommandation);
-
-            }
-        });
-        /*viewHolder.getBookButton().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(CURRENT_BOOKMARK[i] == false){
-                    HashMap usersMap = new HashMap();
-                    usersMap.put(usersRef.child(mAuth.getCurrentUser().getUid()).child("bookmarks").push().getKey(), getRef(i).getKey());
-                    usersRef.child(mAuth.getCurrentUser().getUid()).child("bookmarks").updateChildren(usersMap);
-                    usersRef.child(mAuth.getCurrentUser().getUid()).child("bookmarks").addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            for(DataSnapshot ds: dataSnapshot.getChildren()){
-                                if(ds.getValue().equals(b.getString("key"))){
-                                    Log.e("Bookmark key", ds.getRef().getKey());
-                                    keyBookmark[i] = ds.getRef().getKey();
-
-                                }
-                            }
-                        }
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                        }
-                    });
-                    //follow.setText("Ne plus suivre");
-                    viewHolder.getBookButton().setImageResource(R.drawable.bookmark_ok);
-                    CURRENT_BOOKMARK[i] =true;
-
-                } else if(CURRENT_BOOKMARK[i] == true){
-                    usersRef.child(mAuth.getCurrentUser().getUid()).child("bookmarks").child(keyBookmark[i]).removeValue();
-                    viewHolder.getBookButton().setImageResource(R.drawable.bookmark);
-                    //follow.setText("Suivre");
-                    CURRENT_BOOKMARK[i] =false;
-
-                }
-
+                musicListener.lancerMusique(recommandation);
 
             }
         });
 
-        viewHolder.autreComment.setOnClickListener(new View.OnClickListener() {
+
+        viewHolder.getImgProfil().setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                b.putString("key", getRef(i).getKey());
-                intent2.putExtras(b);
-                startActivity(intent2);
+            public void onClick(View v) {
+                b.putString("key", recommandation.getUserRecoUid());
+                intent3.putExtras(b);
+                context.startActivity(intent3);
             }
         });
-
-        viewHolder.getListLike().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                b.putString("key", getRef(i).getKey());
-                intent1.putExtras(b);
-                startActivity(intent1);
-
-            }
-        });
-
-        viewHolder.getCommentButton().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                b.putString("key", getRef(i).getKey());
-                intent2.putExtras(b);
-                startActivity(intent2);
-
-            }
-        });*/
-
-
-        /*viewHolder.getImgProfil().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(mAuth.getCurrentUser().getUid().equals(recommandation.getUserRecoUid())){
-                    Fragment fragment = new ProfilFragment();
-                    callBack.onProfilClicked();
-                    loadFragement(fragment);
-
-                } else {
-                    b.putString("key", recommandation.getUserRecoUid());
-                    intent3.putExtras(b);
-                    context.startActivity(intent3);
-                }
-
-            }
-        });*/
 
         viewHolder.getDesc().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String link ="";
-                Log.e("testest",""+recommandation.getId());
                 if (recommandation.getType().equals("track")){
                     link="https://www.deezer.com/fr/track/"+recommandation.getId();
                 } else if (recommandation.getType().equals("album")){
@@ -626,109 +539,6 @@ public class RecommandationAdapter extends
 
             }
         });
-
-        /*if (viewHolder.playButton!=null) {
-            viewHolder.playButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-
-                    mp.seekTo(mp.getDuration());
-                    mp.reset();
-                    if (lecteur.getVisibility() == View.INVISIBLE) {
-                        lecteur.setVisibility(View.VISIBLE);
-                        ViewGroup.LayoutParams params = lecteur.getLayoutParams();
-                        params.height = ActionBar.LayoutParams.WRAP_CONTENT;
-                        lecteur.setLayoutParams(params);
-                    }
-                    try {
-                        Log.d("testest", "" + model.getUrlPreview());
-                        mp.setDataSource(model.getUrlPreview());
-                    } catch (IOException ex) {
-                        Log.e("testest", "Can't found data:" + model.getUrlPreview());
-                    }
-
-
-                    if (model.getType().equals("track"))
-                        nameLect.setText(model.getTrack());
-                    else if (model.getType().equals("artist"))
-                        nameLect.setText(model.getArtist());
-                    else if (model.getType().equals("album"))
-                        nameLect.setText(model.getAlbum());
-                        //viewHolder.playButton.setVisibility(View.INVISIBLE);
-                        //viewHolder.player.setVisibility(View.VISIBLE);
-
-
-                    Picasso.with(context).load(model.getUrlImage()).fit().centerInside().into(musicImg);
-                    mp.prepareAsync();
-                    mp.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                        @Override
-                        public void onPrepared(MediaPlayer mp) {
-                            int duration = mp.getDuration();
-                            mSeekBarPlayer.setMax(duration);
-                            mp.start();
-                            mSeekBarPlayer.postDelayed(onEverySecond, 500);
-                        }
-                    });
-
-                    viewHolder.playButton.startAnimation(buttonClick);
-
-                    stop.setOnClickListener(new View.OnClickListener() {
-
-                        @Override
-                        public void onClick(View v) {
-
-                            mp.stop();
-                            mp.reset();
-                            lecteur.setVisibility(View.INVISIBLE);
-
-
-
-                                //viewHolder.playButton.setVisibility(View.VISIBLE);
-                                //viewHolder.playButton.setImageResource(R.drawable.ic_play);
-                                //viewHolder.player.setVisibility(View.INVISIBLE);
-
-                            ViewGroup.LayoutParams params = lecteur.getLayoutParams();
-                            params.height = 0;
-                            lecteur.setLayoutParams(params);
-                        }
-                    });
-
-
-                    btnPause.setOnClickListener(new View.OnClickListener() {
-
-
-                        @Override
-                        public void onClick(View v) {
-                            if (mp.isPlaying()) {
-                                mp.pause();
-                                btnPause.setImageResource(R.drawable.ic_play);
-                                    //viewHolder.playButton.setVisibility(View.VISIBLE);
-                                    //viewHolder.playButton.setImageResource(R.drawable.ic_pause);
-                                    //viewHolder.player.setVisibility(View.INVISIBLE);
-
-                            } else {
-                                btnPause.setImageResource(R.drawable.ic_pause);
-                                    //viewHolder.playButton.setVisibility(View.INVISIBLE);
-                                    //viewHolder.player.setVisibility(View.VISIBLE);
-                                try {
-                                    mp.prepare();
-                                } catch (IllegalStateException e) {
-                                    // TODO Auto-generated catch block
-                                    e.printStackTrace();
-                                } catch (IOException e) {
-                                    // TODO Auto-generated catch block
-                                    e.printStackTrace();
-                                }
-                                mp.start();
-                                mSeekBarPlayer.postDelayed(onEverySecond, 1000);
-                            }
-
-                        }
-                    });
-                }
-            });
-        }*/
-
     }
 
     @Override
@@ -935,7 +745,8 @@ public class RecommandationAdapter extends
         return(sb.toString());
     }
 
-    public interface MusicLauncher{
+    public interface MusicListener {
         void lancerMusique(Recommandation recommandation);
     }
+
 }

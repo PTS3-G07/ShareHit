@@ -4,8 +4,8 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.viewpager.widget.ViewPager;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -32,6 +32,8 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.example.sharehit.Adapter.RecommandationAdapter;
+import com.example.sharehit.Model.Recommandation;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.luseen.spacenavigation.SpaceItem;
@@ -53,7 +55,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 import static com.example.sharehit.R.*;
 
-public class FeedPage extends AppCompatActivity implements FeedFragment.MyListenerFeed, FollowFragment.MyListenerFollow, BookmarkFragment.MyListenerBookmark, ProfilFragment.MyListenerProfil {
+public class FeedPage extends AppCompatActivity implements RecommandationAdapter.MusicListener,  FeedFragment.MyListenerFeed, FollowFragment.MyListenerFollow, BookmarkFragment.MyListenerBookmark, ProfilFragment.MyListenerProfil {
 
     Button logout;
     SpaceNavigationView navigationView;
@@ -420,4 +422,11 @@ public class FeedPage extends AppCompatActivity implements FeedFragment.MyListen
         super.onActivityResult(requestCode, resultCode, data);
     }
 
+    @Override
+    public void lancerMusique(Recommandation recommandation) {
+        FragmentManager fm = getSupportFragmentManager();
+        FollowFragment fragment = (FollowFragment)fm.findFragmentById(id.followFrag);
+        fragment = (FollowFragment)fm.getFragments().get(0);
+        fragment.lancerMusique(recommandation);
+    }
 }
