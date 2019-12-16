@@ -67,6 +67,8 @@ public class FollowFragment extends Fragment implements RecommandationAdapter.Mu
     private RecommandationAdapter adapter;
     private SwipeRefreshLayout swipeContainer;
 
+    private boolean isCharged;
+
     @Override
     public void onPause() {
         super.onPause();
@@ -82,10 +84,13 @@ public class FollowFragment extends Fragment implements RecommandationAdapter.Mu
 
         callBack = (MyListenerFollow) getActivity();
 
+        isCharged = true;
+
         // Création du swipe up pour refresh
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                isCharged = true;
                 adapter.notifyDataSetChanged();
                 chargerRecyclerView(chargerListRecommandation());
                 swipeContainer.setRefreshing(false);
@@ -339,8 +344,9 @@ public class FollowFragment extends Fragment implements RecommandationAdapter.Mu
         recosRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for(DataSnapshot child : dataSnapshot.getChildren()){
-                    if(userRecoIsFollow(child.child("userRecoUid").getValue().toString())){
+                if(isCharged){
+                    for(DataSnapshot child : dataSnapshot.getChildren()){
+                        //if(userRecoIsFollow(child.child("userRecoUid").getValue().toString())){
                         Recommandation recommandation = new Recommandation(
                                 child.child("album").getValue().toString(),
                                 child.child("artist").getValue().toString(),
@@ -354,13 +360,16 @@ public class FollowFragment extends Fragment implements RecommandationAdapter.Mu
                                 child.getKey());
                         list.add(recommandation);
                         Log.e("isFollow", "true");
-                    }
+                    //}
                     Log.e("isFollow", "false");
 
                     //chargerRecyclerView(list);
 
 
+                    }
+                    isCharged = false;
                 }
+
             }
 
             @Override

@@ -68,6 +68,8 @@ public class BookmarkFragment extends Fragment {
     public BookmarkAdapter adapter;
     private SwipeRefreshLayout swipeContainer;
 
+    private List<Bookmark> bookmarks;
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         ViewGroup root = (ViewGroup) inflater.inflate(R.layout.fragement_notif, null);
@@ -82,7 +84,8 @@ public class BookmarkFragment extends Fragment {
                 if(!tri){
                     chargerRecyclerView(chargerListBookmark());
                 } else {
-                    chargerRecyclerView(trierList(chargerListBookmark(), idx));
+                    //bookmarks = chargerListBookmark();
+                    chargerRecyclerView(trierList(idx));
                 }
                 swipeContainer.setRefreshing(false);
             }
@@ -118,6 +121,7 @@ public class BookmarkFragment extends Fragment {
         typeListBookmark.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //bookmarks = chargerListBookmark();
                 String options[] = {"Artiste","Album","Morceau","Serie","Film","Jeux vidéos", "Aucun tri"};
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setTitle("Trier par :");
@@ -126,23 +130,22 @@ public class BookmarkFragment extends Fragment {
                     public void onClick(DialogInterface dialog, int which) {
                         if(which == 0){
                             idx = 0;
-                            chargerRecyclerView(trierList(chargerListBookmark(), 0));
+                            chargerRecyclerView(trierList(0));
                         } else if (which==1){
                             idx = 1;
-                            chargerRecyclerView(trierList(chargerListBookmark(), 1));
+                            chargerRecyclerView(trierList(1));
                         } else if (which == 2){
-                            Log.e("Test", chargerListBookmark().size() + "");
                             idx = 2;
-                            chargerRecyclerView(trierList(chargerListBookmark(), 2));
+                            chargerRecyclerView(trierList(2));
                         } else if (which == 3){
                             idx = 3;
-                            chargerRecyclerView(trierList(chargerListBookmark(), 3));
+                            chargerRecyclerView(trierList(3));
                         } else if (which == 4){
                             idx = 4;
-                            chargerRecyclerView(trierList(chargerListBookmark(), 4));
+                            chargerRecyclerView(trierList(4));
                         } else if (which == 5){
                             idx = 5;
-                            chargerRecyclerView(trierList(chargerListBookmark(), 5));
+                            chargerRecyclerView(trierList(5));
                         } else if (which == 6){
                             Log.e("Test", chargerListBookmark().size() + "");
                             chargerRecyclerView(chargerListBookmark());
@@ -168,7 +171,7 @@ public class BookmarkFragment extends Fragment {
         public void onSwipeRightBookmark();
     }
 
-    public List<Bookmark> trierList(List<Bookmark> list, int i){
+    public List<Bookmark> trierList(int i){
         tri = true;
         final List<Bookmark> listBookmark = new ArrayList<>();
         final String type;
@@ -197,13 +200,14 @@ public class BookmarkFragment extends Fragment {
                 throw new IllegalStateException("Unexpected value: " + i);
         }
 
-        Log.e("Test", list.size() + "");
-        for(Bookmark bookmark : list){
+        Log.e("Test", bookmarks.size() + "");
+        for(Bookmark bookmark : bookmarks){
             Log.e("BookType", bookmark.getType());
             Log.e("Test", "boucle1");
             if(bookmark.getType()== type){
                 Log.e("Test", "boucle2");
                 listBookmark.add(bookmark);
+                chargerRecyclerView(listBookmark);
             }
         }
 
@@ -237,6 +241,7 @@ public class BookmarkFragment extends Fragment {
 
             }
         });
+        bookmarks = listBookmark;
 
         return listBookmark;
     }
