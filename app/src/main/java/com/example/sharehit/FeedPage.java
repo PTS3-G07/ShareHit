@@ -425,8 +425,8 @@ public class FeedPage extends AppCompatActivity implements RecommandationAdapter
     @Override
     public void lancerMusique(Recommandation recommandation) {
         FragmentManager fm = getSupportFragmentManager();
-        FollowFragment fragment = (FollowFragment)fm.findFragmentById(id.followFrag);
-        fragment = (FollowFragment)fm.getFragments().get(0);
+        //FollowFragment fragment = (FollowFragment)fm.findFragmentById(id.followFrag);
+        FollowFragment fragment = (FollowFragment)fm.getFragments().get(0);
         fragment.lancerMusique(recommandation);
     }
 }
