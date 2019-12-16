@@ -69,6 +69,9 @@ public class FollowFragment extends Fragment implements RecommandationAdapter.Mu
 
     private boolean isCharged;
 
+    private boolean isFollow;
+    private List<String> userFollow;
+
     @Override
     public void onPause() {
         super.onPause();
@@ -85,11 +88,13 @@ public class FollowFragment extends Fragment implements RecommandationAdapter.Mu
         callBack = (MyListenerFollow) getActivity();
 
         isCharged = true;
+        userFollow = new ArrayList<>();
 
         // Création du swipe up pour refresh
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                chargerListFollow();
                 isCharged = true;
                 adapter.notifyDataSetChanged();
                 chargerRecyclerView(chargerListRecommandation());
@@ -145,6 +150,8 @@ public class FollowFragment extends Fragment implements RecommandationAdapter.Mu
         displayAllRecosFollow();
 
          */
+
+        chargerListFollow();
 
         chargerRecyclerView(chargerListRecommandation());
 
@@ -958,7 +965,7 @@ public class FollowFragment extends Fragment implements RecommandationAdapter.Mu
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(isCharged){
                     for(DataSnapshot child : dataSnapshot.getChildren()){
-                        //if(userRecoIsFollow(child.child("userRecoUid").getValue().toString())){
+                        if(userRecoIsFollow(child.child("userRecoUid").getValue().toString())){
                         Recommandation recommandation = new Recommandation(
                                 child.child("album").getValue().toString(),
                                 child.child("artist").getValue().toString(),
@@ -972,10 +979,10 @@ public class FollowFragment extends Fragment implements RecommandationAdapter.Mu
                                 child.getKey());
                         list.add(recommandation);
                         Log.e("isFollow", "true");
-                        //}
+                        }
                         Log.e("isFollow", "false");
 
-                        //chargerRecyclerView(list);
+                        chargerRecyclerView(list);
 
 
                     }
@@ -989,6 +996,7 @@ public class FollowFragment extends Fragment implements RecommandationAdapter.Mu
 
             }
         });
+        /*
         recosRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -1000,21 +1008,21 @@ public class FollowFragment extends Fragment implements RecommandationAdapter.Mu
 
             }
         });
+
+         */
         return list;
 
     }
 
 
 
-    private boolean userRecoIsFollow(final String userId){
-        final boolean[] isFollow = {false};
+    private void chargerListFollow(){
+        userFollow.clear();
         followRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot child : dataSnapshot.getChildren()){
-                    if(child.getValue().toString().equals(userId)){
-                        isFollow[0] = true;
-                    }
+                    userFollow.add(child.getValue().toString());
                 }
             }
 
@@ -1023,7 +1031,16 @@ public class FollowFragment extends Fragment implements RecommandationAdapter.Mu
 
             }
         });
-        return isFollow[0];
+    }
+
+    private boolean userRecoIsFollow(String userId){
+        isFollow = false;
+        for(String follow : userFollow){
+            if(userId.equals(follow)){
+                isFollow = true;
+            }
+        }
+        return isFollow;
     }
 
 }
