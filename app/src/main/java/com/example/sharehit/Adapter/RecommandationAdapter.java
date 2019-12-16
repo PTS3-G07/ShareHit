@@ -20,13 +20,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sharehit.CommentPage;
 import com.example.sharehit.ListLikePage;
 import com.example.sharehit.Model.Recommandation;
-import com.example.sharehit.ProfilFragment;
 import com.example.sharehit.ProfilPage;
 import com.example.sharehit.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -49,8 +47,6 @@ public class RecommandationAdapter extends
     Context context;
     private DatabaseReference recosRef, usersRef;
     private FirebaseAuth mAuth;
-    private Bundle b;
-    private int[] tailleTableau;
     List<Recommandation> mRecommandation;
     private Animation buttonClick;
     private MusicListener musicListener;
@@ -266,7 +262,6 @@ public class RecommandationAdapter extends
                     if(ds.getValue().equals(idReco)){
                         test = true;
                         keyBookmark[position] = ds.getRef().getKey();
-                        //follow.setText("Ne plus suivre");
                     }
                 }
                 if(test){
@@ -307,14 +302,12 @@ public class RecommandationAdapter extends
 
                         }
                     });
-                    //follow.setText("Ne plus suivre");
                     viewHolder.getBookButton().setImageResource(R.drawable.bookmark_ok);
                     CURRENT_BOOKMARK[position] =true;
 
                 } else if(CURRENT_BOOKMARK[position] == true){
                     usersRef.child(mAuth.getCurrentUser().getUid()).child("bookmarks").child(keyBookmark[position]).removeValue();
                     viewHolder.getBookButton().setImageResource(R.drawable.bookmark);
-                    //follow.setText("Suivre");
                     CURRENT_BOOKMARK[position] =false;
 
                 }
@@ -331,7 +324,6 @@ public class RecommandationAdapter extends
                     if(ds.getValue().equals(mAuth.getCurrentUser().getUid())){
                         test = true;
                         keyLike[position] = ds.getRef().getKey();
-                        //follow.setText("Ne plus suivre");
                     }
                 }
                 if(test){
@@ -354,14 +346,6 @@ public class RecommandationAdapter extends
         viewHolder.getLikeButton().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                        /*if(CURRENT_LIKE[position] == false){
-                            recosRef.child("likeUsersUid").child(mAuth.getCurrentUser().getUid()).child("like_done").setValue("yes");
-                            CURRENT_LIKE[position]=true;
-                        } else if(CURRENT_LIKE[position] == true){
-                            recosRef.child("likeUsersUid").child(mAuth.getCurrentUser().getUid()).removeValue();
-                            CURRENT_LIKE[position]=false;
-                        }*/
-
 
                 if(CURRENT_LIKE[position] == false){
                     HashMap usersMap = new HashMap();
@@ -383,14 +367,12 @@ public class RecommandationAdapter extends
 
                         }
                     });
-                    //follow.setText("Ne plus suivre");
                     viewHolder.getLikeButton().setImageResource(R.drawable.red_heart);
                     CURRENT_LIKE[position] =true;
 
                 } else if(CURRENT_LIKE[position] == true){
                     recosRef.child(idReco).child("likeUsersUid").child(keyLike[position]).removeValue();
                     viewHolder.getLikeButton().setImageResource(R.drawable.heart);
-                    //follow.setText("Suivre");
                     CURRENT_LIKE[position] =false;
 
                 }
@@ -422,14 +404,12 @@ public class RecommandationAdapter extends
 
                         }
                     });
-                    //follow.setText("Ne plus suivre");
                     viewHolder.getLikeButton().setImageResource(R.drawable.red_heart);
                     CURRENT_LIKE[position] =true;
 
                 } else if(CURRENT_LIKE[position] == true){
                     recosRef.child(idReco).child("likeUsersUid").child(keyLike[position]).removeValue();
                     viewHolder.getLikeButton().setImageResource(R.drawable.heart);
-                    //follow.setText("Suivre");
                     CURRENT_LIKE[position] =false;
 
                 }
@@ -550,8 +530,6 @@ public class RecommandationAdapter extends
         mRecommandation.clear();
         notifyDataSetChanged();
     }
-
-    // Add a list of items -- change to type used
     public void addAll(List<Recommandation> list) {
         mRecommandation.addAll(list);
         notifyDataSetChanged();
@@ -586,23 +564,23 @@ public class RecommandationAdapter extends
         public ViewHolder(View itemView) {
             super(itemView);
 
-            nbrlike = (TextView) itemView.findViewById(R.id.nbrLike);
-            nbrCom = (TextView) itemView.findViewById(R.id.nbrComment);
+            nbrlike = itemView.findViewById(R.id.nbrLike);
+            nbrCom = itemView.findViewById(R.id.nbrComment);
 
             pseudoCom = itemView.findViewById(R.id.pseudoComment);
             autreComment = itemView.findViewById(R.id.autreComment);
 
-            commentButton = (ImageButton) itemView.findViewById(R.id.commentButton);
-            bookmarkButton = (ImageButton) itemView.findViewById(R.id.bookButton);
-            likeButton = (ImageButton) itemView.findViewById(R.id.likeButton);
+            commentButton = itemView.findViewById(R.id.commentButton);
+            bookmarkButton = itemView.findViewById(R.id.bookButton);
+            likeButton = itemView.findViewById(R.id.likeButton);
 
 
-            pictureRecommandation = (ImageButton) itemView.findViewById(R.id.img_ar);
+            pictureRecommandation = itemView.findViewById(R.id.img_ar);
 
-            timeRecommandation = (TextView) itemView.findViewById(R.id.time);
-            descRecommandation = (TextView) itemView.findViewById(R.id.desc);
-            nomRecommandation = (TextView) itemView.findViewById(R.id.name);
-            pictureUserRecommandation = (CircleImageView) itemView.findViewById(R.id.imgProfil);
+            timeRecommandation = itemView.findViewById(R.id.time);
+            descRecommandation = itemView.findViewById(R.id.desc);
+            nomRecommandation = itemView.findViewById(R.id.name);
+            pictureUserRecommandation = itemView.findViewById(R.id.imgProfil);
 
             playButton = itemView.findViewById(R.id.playButton);
             circle = itemView.findViewById(R.id.circle);
@@ -610,7 +588,7 @@ public class RecommandationAdapter extends
 
             playButton.setVisibility(View.INVISIBLE);
             circle.setVisibility(View.INVISIBLE);
-            layout =(LinearLayout)itemView.findViewById(R.id.linearLayoutReco);
+            layout =itemView.findViewById(R.id.linearLayoutReco);
             params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT);
         }
@@ -620,7 +598,7 @@ public class RecommandationAdapter extends
         }
 
         public void setTime(String timeText){
-            TextView time = (TextView) itemView.findViewById(R.id.time);
+            TextView time = itemView.findViewById(R.id.time);
             time.setText(timeText);
         }
 
@@ -637,22 +615,22 @@ public class RecommandationAdapter extends
         }
 
         public void setTitre(Spanned text){
-            TextView nameR = (TextView) itemView.findViewById(R.id.name);
+            TextView nameR = itemView.findViewById(R.id.name);
             nameR.setText(text);
         }
 
         public ImageButton getImg() {
-            ImageButton imgR = (ImageButton) itemView.findViewById(R.id.img_ar);
+            ImageButton imgR = itemView.findViewById(R.id.img_ar);
             return imgR;
         }
 
         public CircleImageView getImgProfil(){
-            CircleImageView imgProfil = (CircleImageView) itemView.findViewById(R.id.imgProfil);
+            CircleImageView imgProfil = itemView.findViewById(R.id.imgProfil);
             return imgProfil;
         }
 
         public ImageButton getLikeButton(){
-            ImageButton imgButton = (ImageButton) itemView.findViewById(R.id.likeButton);
+            ImageButton imgButton = itemView.findViewById(R.id.likeButton);
             return imgButton;
         }
 
@@ -664,32 +642,19 @@ public class RecommandationAdapter extends
             nbrCom.setText(text);
         }
 
-        public String getNbrLike(){
-            return nbrlike.getText().toString();
-        }
-
-        public String getNbrComment(){
-            return nbrCom.getText().toString();
-        }
-
         public TextView getListLike(){
-            TextView nbrLikeBut = (TextView) itemView.findViewById(R.id.nbrLike);
+            TextView nbrLikeBut = itemView.findViewById(R.id.nbrLike);
             return  nbrLikeBut;
         }
 
         public ImageButton getCommentButton(){
-            ImageButton button = (ImageButton) itemView.findViewById(R.id.commentButton);
+            ImageButton button = itemView.findViewById(R.id.commentButton);
             return button;
         }
 
         public ImageButton getBookButton(){
-            ImageButton img = (ImageButton) itemView.findViewById(R.id.bookButton);
+            ImageButton img = itemView.findViewById(R.id.bookButton);
             return img;
-        }
-
-        public void layout_hide() {
-            layout.setVisibility(View.GONE);
-
         }
 
     }
@@ -738,9 +703,6 @@ public class RecommandationAdapter extends
             sb.append(seconds);
             sb.append(" secondes");
         }
-
-
-
 
         return(sb.toString());
     }
