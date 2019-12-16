@@ -22,7 +22,6 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -57,10 +56,8 @@ import static com.example.sharehit.R.*;
 
 public class FeedPage extends AppCompatActivity implements RecommandationAdapter.MusicListener,  FeedFragment.MyListenerFeed, FollowFragment.MyListenerFollow, BookmarkFragment.MyListenerBookmark, ProfilFragment.MyListenerProfil {
 
-    Button logout;
     SpaceNavigationView navigationView;
     FirebaseAuth firebaseAuth;
-    Dialog myDialog;
     ImageButton artiste;
     ImageButton album;
     ImageButton morceau;
@@ -74,7 +71,6 @@ public class FeedPage extends AppCompatActivity implements RecommandationAdapter
     private FirebaseAuth mAuth;
     CircleImageView profilePicture;
 
-    public int idSearch;
     private Bundle b;
 
     final private String FCM_API = "https://fcm.googleapis.com/fcm/send";
@@ -425,7 +421,6 @@ public class FeedPage extends AppCompatActivity implements RecommandationAdapter
     @Override
     public void lancerMusique(Recommandation recommandation) {
         FragmentManager fm = getSupportFragmentManager();
-        //FollowFragment fragment = (FollowFragment)fm.findFragmentById(id.followFrag);
         FollowFragment fragment = (FollowFragment)fm.getFragments().get(0);
         fragment.lancerMusique(recommandation);
     }
