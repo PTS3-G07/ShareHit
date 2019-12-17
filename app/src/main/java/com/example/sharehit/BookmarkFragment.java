@@ -70,6 +70,8 @@ public class BookmarkFragment extends Fragment {
 
     private List<Bookmark> bookmarks;
 
+    private boolean isCharged;
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         ViewGroup root = (ViewGroup) inflater.inflate(R.layout.fragement_notif, null);
@@ -77,9 +79,12 @@ public class BookmarkFragment extends Fragment {
         recyclerview = (RecyclerView) root.findViewById(R.id.postBookmarkRecyclerView);
         typeListBookmark = (FloatingActionButton) root.findViewById(R.id.typeBookmarkList);
 
+        isCharged = true;
+
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                isCharged = true;
                 adapter.notifyDataSetChanged();
                 if(!tri){
                     chargerRecyclerView(chargerListBookmark());
@@ -215,20 +220,24 @@ public class BookmarkFragment extends Fragment {
         bookRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(isCharged) {
                 for(final DataSnapshot child : dataSnapshot.getChildren()){
                     recosRef.child(child.getValue().toString()).addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            Bookmark bookmark = new Bookmark(child.getKey(), child.getValue().toString(), dataSnapshot.child("type").getValue().toString(), dataSnapshot.child("urlImage").getValue().toString(), dataSnapshot.child("track").getValue().toString(), dataSnapshot.child("artist").getValue().toString(), dataSnapshot.child("id").getValue().toString());
-                            listBookmark.add(bookmark);
-                            bookmarks = listBookmark;
-                            chargerRecyclerView(listBookmark);
+                                Bookmark bookmark = new Bookmark(child.getKey(), child.getValue().toString(), dataSnapshot.child("type").getValue().toString(), dataSnapshot.child("urlImage").getValue().toString(), dataSnapshot.child("track").getValue().toString(), dataSnapshot.child("artist").getValue().toString(), dataSnapshot.child("id").getValue().toString());
+                                listBookmark.add(bookmark);
+                                bookmarks = listBookmark;
+                                chargerRecyclerView(listBookmark);
+
                         }
                         @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) {
 
                         }
                     });
+                    isCharged = false;
+                }
                 }
             }
 

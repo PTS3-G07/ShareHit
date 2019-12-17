@@ -324,7 +324,7 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
     }
 
     private Map<String, String> parseJSONtrack(String trackName) {
-
+        Log.e("researchAPItrack", "+," +trackName);
         String url = "http://api.deezer.com/2.0/search/track/?q="+trackName+"&index=0&nb_items=20&output=json";
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
