@@ -53,6 +53,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.MemoryPolicy;
@@ -381,8 +382,11 @@ public class ProfilFragment extends Fragment {
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }*/
+            StorageMetadata metadata = new StorageMetadata.Builder()
+                    .setContentType("application/octet-stream")
+                    .build();
             final StorageReference filepath = mStorageRef.child(user.getUid());
-            filepath.putFile(imguri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+            filepath.putFile(imguri, metadata).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                     //Picasso.with(getContext()).load(imguri).resize(180, 180).into(pdp);
