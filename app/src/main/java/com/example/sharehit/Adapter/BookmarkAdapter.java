@@ -3,6 +3,9 @@ package com.example.sharehit.Adapter;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.media.Image;
+import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -87,8 +90,8 @@ public class BookmarkAdapter extends
 
         ImageView imageView = viewHolder.imgBookmark;
         if(!bookmark.getImgUrl().equals("")) Picasso.with(context).load(bookmark.getImgUrl()).fit().centerInside().into(imageView);
-        LinearLayout linearLayout = viewHolder.bookmarkMain;
-        linearLayout.setOnClickListener(new View.OnClickListener() {
+        final ImageView bookmarkDelete = viewHolder.bookmarkDelete;
+        bookmarkDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AlertDialog alertDialog = new AlertDialog.Builder(context)
@@ -105,6 +108,27 @@ public class BookmarkAdapter extends
                         .setIcon(R.drawable.ic_exclamation_mark)
                         .show();
 
+            }
+        });
+
+        ImageView bookmarkLink = viewHolder.bookmarkLink;
+        bookmarkLink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String link ="";
+                if (bookmark.getType().equals("track")){
+                    link="https://www.deezer.com/fr/track/"+bookmark.getIdUrl();
+                } else if (bookmark.getType().equals("album")){
+                    link="https://www.deezer.com/fr/album/"+bookmark.getIdUrl();
+                }else if (bookmark.getType().equals("artist")){
+                    link="https://www.deezer.com/fr/artist/"+bookmark.getIdUrl();
+                } else{
+                    link="https://www.imdb.com/title/"+bookmark.getIdUrl();
+                }
+                Intent viewIntent =
+                        new Intent("android.intent.action.VIEW",
+                                Uri.parse(link));
+                context.startActivity(viewIntent);
             }
         });
 
@@ -131,7 +155,7 @@ public class BookmarkAdapter extends
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         public TextView titreBookmark, sousTitreBookmark, typeBookmark;
-        public ImageView imgBookmark;
+        public ImageView imgBookmark, bookmarkDelete, bookmarkLink;
         public LinearLayout bookmarkMain;
 
         public ViewHolder(View itemView) {
@@ -141,6 +165,8 @@ public class BookmarkAdapter extends
             sousTitreBookmark = (TextView) itemView.findViewById(R.id.bookmarkSoustitre);
             typeBookmark = (TextView) itemView.findViewById(R.id.bookmarkType);
             imgBookmark = (ImageView) itemView.findViewById(R.id.bookmarkImage);
+            bookmarkDelete = (ImageView) itemView.findViewById(R.id.bookmarkDelete);
+            bookmarkLink = (ImageView) itemView.findViewById(R.id.bookmarkLink);
             bookmarkMain = (LinearLayout) itemView.findViewById(R.id.bookmarkMain);
         }
     }

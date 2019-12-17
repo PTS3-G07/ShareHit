@@ -2,15 +2,16 @@ package com.example.sharehit.Model;
 
 public class Bookmark {
 
-    private String keyBookmark, keyReco, type, imgUrl, titre, artist;
+    private String keyBookmark, keyReco, type, imgUrl, titre, artist, idUrl;
 
-    public Bookmark(String keyBookmark, String keyReco, String type, String imgUrl, String titre, String artist) {
+    public Bookmark(String keyBookmark, String keyReco, String type, String imgUrl, String titre, String artist, String idUrl) {
         this.keyBookmark = keyBookmark;
         this.keyReco = keyReco;
         this.type = type;
         this.imgUrl = imgUrl;
         this.titre = titre;
         this.artist = artist;
+        this.idUrl = idUrl;
     }
 
     public String getKeyBookmark() {
@@ -61,7 +62,16 @@ public class Bookmark {
         this.artist = artist;
     }
 
+    public String getIdUrl() {
+        return idUrl;
+    }
+
+    public void setIdUrl(String idUrl) {
+        this.idUrl = idUrl;
+    }
+
     public String toString(){
         return this.keyBookmark + " " + this.keyReco + " " + this.imgUrl + " " + this.titre + " " + this.artist;
     }
+
 }

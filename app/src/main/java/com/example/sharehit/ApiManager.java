@@ -103,6 +103,7 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
             public boolean onQueryTextChange(String newText) {
 
                 mExampleList.clear();
+                Log.e("researchAPI", "+," +newText);
                 if(type == 1){
                     parseJSONartist(newText);
                     typeRecom="artist";

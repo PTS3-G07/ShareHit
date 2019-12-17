@@ -147,6 +147,11 @@ public class FollowFragment extends Fragment implements RecommandationAdapter.Mu
         return root;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
     private String convertTimeStampToBelleHeureSaMere(long millis) {
         if(millis < 0) {
             throw new IllegalArgumentException("Duration must be greater than zero!");

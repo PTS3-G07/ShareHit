@@ -178,13 +178,12 @@ public class BookmarkFragment extends Fragment {
         Log.e("Test", "test");
         switch (i){
             case 0:
-                type = "artiste";
+                type = "artist";
                 break;
             case 1:
                 type = "album";
                 break;
             case 2:
-                Log.e("Test", "track");
                 type = "track";
                 break;
             case 3:
@@ -200,12 +199,8 @@ public class BookmarkFragment extends Fragment {
                 throw new IllegalStateException("Unexpected value: " + i);
         }
 
-        Log.e("Test", bookmarks.size() + "");
         for(Bookmark bookmark : bookmarks){
-            Log.e("BookType", bookmark.getType());
-            Log.e("Test", "boucle1");
-            if(bookmark.getType()== type){
-                Log.e("Test", "boucle2");
+            if(bookmark.getType().equals(type)){
                 listBookmark.add(bookmark);
                 chargerRecyclerView(listBookmark);
             }
@@ -224,8 +219,9 @@ public class BookmarkFragment extends Fragment {
                     recosRef.child(child.getValue().toString()).addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            Bookmark bookmark = new Bookmark(child.getKey(), child.getValue().toString(), dataSnapshot.child("type").getValue().toString(), dataSnapshot.child("urlImage").getValue().toString(), dataSnapshot.child("track").getValue().toString(), dataSnapshot.child("artist").getValue().toString());
+                            Bookmark bookmark = new Bookmark(child.getKey(), child.getValue().toString(), dataSnapshot.child("type").getValue().toString(), dataSnapshot.child("urlImage").getValue().toString(), dataSnapshot.child("track").getValue().toString(), dataSnapshot.child("artist").getValue().toString(), dataSnapshot.child("id").getValue().toString());
                             listBookmark.add(bookmark);
+                            bookmarks = listBookmark;
                             chargerRecyclerView(listBookmark);
                         }
                         @Override
@@ -241,13 +237,11 @@ public class BookmarkFragment extends Fragment {
 
             }
         });
-        bookmarks = listBookmark;
 
         return listBookmark;
     }
 
     public void chargerRecyclerView(List<Bookmark> list){
-        Log.e("Test", list.size() + " //");
         adapter = new BookmarkAdapter(list);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setStackFromEnd(true);
