@@ -97,19 +97,6 @@ public class RecommandationAdapter extends
         final Intent intent2 = new Intent(context, CommentPage.class);
         final Intent intent3 = new Intent(context, ProfilPage.class);
 
-        final int[] tailleTableau = new int[1];
-        recosRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                tailleTableau[0] = (int) dataSnapshot.getChildrenCount();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
         final String[] keyBookmark = new String[mRecommandation.size()];
         final boolean[] CURRENT_BOOKMARK = new boolean[mRecommandation.size()];
         final String[] keyLike = new String[mRecommandation.size()];
