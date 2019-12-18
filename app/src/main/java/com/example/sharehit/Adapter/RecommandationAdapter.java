@@ -451,14 +451,16 @@ public class RecommandationAdapter extends
             }
         });
 
-        viewHolder.playButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                viewHolder.playButton.startAnimation(buttonClick);
-                musicListener.lancerMusique(recommandation);
+        if(viewHolder.playButton!=null) {
+            viewHolder.playButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    viewHolder.playButton.startAnimation(buttonClick);
+                    musicListener.lancerMusique(recommandation);
 
-            }
-        });
+                }
+            });
+        }
 
 
         viewHolder.getImgProfil().setOnClickListener(new View.OnClickListener() {
