@@ -262,7 +262,7 @@ public class FeedPage extends AppCompatActivity implements RecommandationAdapter
 
 
         if(b == null){
-            Fragment fragment = new FollowFragment();
+            Fragment fragment = new FeedFragment();
             loadFragement(fragment,true);
         } else {
             Fragment fragment = new ProfilFragment();

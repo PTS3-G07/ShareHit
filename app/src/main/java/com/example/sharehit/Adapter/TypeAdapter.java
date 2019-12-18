@@ -1,5 +1,6 @@
 package com.example.sharehit.Adapter;
 
+import android.app.ActionBar;
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -7,9 +8,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,12 +24,14 @@ import com.example.sharehit.Model.Artist;
 import com.example.sharehit.Model.Film;
 import com.example.sharehit.Model.JeuVideo;
 import com.example.sharehit.Model.Morceau;
+import com.example.sharehit.Model.Recommandation;
 import com.example.sharehit.Model.Serie;
 import com.example.sharehit.Model.Type;
 import com.example.sharehit.Model.Video;
 import com.example.sharehit.R;
 import com.squareup.picasso.Picasso;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.TypeViewHolder> {
@@ -34,10 +40,9 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.TypeViewHolder
     private ArrayList<Type> types;
     private OnItemclickListener listener;
 
-    public MediaPlayer mediaPlayer;
-    private MediaPlayer mediaPlaying;
+    private Animation buttonClick;
 
-    String songUrl;
+    private MusicListener musicListener;
 
 
     public interface OnItemclickListener {
@@ -51,6 +56,8 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.TypeViewHolder
     public TypeAdapter(Context context, ArrayList<Type> matistList) {
         this.context = context;
         types = matistList;
+        buttonClick = AnimationUtils.loadAnimation(context, R.anim.click);
+        musicListener = (MusicListener) context;
     }
 
     @NonNull
@@ -62,14 +69,10 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.TypeViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull TypeViewHolder holder, int position) {
-        Type currentItem = types.get(position);
+        final Type currentItem = types.get(position);
         String imageUrl = currentItem.getImgUrl();
         String name = currentItem.getName();
         String spec = currentItem.getSpec();
-        /*if(currentItem instanceof Morceau){
-            songUrl = ((Morceau) currentItem).getSongUrl();
-            mediaPlayer = MediaPlayer.create(context, Uri.parse(((Morceau) currentItem).getSongUrl()));
-        }*/
         String pre="";
         if (currentItem instanceof Album){
             pre="Artiste: ";
@@ -78,22 +81,47 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.TypeViewHolder
             pre="Nombre de fans: ";
         }
         if (currentItem instanceof Film){
+            holder.playButton.setVisibility(View.INVISIBLE);
+            holder.circle.setVisibility(View.INVISIBLE);
             pre="Année: ";
         }
         if (currentItem instanceof Video){
+            holder.playButton.setVisibility(View.INVISIBLE);
+            holder.circle.setVisibility(View.INVISIBLE);
             pre="Année: ";
         }
         if (currentItem instanceof JeuVideo){
+            holder.playButton.setVisibility(View.INVISIBLE);
+            holder.circle.setVisibility(View.INVISIBLE);
             pre="Année: ";
+
         }
         if (currentItem instanceof Morceau){
             pre="Artiste: ";
         }
         if (currentItem instanceof Serie){
+            holder.playButton.setVisibility(View.INVISIBLE);
+            holder.circle.setVisibility(View.INVISIBLE);
             pre="Année: ";
         }
 
-        holder.mediaPlayer  = this.mediaPlayer;
+        /*holder.playButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //holder.playButton.startAnimation(buttonClick);
+                musicListener.lancerMusique(currentItem);
+
+            }
+        });*/
+
+        holder.playButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                musicListener.lancerMusique(currentItem);
+            }
+        });
+
+        //holder.mediaPlayer  = this.mediaPlayer;
         holder.name_ar.setText(name);
         holder.spec.setText(pre + spec);
         Picasso.with(context).load(imageUrl).fit().centerInside().into(holder.img_ar);
@@ -109,7 +137,8 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.TypeViewHolder
         public ImageButton img_ar;
         public TextView name_ar;
         public TextView spec;
-        public MediaPlayer mediaPlayer;
+        public ImageView playButton;
+        public ImageView circle;
 
         public TypeViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -119,7 +148,8 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.TypeViewHolder
             img_ar = itemView.findViewById(R.id.img_ar);
             name_ar = itemView.findViewById(R.id.name_ar);
             spec = itemView.findViewById(R.id.spec);
-
+            playButton = itemView.findViewById(R.id.playButton);
+            circle = itemView.findViewById(R.id.circle);
 
 
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -145,7 +175,12 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.TypeViewHolder
                     }
                 }
             });
+
         }
+    }
+
+    public interface MusicListener {
+        void lancerMusique(Type type);
     }
 }
 

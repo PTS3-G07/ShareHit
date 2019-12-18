@@ -16,8 +16,12 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.TextView;
 
@@ -52,7 +56,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemclickListener {
+public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemclickListener, TypeAdapter.MusicListener {
 
     public static final String EXTRA_URL = "imgUrl";
     public static final String EXTRA_NAME = "name";
@@ -65,17 +69,31 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
     private TypeAdapter mExampleAdapter;
     private ArrayList<Type> mExampleList;
     private RequestQueue mRequestQueue;
-    Context c;
+    private Context context;
     private SearchView search;
     public int type;
     private String typeRecom;
 
-    public MediaPlayer mediaPlayer;
+    private final static MediaPlayer mp = new MediaPlayer();
+
+    private LinearLayout lecteur;
+    private ProgressBar mSeekBarPlayer;
+    private ImageButton stop;
+    private ImageView musicImg;
+    private ImageButton btnPause;
+    private TextView nameLect;
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mp.pause();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dezer_api);
+        context = this;
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
@@ -93,6 +111,17 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
         mExampleList = new ArrayList<Type>();
         mRequestQueue = Volley.newRequestQueue(this);
 
+        lecteur = findViewById(R.id.lecteur);
+        lecteur.setVisibility(View.INVISIBLE);
+        ViewGroup.LayoutParams params = lecteur.getLayoutParams();
+        params.height=0;
+        lecteur.setLayoutParams(params);
+
+        stop = lecteur.findViewById(R.id.button1);
+        btnPause = lecteur.findViewById(R.id.button2);
+        mSeekBarPlayer = lecteur.findViewById(R.id.progressBar);
+        nameLect = lecteur.findViewById(R.id.nameLect);
+        musicImg = lecteur.findViewById(R.id.musicImg);
         search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -135,6 +164,8 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
 
 
     }
+
+
 
     private Map<String, String> parseJSONartist(String artistName) {
 
@@ -507,6 +538,128 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
             }
         });
     }
+
+    public void lancerMusique(Type model){
+        //if (model instanceof Morceau) {
+            Morceau son = (Morceau) model;
+        /*}else if (model instanceof Artist) {
+            Artist son = (Artist) model;
+        }else if (model instanceof Album) {
+            Album son = (Album) model;
+        }*/
+        mp.seekTo(mp.getDuration());
+        mp.reset();
+        if (lecteur.getVisibility()==View.INVISIBLE) {
+            lecteur.setVisibility(View.VISIBLE);
+            ViewGroup.LayoutParams params = lecteur.getLayoutParams();
+            params.height = android.app.ActionBar.LayoutParams.WRAP_CONTENT;
+            lecteur.setLayoutParams(params);
+        }
+        try{
+            //Log.e("testest", ""+model.getName() );
+            mp.setDataSource(son.getSongUrl());
+        }
+        catch (IOException ex){
+            //Log.e("testest", "Can't found data:"+model.getSongUrl());
+        }
+
+        nameLect.setText(model.getName());
+
+        /*if(model.getType().equals("track"))
+            nameLect.setText(model.getTrack());
+        else if(model.getType().equals("artist"))
+            nameLect.setText(model.getArtist());
+        else if(model.getType().equals("album"))
+            nameLect.setText(model.getAlbum());*/
+                        /*recosViewHolder.playButton.setVisibility(View.INVISIBLE);
+                        recosViewHolder.player.setVisibility(View.VISIBLE);*/
+
+
+        Picasso.with(context).load(model.getImgUrl()).fit().centerInside().into(musicImg);
+        mp.prepareAsync();
+        mp.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mp) {
+                int duration = mp.getDuration();
+                mSeekBarPlayer.setMax(duration);
+                mp.start();
+                mSeekBarPlayer.postDelayed(onEverySecond, 500);
+            }
+        });
+
+        //recosViewHolder.playButton.startAnimation(buttonClick);
+
+        stop.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                mp.stop();
+                mp.reset();
+                lecteur.setVisibility(View.INVISIBLE);
+
+
+
+                                /*recosViewHolder.playButton.setVisibility(View.VISIBLE);
+                                recosViewHolder.playButton.setImageResource(R.drawable.ic_play);
+                                recosViewHolder.player.setVisibility(View.INVISIBLE);*/
+
+                ViewGroup.LayoutParams params = lecteur.getLayoutParams();
+                params.height=0;
+                lecteur.setLayoutParams(params);
+            }
+        });
+
+
+        btnPause.setOnClickListener(new View.OnClickListener() {
+
+
+            @Override
+            public void onClick(View v) {
+                if (mp.isPlaying()) {
+                    mp.pause();
+                    btnPause.setImageResource(R.drawable.ic_play);
+                                    /*recosViewHolder.playButton.setVisibility(View.VISIBLE);
+                                    recosViewHolder.playButton.setImageResource(R.drawable.ic_pause);
+                                    recosViewHolder.player.setVisibility(View.INVISIBLE);*/
+
+                }
+                else {
+                    btnPause.setImageResource(R.drawable.ic_pause);
+                                    /*recosViewHolder.playButton.setVisibility(View.INVISIBLE);
+                                    recosViewHolder.player.setVisibility(View.VISIBLE);*/
+                    try {
+                        mp.prepare();
+                    } catch (IllegalStateException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                    mp.start();
+                    mSeekBarPlayer.postDelayed(onEverySecond, 1000);
+                }
+
+            }
+        });
+    }
+
+    private Runnable onEverySecond = new Runnable() {
+        @Override
+        public void run(){
+            if(mp != null) {
+                mSeekBarPlayer.setProgress(mp.getCurrentPosition());
+            }
+
+            if(mp.isPlaying()) {
+                btnPause.setImageResource(R.drawable.ic_pause);
+                mSeekBarPlayer.postDelayed(onEverySecond, 100);
+            }else{
+                btnPause.setImageResource(R.drawable.ic_play);
+            }
+        }
+    };
 
 
 
