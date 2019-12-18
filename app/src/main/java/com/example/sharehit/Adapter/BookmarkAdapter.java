@@ -59,44 +59,62 @@ public class BookmarkAdapter extends
     public void onBindViewHolder(BookmarkAdapter.ViewHolder viewHolder, final int position) {
         final Bookmark bookmark = mBookmark.get(position);
         final String newLine = System.getProperty("line.separator");
+        final String messageSuppression;
 
-        TextView textView = viewHolder.titreBookmark;
-        textView.setText(bookmark.getTitre());
-        TextView textView2 = viewHolder.sousTitreBookmark;
-        textView2.setText(bookmark.getArtist());
-        TextView textView3 = viewHolder.typeBookmark;
-        switch (bookmark.getType()){
+        TextView titre = viewHolder.titreBookmark;
+        TextView sousTitre = viewHolder.sousTitreBookmark;
+        final TextView type = viewHolder.typeBookmark;
+
+        switch (bookmark.getRecommandation().getType()){
             case "artist":
-                textView3.setText("Artiste");
+                titre.setText(bookmark.getRecommandation().getArtist());
+                sousTitre.setText("");
+                type.setText("Artiste");
+                messageSuppression = bookmark.getRecommandation().getArtist();
                 break;
             case "album":
-                textView3.setText("Album");
+                titre.setText(bookmark.getRecommandation().getAlbum());
+                sousTitre.setText(bookmark.getRecommandation().getArtist());
+                type.setText("Album");
+                messageSuppression = bookmark.getRecommandation().getAlbum() + ", " + bookmark.getRecommandation().getArtist();
                 break;
             case "track":
-                textView3.setText("Morceau");
+                titre.setText(bookmark.getRecommandation().getTrack());
+                sousTitre.setText(bookmark.getRecommandation().getArtist());
+                type.setText("Morceau");
+                messageSuppression = bookmark.getRecommandation().getTrack() + ", " + bookmark.getRecommandation().getArtist();
                 break;
             case "game":
-                textView3.setText("Jeu vidéo");
+                titre.setText(bookmark.getRecommandation().getArtist());
+                sousTitre.setText("");
+                type.setText("Jeu vidéo");
+                messageSuppression = bookmark.getRecommandation().getArtist();
                 break;
             case "serie":
-                textView3.setText("Série");
+                titre.setText(bookmark.getRecommandation().getArtist());
+                sousTitre.setText("");
+                type.setText("Série");
+                messageSuppression = bookmark.getRecommandation().getArtist();
                 break;
             case "movie":
-                textView3.setText("Film");
+                titre.setText(bookmark.getRecommandation().getArtist());
+                sousTitre.setText("");
+                type.setText("Film");
+                messageSuppression = bookmark.getRecommandation().getArtist();
                 break;
             default:
                 throw new IllegalStateException("Bug");
         }
 
         ImageView imageView = viewHolder.imgBookmark;
-        if(!bookmark.getImgUrl().equals("")) Picasso.with(context).load(bookmark.getImgUrl()).fit().centerInside().into(imageView);
+        if(!bookmark.getRecommandation().getUrlImage().equals("")) Picasso.with(context).load(bookmark.getRecommandation().getUrlImage()).fit().centerInside().into(imageView);
         final ImageView bookmarkDelete = viewHolder.bookmarkDelete;
         bookmarkDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AlertDialog alertDialog = new AlertDialog.Builder(context)
                         .setTitle("Supprimer ?")
-                        .setMessage(bookmark.getArtist())
+                        .setMessage(messageSuppression + newLine + type.getText())
                         .setPositiveButton("Supprimer", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 FirebaseDatabase.getInstance().getReference().child("users").child(mAuth.getCurrentUser().getUid()).child("bookmarks").child(bookmark.getKeyBookmark()).removeValue();
@@ -116,14 +134,14 @@ public class BookmarkAdapter extends
             @Override
             public void onClick(View v) {
                 String link ="";
-                if (bookmark.getType().equals("track")){
-                    link="https://www.deezer.com/fr/track/"+bookmark.getIdUrl();
-                } else if (bookmark.getType().equals("album")){
-                    link="https://www.deezer.com/fr/album/"+bookmark.getIdUrl();
-                }else if (bookmark.getType().equals("artist")){
-                    link="https://www.deezer.com/fr/artist/"+bookmark.getIdUrl();
+                if (bookmark.getRecommandation().getType().equals("track")){
+                    link="https://www.deezer.com/fr/track/"+bookmark.getRecommandation().getId();
+                } else if (bookmark.getRecommandation().getType().equals("album")){
+                    link="https://www.deezer.com/fr/album/"+bookmark.getRecommandation().getId();
+                }else if (bookmark.getRecommandation().getType().equals("artist")){
+                    link="https://www.deezer.com/fr/artist/"+bookmark.getRecommandation().getId();
                 } else{
-                    link="https://www.imdb.com/title/"+bookmark.getIdUrl();
+                    link="https://www.imdb.com/title/"+bookmark.getRecommandation().getId();
                 }
                 Intent viewIntent =
                         new Intent("android.intent.action.VIEW",

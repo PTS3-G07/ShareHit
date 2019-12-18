@@ -16,6 +16,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.sharehit.Adapter.BookmarkAdapter;
 import com.example.sharehit.Model.Bookmark;
+import com.example.sharehit.Model.Recommandation;
 import com.example.sharehit.Utilities.OnSwipeTouchListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -153,7 +154,7 @@ public class BookmarkFragment extends Fragment {
                 throw new IllegalStateException("Unexpected value: " + i);
         }
         for(Bookmark bookmark : bookmarks){
-            if(bookmark.getType().equals(type)){
+            if(bookmark.getRecommandation().getType().equals(type)){
                 listBookmark.add(bookmark);
                 chargerRecyclerView(listBookmark);
             }
@@ -171,7 +172,18 @@ public class BookmarkFragment extends Fragment {
                         recosRef.child(child.getValue().toString()).addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    Bookmark bookmark = new Bookmark(child.getKey(), child.getValue().toString(), dataSnapshot.child("type").getValue().toString(), dataSnapshot.child("urlImage").getValue().toString(), dataSnapshot.child("track").getValue().toString(), dataSnapshot.child("artist").getValue().toString(), dataSnapshot.child("id").getValue().toString());
+                                Recommandation recommandation = new Recommandation(
+                                        dataSnapshot.child("album").getValue().toString(),
+                                        dataSnapshot.child("artist").getValue().toString(),
+                                        dataSnapshot.child("id").getValue().toString(),
+                                        Double.parseDouble(dataSnapshot.child("timestamp").getValue().toString()),
+                                        dataSnapshot.child("track").getValue().toString(),
+                                        dataSnapshot.child("type").getValue().toString(),
+                                        dataSnapshot.child("urlImage").getValue().toString(),
+                                        dataSnapshot.child("urlPreview").getValue().toString(),
+                                        dataSnapshot.child("userRecoUid").getValue().toString(),
+                                        child.getValue().toString());
+                                    Bookmark bookmark = new Bookmark(child.getKey(), recommandation);
                                     listBookmark.add(bookmark);
                                     bookmarks = listBookmark;
                                     chargerRecyclerView(listBookmark);
