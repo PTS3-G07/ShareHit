@@ -191,7 +191,6 @@ public class ProfilFragment extends Fragment implements RecommandationAdapter.Mu
         storagePermissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
         mStorageRef = FirebaseStorage.getInstance().getReference();
         pd = new ProgressDialog(getActivity());
-        mStorageRef = FirebaseStorage.getInstance().getReference();
 
         Picasso.with(getContext()).load("https://firebasestorage.googleapis.com/v0/b/share-hit.appspot.com/o/"+mAuth.getCurrentUser().getUid()+"?alt=media&token=1d93f69f-a530-455a-83d2-929ce42c3667").into(pdp);
 
@@ -408,7 +407,7 @@ public class ProfilFragment extends Fragment implements RecommandationAdapter.Mu
                 e.printStackTrace();
             }*/
             StorageMetadata metadata = new StorageMetadata.Builder()
-                    .setContentType("application/octet-stream")
+                    .setContentType("application/image")
                     .build();
             final StorageReference filepath = mStorageRef.child(user.getUid());
             filepath.putFile(imguri, metadata).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
@@ -428,7 +427,7 @@ public class ProfilFragment extends Fragment implements RecommandationAdapter.Mu
 
                      */
                     Toast.makeText(getContext(),"Photo de profil changé", Toast.LENGTH_LONG).show();
-                    Picasso.with(getContext()).load("https://firebasestorage.googleapis.com/v0/b/share-hit.appspot.com/o/"+mAuth.getCurrentUser().getUid()+"?alt=media&token=1d93f69f-a530-455a-83d2-929ce42c3667").networkPolicy(NetworkPolicy.NO_CACHE).memoryPolicy(MemoryPolicy.NO_CACHE).fit().centerInside().into(pdp);
+                    Picasso.with(getContext()).load(imguri).networkPolicy(NetworkPolicy.NO_CACHE).memoryPolicy(MemoryPolicy.NO_CACHE).fit().centerInside().into(pdp);
 
 
                 }

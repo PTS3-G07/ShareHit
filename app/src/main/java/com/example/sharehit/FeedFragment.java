@@ -137,6 +137,8 @@ public class FeedFragment extends Fragment implements RecommandationAdapter.Musi
         followRef = FirebaseDatabase.getInstance().getReference().child("users").child(mAuth.getCurrentUser().getUid()).child("followed");
         usersRef = FirebaseDatabase.getInstance().getReference().child("users");
 
+
+
         lecteur = root.findViewById(R.id.lecteur);
         stop = root.findViewById(R.id.button1);
         btnPause = root.findViewById(R.id.button2);

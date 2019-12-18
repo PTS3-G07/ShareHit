@@ -27,14 +27,20 @@ import com.example.sharehit.ListLikePage;
 import com.example.sharehit.Model.Recommandation;
 import com.example.sharehit.ProfilPage;
 import com.example.sharehit.R;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageMetadata;
+import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -50,6 +56,7 @@ public class RecommandationAdapter extends
     List<Recommandation> mRecommandation;
     private Animation buttonClick;
     private MusicListener musicListener;
+    private StorageReference mStorageRef;
 
     public RecommandationAdapter(List<Recommandation> recommandations) {
         this.mRecommandation = recommandations;
@@ -62,6 +69,7 @@ public class RecommandationAdapter extends
 
         musicListener = (MusicListener) context;
 
+        mStorageRef = FirebaseStorage.getInstance().getReference();
         buttonClick = AnimationUtils.loadAnimation(context, R.anim.click);
 
         mAuth = FirebaseAuth.getInstance();
@@ -180,7 +188,23 @@ public class RecommandationAdapter extends
         });
 
 
-        Picasso.with(context).load("https://firebasestorage.googleapis.com/v0/b/share-hit.appspot.com/o/"+recommandation.getUserRecoUid()+"?alt=media&token=1d93f69f-a530-455a-83d2-929ce42c3667").fit().centerInside().into(viewHolder.getImgProfil());
+        // Create a storage reference from our app
+        final StorageReference filepath = mStorageRef;
+
+        //Log.e("testest","id de l'utilisateur : "+ recommandation.getUserRecoUid());
+        //Log.e("testest", filepath.child(recommandation.getUserRecoUid()).toString());
+
+        filepath.child(recommandation.getUserRecoUid()).getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
+            @Override
+            public void onSuccess(StorageMetadata storageMetadata) {
+                Picasso.with(context).load("https://firebasestorage.googleapis.com/v0/b/sharehit-37e93.appspot.com/o/"+recommandation.getUserRecoUid()+"?alt=media&token=cef7fe50-60c9-49bd-bc17-6164bd07eb3c").fit().centerInside().into(viewHolder.getImgProfil());
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+            }
+        });
+        //Picasso.with(context).load("https://firebasestorage.googleapis.com/v0/b/share-hit.appspot.com/o/"+recommandation.getUserRecoUid()+"?alt=media&token=1d93f69f-a530-455a-83d2-929ce42c3667").fit().centerInside().into(viewHolder.getImgProfil());
 
         usersRef.child(recommandation.getUserRecoUid()).addValueEventListener(new ValueEventListener() {
             @Override
