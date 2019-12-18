@@ -54,8 +54,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 import static com.example.sharehit.R.*;
 
-public class FeedPage extends AppCompatActivity implements RecommandationAdapter.MusicListener,  FeedFragment.MyListenerFeed, FollowFragment.MyListenerFollow, BookmarkFragment.MyListenerBookmark, ProfilFragment.MyListenerProfil {
-
+public class FeedPage extends AppCompatActivity implements RecommandationAdapter.MusicListener, FeedFragment.MyListenerFeed, FollowFragment.MyListenerFollow, BookmarkFragment.MyListenerBookmark, ProfilFragment.MyListenerProfil {
     SpaceNavigationView navigationView;
     FirebaseAuth firebaseAuth;
     ImageButton artiste;
@@ -421,7 +420,18 @@ public class FeedPage extends AppCompatActivity implements RecommandationAdapter
     @Override
     public void lancerMusique(Recommandation recommandation) {
         FragmentManager fm = getSupportFragmentManager();
-        FollowFragment fragment = (FollowFragment)fm.getFragments().get(0);
-        fragment.lancerMusique(recommandation);
+        if(fm.getFragments().get(0) instanceof FollowFragment){
+            FollowFragment fragment = (FollowFragment)fm.getFragments().get(0);
+            fragment.lancerMusique(recommandation);
+        }
+        if(fm.getFragments().get(0) instanceof FeedFragment){
+            FeedFragment fragment = (FeedFragment)fm.getFragments().get(0);
+            fragment.lancerMusique(recommandation);
+        }
+        if(fm.getFragments().get(0) instanceof ProfilFragment){
+            ProfilFragment fragment = (ProfilFragment)fm.getFragments().get(0);
+            fragment.lancerMusique(recommandation);
+        }
+
     }
 }

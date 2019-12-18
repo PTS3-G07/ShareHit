@@ -1,6 +1,7 @@
 package com.example.sharehit;
 
 import android.Manifest;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -37,7 +38,9 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.example.sharehit.Adapter.RecommandationAdapter;
 import com.example.sharehit.Model.Recommandation;
 import com.example.sharehit.Utilities.OnSwipeTouchListener;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -65,11 +68,13 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 
-public class ProfilFragment extends Fragment {
+public class ProfilFragment extends Fragment implements RecommandationAdapter.MusicListener {
 
 
     FirebaseAuth firebaseAuth, mAuth;
@@ -90,7 +95,7 @@ public class ProfilFragment extends Fragment {
     String cameraPermissions[];
     String storagePermissions[];
     public boolean CURRENT_LIKE;
-    private RecyclerView post;
+    private RecyclerView recyclerView;
     private final static MediaPlayer mp = new MediaPlayer();
 
     private MyListenerProfil callBack;
@@ -102,6 +107,11 @@ public class ProfilFragment extends Fragment {
     private ImageView musicImg;
 
     private Animation buttonClick;
+
+    private RecommandationAdapter adapter;
+    private SwipeRefreshLayout swipeContainer;
+
+    private boolean isCharged;
 
 
     public boolean OnCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -119,8 +129,28 @@ public class ProfilFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ViewGroup root = (ViewGroup) inflater.inflate(R.layout.fragement_profil, null);
+        recyclerView = root.findViewById(R.id.postIudRecyclerView);
+        swipeContainer = (SwipeRefreshLayout) root.findViewById(R.id.swipeContainerProfil);
 
         callBack=(MyListenerProfil)getActivity();
+
+        isCharged = true;
+
+        // Création du swipe up pour refresh
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                isCharged = true;
+                adapter.notifyDataSetChanged();
+                chargerRecyclerView(chargerListRecommandation());
+                swipeContainer.setRefreshing(false);
+            }
+        });
+
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
 
         root.setOnTouchListener(new OnSwipeTouchListener(getContext()) {
 
@@ -141,12 +171,6 @@ public class ProfilFragment extends Fragment {
         fb = root.findViewById(R.id.fb);
         final String userUID = firebaseAuth.getCurrentUser().getUid();
         recosRef = FirebaseDatabase.getInstance().getReference().child("recos");
-
-        post = (RecyclerView) root.findViewById(R.id.postIudRecyclerView);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-        layoutManager.setStackFromEnd(true);
-        layoutManager.setReverseLayout(true);
-        post.setLayoutManager(layoutManager);
 
         buttonClick = AnimationUtils.loadAnimation(getContext(), R.anim.click);
 
@@ -235,8 +259,9 @@ public class ProfilFragment extends Fragment {
             }
         });
 
-        displayAllPostUid();
+        //displayAllPostUid();
 
+        chargerRecyclerView(chargerListRecommandation());
 
         return root;
     }
@@ -415,20 +440,33 @@ public class ProfilFragment extends Fragment {
 
     }
 
-
-    private void displayAllPostUid() {
-
-        final Intent intent1 = new Intent(getContext(), ListLikePage.class);
-        final Intent intent2 = new Intent(getContext(), CommentPage.class);
-        final Bundle b = new Bundle();
-
+    public List<Recommandation> chargerListRecommandation(){
+        final List<Recommandation> list = new ArrayList<>();
         Query myPost = recosRef.orderByChild("userRecoUid").startAt(user.getUid()).endAt(user.getUid()+"\uf8ff");
-
-        final int[] tailleTableau = new int[1];
         myPost.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                tailleTableau[0] = (int) dataSnapshot.getChildrenCount();
+                if(isCharged){
+                    for(DataSnapshot child : dataSnapshot.getChildren()){
+                        Recommandation recommandation = new Recommandation(
+                                child.child("album").getValue().toString(),
+                                child.child("artist").getValue().toString(),
+                                child.child("id").getValue().toString(),
+                                Double.parseDouble(child.child("timestamp").getValue().toString()),
+                                child.child("track").getValue().toString(),
+                                child.child("type").getValue().toString(),
+                                child.child("urlImage").getValue().toString(),
+                                child.child("urlPreview").getValue().toString(),
+                                child.child("userRecoUid").getValue().toString(),
+                                child.getKey());
+                        list.add(recommandation);
+                        chargerRecyclerView(list);
+
+
+                    }
+                    isCharged = false;
+                }
+
             }
 
             @Override
@@ -436,504 +474,69 @@ public class ProfilFragment extends Fragment {
 
             }
         });
-
-        FirebaseRecyclerAdapter<Recommandation, FeedFragment.RecosViewHolder> fireBaseRecyclerAdapter = new FirebaseRecyclerAdapter<Recommandation, FeedFragment.RecosViewHolder>
-                (
-                        Recommandation.class,
-                        R.layout.recommandation_item,
-                        FeedFragment.RecosViewHolder.class,
-                        myPost
-                ) {
-
-            @Override
-            protected void populateViewHolder(final FeedFragment.RecosViewHolder recosViewHolder, final Recommandation model, final int i) {
-                final String[] keyBookmark = new String[tailleTableau[0]];
-                final boolean[] CURRENT_BOOKMARK = new boolean[tailleTableau[0]];
-                final String[] keyLike = new String[tailleTableau[0]];
-                final boolean[] CURRENT_LIKE = new boolean[tailleTableau[0]];
-
-
-                Picasso.with(getContext()).load(model.getUrlImage()).fit().centerInside().into(recosViewHolder.getImg());
-
-                if (model.getType().equals("track")) {
-                    String desc = "<b>" + model.getTrack() + "</b>" + " de " + "<b>" + model.getArtist() + "</b>";
-                    recosViewHolder.setDesc(Html.fromHtml(desc));
-                } else if (model.getType().equals("album")) {
-                    String desc = "<b>" + model.getAlbum() + "</b>" + " de " + "<b>" + model.getArtist() + "</b>";
-                    recosViewHolder.setDesc(Html.fromHtml(desc));
-                } else {
-                    String desc = "<b>" + model.getArtist() + "</b>";
-                    recosViewHolder.setDesc(Html.fromHtml(desc));
-                }
-
-                final String idReco = getRef(i).getKey();
-
-                //Log.e("testesto", model.getName()+" - "+model.getUrlPreview() +" - "+idReco);
-
-                //Log.e(""+recosRef.child(idReco).toString(), "CURRENT_LIKE="+CURRENT_LIKE);
-
-                recosRef.child(idReco).child("Coms").limitToLast(1).addValueEventListener(new ValueEventListener() {
-
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        Log.e("letesta", "" + dataSnapshot);
-                        if (!dataSnapshot.hasChildren()) {
-                            recosViewHolder.setPseudoCom("Aucun commentaire");
-                            recosViewHolder.setAutreComment("0");
-                            recosViewHolder.setNbrCom("");
-                        } else {
-                            for (DataSnapshot child : dataSnapshot.getChildren()) {
-                                if (child.child("com").exists()) {
-
-                                    recosViewHolder.setNbrCom(child.child("com").getValue().toString());
-                                }
-                                final String index = child.getKey();
-                                String idUsr = dataSnapshot.child(index).child("uid").getValue().toString();
-                                usersRef.child(idUsr).child("pseudo").addValueEventListener(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                        recosViewHolder.setPseudoCom(dataSnapshot.getValue().toString() + " :");
-                                    }
-
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                    }
-                                });
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
-
-                recosRef.child(idReco).child("Coms").addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.exists()) {
-                            recosViewHolder.setAutreComment("" + dataSnapshot.getChildrenCount());
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
-
-                recosRef.child(idReco).child("likeUsersUid").addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        recosViewHolder.setNbrLike(Long.toString(dataSnapshot.getChildrenCount()));
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                    }
-                });
-
-                usersRef.child(mAuth.getCurrentUser().getUid()).child("bookmarks").addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        boolean test = false;
-                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                            if (ds.getValue().equals(getRef(i).getKey())) {
-                                test = true;
-                                keyBookmark[i] = ds.getRef().getKey();
-                                //follow.setText("Ne plus suivre");
-                            }
-                        }
-                        if (test) {
-                            recosViewHolder.getBookButton().setImageResource(R.drawable.bookmark_ok);
-                            CURRENT_BOOKMARK[i] = true;
-                        } else {
-                            CURRENT_BOOKMARK[i] = false;
-                        }
-
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
-
-                recosRef.child(getRef(i).getKey()).child("likeUsersUid").addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        boolean test = false;
-                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                            if (ds.getValue().equals(mAuth.getCurrentUser().getUid())) {
-                                test = true;
-                                keyLike[i] = ds.getRef().getKey();
-                                //follow.setText("Ne plus suivre");
-                            }
-                        }
-                        if (test) {
-                            recosViewHolder.getLikeButton().setImageResource(R.drawable.red_heart);
-                            CURRENT_LIKE[i] = true;
-                        } else {
-                            recosViewHolder.getLikeButton().setImageResource(R.drawable.heart);
-                            CURRENT_LIKE[i] = false;
-                        }
-
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
-
-
-                recosViewHolder.getLikeButton().setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        /*
-                        if(CURRENT_LIKE[i] == false){
-                            getRef(i).child("likeUsersUid").child(mAuth.getCurrentUser().getUid()).child("like_done").setValue("yes");
-                            CURRENT_LIKE=true;
-                        } else if(CURRENT_LIKE == true){
-                            getRef(i).child("likeUsersUid").child(mAuth.getCurrentUser().getUid()).removeValue();
-                            CURRENT_LIKE=false;
-                        }
-
-                         */
-                        if (CURRENT_LIKE[i] == false) {
-                            HashMap usersMap = new HashMap();
-                            usersMap.put(recosRef.child(getRef(i).getKey()).child("likeUsersUid").push().getKey(), mAuth.getCurrentUser().getUid());
-                            recosRef.child(getRef(i).getKey()).child("likeUsersUid").updateChildren(usersMap);
-                            recosRef.child(getRef(i).getKey()).child("likeUsersUid").addValueEventListener(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                                        if (ds.getValue().equals(mAuth.getCurrentUser().getUid())) {
-                                            Log.e("Like key", ds.getRef().getKey());
-                                            keyLike[i] = ds.getRef().getKey();
-
-                                        }
-                                    }
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                }
-                            });
-                            //follow.setText("Ne plus suivre");
-                            recosViewHolder.getLikeButton().setImageResource(R.drawable.red_heart);
-                            CURRENT_LIKE[i] = true;
-
-                        } else if (CURRENT_LIKE[i] == true) {
-                            recosRef.child(getRef(i).getKey()).child("likeUsersUid").child(keyLike[i]).removeValue();
-                            recosViewHolder.getLikeButton().setImageResource(R.drawable.heart);
-                            //follow.setText("Suivre");
-                            CURRENT_LIKE[i] = false;
-
-                        }
-
-                    }
-
-                });
-
-
-                final GestureDetector.SimpleOnGestureListener listener = new GestureDetector.SimpleOnGestureListener() {
-                    @Override
-                    public boolean onDoubleTap(MotionEvent e) {
-                        if (CURRENT_LIKE[i] == false) {
-                            HashMap usersMap = new HashMap();
-                            usersMap.put(recosRef.child(getRef(i).getKey()).child("likeUsersUid").push().getKey(), mAuth.getCurrentUser().getUid());
-                            recosRef.child(getRef(i).getKey()).child("likeUsersUid").updateChildren(usersMap);
-                            recosRef.child(getRef(i).getKey()).child("likeUsersUid").addValueEventListener(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                                        if (ds.getValue().equals(mAuth.getCurrentUser().getUid())) {
-                                            Log.e("Like key", ds.getRef().getKey());
-                                            keyLike[i] = ds.getRef().getKey();
-
-                                        }
-                                    }
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                }
-                            });
-                            //follow.setText("Ne plus suivre");
-                            recosViewHolder.getLikeButton().setImageResource(R.drawable.red_heart);
-                            CURRENT_LIKE[i] = true;
-
-                        } else if (CURRENT_LIKE[i] == true) {
-                            recosRef.child(getRef(i).getKey()).child("likeUsersUid").child(keyLike[i]).removeValue();
-                            recosViewHolder.getLikeButton().setImageResource(R.drawable.heart);
-                            //follow.setText("Suivre");
-                            CURRENT_LIKE[i] = false;
-
-                        }
-                        return true;
-                    }
-
-                    public boolean onSingleTapConfirmed(MotionEvent e) {
-
-                        String link = "";
-                        Log.e("testest", "" + model.getId());
-                        if (model.getType().equals("track")) {
-                            link = "https://www.deezer.com/fr/track/" + model.getId();
-                        } else if (model.getType().equals("album")) {
-                            link = "https://www.deezer.com/fr/album/" + model.getId();
-                        } else if (model.getType().equals("artist")) {
-                            link = "https://www.deezer.com/fr/artist/" + model.getId();
-                        } else {
-                            link = "https://www.imdb.com/title/" + model.getId();
-                        }
-                        Intent viewIntent =
-                                new Intent("android.intent.action.VIEW",
-                                        Uri.parse(link));
-                        startActivity(viewIntent);
-
-                        return true;
-                    }
-                };
-
-
-                final GestureDetector detector = new GestureDetector(listener);
-
-                detector.setOnDoubleTapListener(listener);
-                detector.setIsLongpressEnabled(true);
-
-                recosViewHolder.getImg().setOnTouchListener(new View.OnTouchListener() {
-                    @Override
-                    public boolean onTouch(View view, MotionEvent event) {
-                        return detector.onTouchEvent(event);
-                    }
-                });
-
-                recosViewHolder.getBookButton().setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (CURRENT_BOOKMARK[i] == false) {
-                            HashMap usersMap = new HashMap();
-                            usersMap.put(usersRef.child(mAuth.getCurrentUser().getUid()).child("bookmarks").push().getKey(), getRef(i).getKey());
-                            usersRef.child(mAuth.getCurrentUser().getUid()).child("bookmarks").updateChildren(usersMap);
-                            usersRef.child(mAuth.getCurrentUser().getUid()).child("bookmarks").addValueEventListener(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                                        if (ds.getValue().equals(b.getString("key"))) {
-                                            Log.e("Bookmark key", ds.getRef().getKey());
-                                            keyBookmark[i] = ds.getRef().getKey();
-
-                                        }
-                                    }
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                }
-                            });
-                            //follow.setText("Ne plus suivre");
-                            recosViewHolder.getBookButton().setImageResource(R.drawable.bookmark_ok);
-                            CURRENT_BOOKMARK[i] = true;
-
-                        } else if (CURRENT_BOOKMARK[i] == true) {
-                            usersRef.child(mAuth.getCurrentUser().getUid()).child("bookmarks").child(keyBookmark[i]).removeValue();
-                            recosViewHolder.getBookButton().setImageResource(R.drawable.bookmark);
-                            //follow.setText("Suivre");
-                            CURRENT_BOOKMARK[i] = false;
-
-                        }
-
-
-                    }
-                });
-
-                recosViewHolder.autreComment.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        b.putString("key", getRef(i).getKey());
-                        intent2.putExtras(b);
-                        startActivity(intent2);
-                    }
-                });
-
-                recosViewHolder.getListLike().setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        b.putString("key", getRef(i).getKey());
-                        intent1.putExtras(b);
-                        startActivity(intent1);
-
-                    }
-                });
-
-                recosViewHolder.getCommentButton().setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        b.putString("key", getRef(i).getKey());
-                        intent2.putExtras(b);
-                        startActivity(intent2);
-
-                    }
-                });
-
-
-                //BufferedImage img = ImageIO.read(new ByteArrayInputStream(bytes));
-                Picasso.with(getContext()).load("https://firebasestorage.googleapis.com/v0/b/share-hit-52071.appspot.com/o/Pdp%2F" + model.getUserRecoUid() + "?alt=media&token=32f03c76-31a8-4ea2-8cac-8fa92bef6667").fit().centerInside().into(recosViewHolder.getImgProfil());
-
-                usersRef.child(model.getUserRecoUid()).addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        final String pseudo = dataSnapshot.child("pseudo").getValue().toString();
-                        String typeReco = "";
-                        if (model.getType().equals("track")) {
-                            typeReco = "un morceau";
-                        } else if (model.getType().equals("artist")) {
-                            typeReco = "un artiste";
-                        } else if (model.getType().equals("album")) {
-                            typeReco = "un album";
-                        } else if (model.getType().equals("movie")) {
-                            typeReco = "un film";
-                        } else if (model.getType().equals("serie")) {
-                            typeReco = "une série";
-                        } else if (model.getType().equals("game")) {
-                            typeReco = "un jeu vidéo";
-                        }
-                        final String sourceString = "<b>" + pseudo + "</b>" + " a recommandé " + "<b>" + typeReco + "</b>";
-
-                        recosViewHolder.setTitre(Html.fromHtml(sourceString));
-
-                        long currentTimestamp = System.currentTimeMillis();
-                        double searchTimestampD = model.getTimestamp();
-                        long searchTimestamp = (long)searchTimestampD;
-                        long difference = Math.abs(currentTimestamp - searchTimestamp);
-                        if (TimeUnit.MILLISECONDS.toSeconds(currentTimestamp) == TimeUnit.MILLISECONDS.toSeconds(searchTimestamp)) {
-                            recosViewHolder.setTime("À l'instant");
-                        } else {
-                            recosViewHolder.setTime("Il y a " + convertTimeStampToBelleHeureSaMere(difference));
-                        }
-
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
-
-                recosViewHolder.getDesc().setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        String link = "";
-                        Log.e("testest", "" + model.getId());
-                        if (model.getType().equals("track")) {
-                            link = "https://www.deezer.com/fr/track/" + model.getId();
-                        } else if (model.getType().equals("album")) {
-                            link = "https://www.deezer.com/fr/album/" + model.getId();
-                        } else if (model.getType().equals("artiste")) {
-                            link = "https://www.deezer.com/fr/artist/" + model.getId();
-                        } else {
-                            link = "https://www.imdb.com/title/" + model.getId();
-                        }
-                        Intent viewIntent =
-                                new Intent("android.intent.action.VIEW",
-                                        Uri.parse(link));
-                        startActivity(viewIntent);
-                    }
-                });
-
-                recosRef.child(idReco).child("urlPreview").addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.exists()) {
-                            if (!dataSnapshot.getValue().toString().equals("")) {
-                                recosViewHolder.playButton.setVisibility(View.VISIBLE);
-                                recosViewHolder.circle.setVisibility(View.VISIBLE);
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                    }
-                });
-
-                /*Log.e("jhsvhx", recosViewHolder.getDesc().getText().toString().equals(nameLect.getText().toString())+"");
-
-                if(recosViewHolder.getDesc().getText().toString().equals(nameLect.getText().toString())){
-                    Log.e("jhsvhx", ""+recosViewHolder.getDesc().getText());
-                    recosViewHolder.playButton.setVisibility(View.INVISIBLE);
-                    recosViewHolder.player.setVisibility(View.VISIBLE);
-                }else{
-                    recosViewHolder.playButton.setVisibility(View.VISIBLE);
-                    recosViewHolder.player.setVisibility(View.INVISIBLE);
-                }*/
-
-                /*recosViewHolder.playButton.setOnTouchListener(new View.OnTouchListener() {
-                    @Override
-                    public boolean onTouch(View view, MotionEvent motionEvent) {
-                        recosViewHolder.playButton.startAnimation(buttonClick);
-                        return true;
-                    }
-                });*/
-
-                recosViewHolder.playButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-
-                        mp.seekTo(mp.getDuration());
-                        mp.reset();
-                        if (lecteur.getVisibility() == View.INVISIBLE) {
-                            lecteur.setVisibility(View.VISIBLE);
-                            ViewGroup.LayoutParams params = lecteur.getLayoutParams();
-                            params.height = android.app.ActionBar.LayoutParams.WRAP_CONTENT;
-                            lecteur.setLayoutParams(params);
-                        }
-                        try {
-                            Log.e("testest", "" + model.getUrlPreview());
-                            mp.setDataSource(model.getUrlPreview());
-                        } catch (IOException ex) {
-                            Log.e("testest", "Can't found data:" + model.getUrlPreview());
-                        }
-
-
-                        if (model.getType().equals("track"))
-                            nameLect.setText(model.getTrack());
-                        else if (model.getType().equals("artist"))
-                            nameLect.setText(model.getArtist());
-                        else if (model.getType().equals("album"))
-                            nameLect.setText(model.getAlbum());
+        return list;
+
+    }
+
+    public void chargerRecyclerView(List<Recommandation> list){
+        adapter = new RecommandationAdapter(list);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        layoutManager.setStackFromEnd(true);
+        layoutManager.setReverseLayout(true);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(adapter);
+    }
+
+    @Override
+    public void lancerMusique(Recommandation model) {
+        mp.seekTo(mp.getDuration());
+        mp.reset();
+        if (lecteur.getVisibility()==View.INVISIBLE) {
+            lecteur.setVisibility(View.VISIBLE);
+            ViewGroup.LayoutParams params = lecteur.getLayoutParams();
+            params.height = ActionBar.LayoutParams.WRAP_CONTENT;
+            lecteur.setLayoutParams(params);
+        }
+        try{
+            Log.e("testest", ""+model.getUrlPreview() );mp.setDataSource(model.getUrlPreview());
+        }
+        catch (IOException ex){
+            Log.e("testest", "Can't found data:"+model.getUrlPreview());
+        }
+
+
+        if(model.getType().equals("track"))
+            nameLect.setText(model.getTrack());
+        else if(model.getType().equals("artist"))
+            nameLect.setText(model.getArtist());
+        else if(model.getType().equals("album"))
+            nameLect.setText(model.getAlbum());
                         /*recosViewHolder.playButton.setVisibility(View.INVISIBLE);
                         recosViewHolder.player.setVisibility(View.VISIBLE);*/
 
 
-                        Picasso.with(getContext()).load(model.getUrlImage()).fit().centerInside().into(musicImg);
-                        mp.prepareAsync();
-                        mp.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                            @Override
-                            public void onPrepared(MediaPlayer mp) {
-                                int duration = mp.getDuration();
-                                mSeekBarPlayer.setMax(duration);
-                                mp.start();
-                                mSeekBarPlayer.postDelayed(onEverySecond, 500);
-                            }
-                        });
+        Picasso.with(getContext()).load(model.getUrlImage()).fit().centerInside().into(musicImg);
+        mp.prepareAsync();
+        mp.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mp) {
+                int duration = mp.getDuration();
+                mSeekBarPlayer.setMax(duration);
+                mp.start();
+                mSeekBarPlayer.postDelayed(onEverySecond, 500);
+            }
+        });
 
-                        recosViewHolder.playButton.startAnimation(buttonClick);
+        //recosViewHolder.playButton.startAnimation(buttonClick);
 
-                        stop.setOnClickListener(new View.OnClickListener() {
+        stop.setOnClickListener(new View.OnClickListener() {
 
-                            @Override
-                            public void onClick(View v) {
+            @Override
+            public void onClick(View v) {
 
-                                mp.stop();
-                                mp.reset();
-                                lecteur.setVisibility(View.INVISIBLE);
+                mp.stop();
+                mp.reset();
+                lecteur.setVisibility(View.INVISIBLE);
 
 
 
@@ -941,112 +544,45 @@ public class ProfilFragment extends Fragment {
                                 recosViewHolder.playButton.setImageResource(R.drawable.ic_play);
                                 recosViewHolder.player.setVisibility(View.INVISIBLE);*/
 
-                                ViewGroup.LayoutParams params = lecteur.getLayoutParams();
-                                params.height = 0;
-                                lecteur.setLayoutParams(params);
-                            }
-                        });
+                ViewGroup.LayoutParams params = lecteur.getLayoutParams();
+                params.height=0;
+                lecteur.setLayoutParams(params);
+            }
+        });
 
 
-                        btnPause.setOnClickListener(new View.OnClickListener() {
+        btnPause.setOnClickListener(new View.OnClickListener() {
 
 
-                            @Override
-                            public void onClick(View v) {
-                                if (mp.isPlaying()) {
-                                    mp.pause();
-                                    btnPause.setImageResource(R.drawable.ic_play);
+            @Override
+            public void onClick(View v) {
+                if (mp.isPlaying()) {
+                    mp.pause();
+                    btnPause.setImageResource(R.drawable.ic_play);
                                     /*recosViewHolder.playButton.setVisibility(View.VISIBLE);
                                     recosViewHolder.playButton.setImageResource(R.drawable.ic_pause);
                                     recosViewHolder.player.setVisibility(View.INVISIBLE);*/
 
-                                } else {
-                                    btnPause.setImageResource(R.drawable.ic_pause);
+                }
+                else {
+                    btnPause.setImageResource(R.drawable.ic_pause);
                                     /*recosViewHolder.playButton.setVisibility(View.INVISIBLE);
                                     recosViewHolder.player.setVisibility(View.VISIBLE);*/
-                                    try {
-                                        mp.prepare();
-                                    } catch (IllegalStateException e) {
-                                        // TODO Auto-generated catch block
-                                        e.printStackTrace();
-                                    } catch (IOException e) {
-                                        // TODO Auto-generated catch block
-                                        e.printStackTrace();
-                                    }
-                                    mp.start();
-                                    mSeekBarPlayer.postDelayed(onEverySecond, 1000);
-                                }
-
-                            }
-                        });
+                    try {
+                        mp.prepare();
+                    } catch (IllegalStateException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
                     }
-                });
-
+                    mp.start();
+                    mSeekBarPlayer.postDelayed(onEverySecond, 1000);
+                }
 
             }
-        };
-
-
-        post.setAdapter(fireBaseRecyclerAdapter);
-    }
-
-    private String convertTimeStampToBelleHeureSaMere(long millis) {
-        if (millis < 0) {
-            throw new IllegalArgumentException("Duration must be greater than zero!");
-        }
-
-        long days = TimeUnit.MILLISECONDS.toDays(millis);
-        millis -= TimeUnit.DAYS.toMillis(days);
-        long hours = TimeUnit.MILLISECONDS.toHours(millis);
-        millis -= TimeUnit.HOURS.toMillis(hours);
-        long minutes = TimeUnit.MILLISECONDS.toMinutes(millis);
-        millis -= TimeUnit.MINUTES.toMillis(minutes);
-        long seconds = TimeUnit.MILLISECONDS.toSeconds(millis);
-
-        StringBuilder sb = new StringBuilder(64);
-        if (days != 0) {
-            if (days == 1) {
-                sb.append(days);
-                sb.append(" jour ");
-            } else {
-                sb.append(days);
-                sb.append(" jours ");
-            }
-
-        } else if (hours != 0) {
-            if (hours == 1) {
-                sb.append(hours);
-                sb.append(" heure ");
-            } else {
-                sb.append(hours);
-                sb.append(" heures ");
-            }
-
-        } else if (minutes != 0) {
-            if (minutes == 1) {
-                sb.append(minutes);
-                sb.append(" minute ");
-            } else {
-                sb.append(minutes);
-                sb.append(" minutes ");
-            }
-        } else if (seconds != 0) {
-            sb.append(seconds);
-            sb.append(" secondes");
-        }
-
-
-        return (sb.toString());
-    }
-
-    private boolean loadFragement(Fragment fragment){
-        if(fragment != null){
-            getFragmentManager().beginTransaction().replace(R.id.container, fragment)
-                    .commit();
-
-            return true;
-        }
-        return false;
+        });
     }
 
     private Runnable onEverySecond = new Runnable() {
