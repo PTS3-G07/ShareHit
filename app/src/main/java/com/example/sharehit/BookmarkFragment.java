@@ -64,17 +64,20 @@ public class BookmarkFragment extends Fragment {
 
         isCharged = true;
 
+
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                isCharged = true;
-                adapter.notifyDataSetChanged();
+
                 if(!tri){
+                    isCharged = true;
+                    adapter.notifyDataSetChanged();
                     chargerRecyclerView(chargerListBookmark());
                 } else {
-                    chargerRecyclerView(trierList(idx));
+                    //chargerRecyclerView(trierList(idx));
                 }
                 swipeContainer.setRefreshing(false);
+
             }
         });
         swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,

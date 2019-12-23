@@ -5,7 +5,9 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Patterns;
@@ -22,6 +24,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageMetadata;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,11 +41,15 @@ public class SignUp extends AppCompatActivity {
     private FirebaseAuth mAuth;
     DatabaseReference myRef;
     FirebaseDatabase database;
+    private StorageReference mStorageRef;
+    private Context context;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
+        context=this;
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
         final ProgressDialog progress = new ProgressDialog(this);
@@ -51,6 +62,8 @@ public class SignUp extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
         myRef = FirebaseDatabase.getInstance().getReference();
+
+        mStorageRef = FirebaseStorage.getInstance().getReference();
 
         regButt.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,7 +102,18 @@ public class SignUp extends AppCompatActivity {
                                                             DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("users");
                                                             usersMap.put(userUID, user);
                                                             usersRef.updateChildren(usersMap);
-                                                            progress.dismiss();
+                                                            StorageMetadata metadata = new StorageMetadata.Builder()
+                                                                    .setContentType("application/octet-stream")
+                                                                    .build();
+                                                            final StorageReference filepath = mStorageRef.child(userUID);
+                                                            Uri image = Uri.parse("android.resource://drawable/" + R.drawable.ic_user);
+                                                            filepath.putFile(image, metadata).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                                                                                                                         @Override
+                                                                                                                         public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                                                                                                                             progress.dismiss();
+                                                                                                                             Toast.makeText(context,"Profil créé", Toast.LENGTH_LONG).show();
+                                                                                                                         }
+                                                                                                                     });
                                                             startActivity(new Intent(SignUp.this, FeedPage.class));
                                                             finish();
                                                         }else {

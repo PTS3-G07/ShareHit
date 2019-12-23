@@ -130,7 +130,7 @@ public class ProfilFragment extends Fragment implements RecommandationAdapter.Mu
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ViewGroup root = (ViewGroup) inflater.inflate(R.layout.fragement_profil, null);
         recyclerView = root.findViewById(R.id.postIudRecyclerView);
-        swipeContainer = (SwipeRefreshLayout) root.findViewById(R.id.swipeContainerProfil);
+        swipeContainer = root.findViewById(R.id.swipeContainerProfil);
 
         callBack=(MyListenerProfil)getActivity();
 
@@ -144,6 +144,8 @@ public class ProfilFragment extends Fragment implements RecommandationAdapter.Mu
                 adapter.notifyDataSetChanged();
                 chargerRecyclerView(chargerListRecommandation());
                 swipeContainer.setRefreshing(false);
+                Picasso.with(getContext()).load("https://firebasestorage.googleapis.com/v0/b/sharehit-37e93.appspot.com/o/"+mAuth.getCurrentUser().getUid()+"?alt=media&token=07b519e5-19ae-4004-b75c-f610b8fb6285").fit().centerInside().into(pdp);
+
             }
         });
 
@@ -192,14 +194,15 @@ public class ProfilFragment extends Fragment implements RecommandationAdapter.Mu
         mStorageRef = FirebaseStorage.getInstance().getReference();
         pd = new ProgressDialog(getActivity());
 
-        Picasso.with(getContext()).load("https://firebasestorage.googleapis.com/v0/b/share-hit.appspot.com/o/"+mAuth.getCurrentUser().getUid()+"?alt=media&token=1d93f69f-a530-455a-83d2-929ce42c3667").into(pdp);
+        Picasso.with(getContext()).load("https://firebasestorage.googleapis.com/v0/b/sharehit-37e93.appspot.com/o/"+mAuth.getCurrentUser().getUid()+"?alt=media&token=07b519e5-19ae-4004-b75c-f610b8fb6285").fit().centerInside().into(pdp);
+
+        //Picasso.with(getContext()).load("https://firebasestorage.googleapis.com/v0/b/share-hit.appspot.com/o/"+mAuth.getCurrentUser().getUid()+"?alt=media&token=1d93f69f-a530-455a-83d2-929ce42c3667").into(pdp);
 
 
         usersRef.child(user.getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 pseudo.setText(dataSnapshot.child("pseudo").getValue().toString());
-
             }
 
             @Override
@@ -407,7 +410,7 @@ public class ProfilFragment extends Fragment implements RecommandationAdapter.Mu
                 e.printStackTrace();
             }*/
             StorageMetadata metadata = new StorageMetadata.Builder()
-                    .setContentType("application/image")
+                    .setContentType("application/octet-stream")
                     .build();
             final StorageReference filepath = mStorageRef.child(user.getUid());
             filepath.putFile(imguri, metadata).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
@@ -427,7 +430,11 @@ public class ProfilFragment extends Fragment implements RecommandationAdapter.Mu
 
                      */
                     Toast.makeText(getContext(),"Photo de profil changé", Toast.LENGTH_LONG).show();
-                    Picasso.with(getContext()).load(imguri).networkPolicy(NetworkPolicy.NO_CACHE).memoryPolicy(MemoryPolicy.NO_CACHE).fit().centerInside().into(pdp);
+                    Picasso.with(getContext()).load(imguri).fit().centerInside().into(pdp);
+                    Log.e("testest", task.getResult().getUploadSessionUri().toString() );
+                    Log.e("testest", task.getResult().getUploadSessionUri().getQuery() );
+                    Log.e("testest", task.getResult().getMetadata().toString() );
+                    Log.e("testest", task.getResult().getStorage().toString() );
 
 
                 }

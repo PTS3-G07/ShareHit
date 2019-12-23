@@ -203,7 +203,8 @@ public class ProfilPage extends AppCompatActivity implements RecommandationAdapt
             }
         });
 
-        Picasso.with(getApplicationContext()).load("https://firebasestorage.googleapis.com/v0/b/share-hit.appspot.com/o/"+b.getString("key")+"?alt=media&token=1d93f69f-a530-455a-83d2-929ce42c3667").fit().centerInside().into(pdp);
+        Picasso.with(getApplicationContext()).load("https://firebasestorage.googleapis.com/v0/b/sharehit-37e93.appspot.com/o/"+userId+"?alt=media").fit().centerInside().into(pdp);
+        //Picasso.with(getApplicationContext()).load("https://firebasestorage.googleapis.com/v0/b/share-hit.appspot.com/o/"+b.getString("key")+"?alt=media&token=1d93f69f-a530-455a-83d2-929ce42c3667").fit().centerInside().into(pdp);
 
         usersRef.child(b.getString("key")).addValueEventListener(new ValueEventListener() {
             @Override
