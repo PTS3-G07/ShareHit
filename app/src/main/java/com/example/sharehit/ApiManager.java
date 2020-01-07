@@ -125,41 +125,36 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
         search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-
                 mExampleList.clear();
-                Log.e("researchAPI", "+," +newText);
+                Log.e("researchAPI", "+," +query);
                 if(type == 1){
-                    parseJSONartist(newText);
+                    parseJSONartist(query);
                     typeRecom="artist";
                 }
                 if(type == 2) {
-                    parseJSONalbum(newText);
+                    parseJSONalbum(query);
                     typeRecom="album";
                 }
                 if(type == 3) {
-                    parseJSONtrack(newText);
+                    parseJSONtrack(query);
                     typeRecom="track";
                 }
                 if(type == 4) {
-                    parseJSONomdb(newText, "movie");
+                    parseJSONomdb(query, "movie");
                     typeRecom="movie";
                 }
                 if(type == 5) {
-                    parseJSONomdb(newText, "series");
+                    parseJSONomdb(query, "series");
                     typeRecom="serie";
                 }
                 if(type == 6) {
-                    parseJSONomdb(newText,"game");
+                    parseJSONomdb(query,"game");
                     typeRecom="game";
-                }
-
-                return false;
+                }return false;
             }
+
+            @Override
+            public boolean onQueryTextChange(String newText) { return false; }
         });
 
 

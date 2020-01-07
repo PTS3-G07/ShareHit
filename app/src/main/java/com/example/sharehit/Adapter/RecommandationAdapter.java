@@ -18,6 +18,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -256,7 +257,7 @@ public class RecommandationAdapter extends
                     }
                     else {
                         viewHolder.playButton = null;
-                        viewHolder.playButton = null;
+                        viewHolder.circle = null;
                     }
                 }
             }
@@ -462,15 +463,19 @@ public class RecommandationAdapter extends
             }
         });
 
-        if(viewHolder.playButton!=null) {
-            viewHolder.playButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    viewHolder.playButton.startAnimation(buttonClick);
-                    musicListener.lancerMusique(recommandation);
+        try {
+            if (viewHolder.playButton != null) {
+                viewHolder.playButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        viewHolder.playButton.startAnimation(buttonClick);
+                        musicListener.lancerMusique(recommandation);
 
-                }
-            });
+                    }
+                });
+            }
+        } catch (NullPointerException e){
+            Toast.makeText(context, "Impossible de lire ce contenu", Toast.LENGTH_LONG).show();
         }
 
 
