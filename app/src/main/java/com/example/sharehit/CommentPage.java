@@ -11,7 +11,9 @@ import androidx.fragment.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -41,7 +43,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class CommentPage extends AppCompatActivity {
 
-    private ImageButton sendButton;
+    private TextView sendButton;
     private EditText sendText;
 
     private DatabaseReference comRef, usersRef;
@@ -66,15 +68,36 @@ public class CommentPage extends AppCompatActivity {
 
 
 
-        sendButton = (ImageButton) findViewById(R.id.sendComment);
+        sendButton = (TextView) findViewById(R.id.sendComment);
         sendText = (EditText) findViewById(R.id.textComment);
 
         Bundle b = getIntent().getExtras();
+
+        sendButton.setEnabled(false);
 
         mAuth = FirebaseAuth.getInstance();
         current_user_id = mAuth.getCurrentUser().getUid();
         comRef = FirebaseDatabase.getInstance().getReference().child("recos").child(b.getString("key")).child("Coms");
         usersRef = FirebaseDatabase.getInstance().getReference().child("users");
+
+        sendText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(s.length()>0){
+                    sendButton.setEnabled(true);
+                    sendButton.setTextColor(getResources().getColor(R.color.colorPrimary));
+                } else {
+                    sendButton.setEnabled(false);
+                    sendButton.setTextColor(getResources().getColor(R.color.grisStyle));
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) { }
+        });
 
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override

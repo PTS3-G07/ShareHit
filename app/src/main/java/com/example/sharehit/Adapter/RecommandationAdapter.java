@@ -99,7 +99,7 @@ public class RecommandationAdapter extends
     }
 
     @Override
-    public void onBindViewHolder(final RecommandationAdapter.ViewHolder viewHolder, final int position) {
+    public void onBindViewHolder(final RecommandationAdapter.ViewHolder viewHolder, final int position) throws NullPointerException {
         final Recommandation recommandation = mRecommandation.get(position);
 
         final Intent intent1 = new Intent(context, ListLikePage.class);
@@ -463,8 +463,9 @@ public class RecommandationAdapter extends
             }
         });
 
-        try {
-            if (viewHolder.playButton != null) {
+
+        if (viewHolder.playButton != null) {
+            try {
                 viewHolder.playButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -473,10 +474,12 @@ public class RecommandationAdapter extends
 
                     }
                 });
+            } catch (NullPointerException e){
+                e.getMessage();
+                Toast.makeText(context, "Impossible de lire ce contenu", Toast.LENGTH_LONG).show();
             }
-        } catch (NullPointerException e){
-            Toast.makeText(context, "Impossible de lire ce contenu", Toast.LENGTH_LONG).show();
         }
+
 
 
         viewHolder.getImgProfil().setOnClickListener(new View.OnClickListener() {
