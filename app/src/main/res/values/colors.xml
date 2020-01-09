@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#005EAA</color>
-    <color name="colorPrimaryDark">#005EAA</color>
+    <color name="colorPrimary">#f368e0</color>
+    <color name="colorPrimaryDark">#f368e0</color>
+    <color name="bleuShareHit">#005EAA</color>
     <color name="colorAccent">#005EAA</color>
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
@@ -12,6 +13,7 @@
     <color name="likeblue">#1B8FFB</color>
     <color name="grisStyle">#939598</color>
     <color name="trans">#80000000</color>
+    <color name="grisClair">#ecf0f1</color>
     <color name="transparent">#00000000</color>
     <array name="colorPagesViewPager">
         <item>#EDD9CF</item>

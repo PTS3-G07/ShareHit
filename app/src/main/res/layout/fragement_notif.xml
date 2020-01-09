@@ -32,5 +32,6 @@
         android:layout_marginRight="20dp"
         android:layout_marginBottom="30dp"
         android:clickable="true"
-        android:src="@drawable/type_bookmark_button" />
+        android:src="@drawable/type_bookmark_button"
+        app:backgroundTint="@color/colorPrimary" />
 </RelativeLayout>

@@ -370,8 +370,6 @@ public class FeedFragment extends Fragment implements RecommandationAdapter.Musi
                                 child.child("userRecoUid").getValue().toString(),
                                 child.getKey());
                         list.add(recommandation);
-
-
                         chargerRecyclerView(list);
 
 

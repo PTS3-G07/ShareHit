@@ -206,12 +206,13 @@
         android:id="@+id/fb"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="20dp"
         android:layout_marginBottom="30dp"
         android:clickable="true"
-        android:layout_marginRight="20dp"
-        android:src="@drawable/button_settings" />
+        android:src="@drawable/button_settings"
+        app:backgroundTint="@color/colorPrimary" />
 
 
 

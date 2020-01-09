@@ -3,6 +3,7 @@ package com.example.sharehit;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -187,7 +188,6 @@ public class CommentPage extends AppCompatActivity {
                             b.putInt("key", 1);
                             intent2.putExtras(b);
                             startActivity(intent2);
-
                         } else {
                             b.putString("key", comment.getUid());
                             intent3.putExtras(b);
@@ -199,6 +199,8 @@ public class CommentPage extends AppCompatActivity {
             }
         };
         commentList.setAdapter(firebaseRecyclerAdapter);
+        RecyclerView.ItemDecoration dividerItemDecoration = new DividerItemDecorator(ContextCompat.getDrawable(getApplicationContext(), R.drawable.recycler_view_divider));
+        commentList.addItemDecoration(dividerItemDecoration);
 
     }
 
