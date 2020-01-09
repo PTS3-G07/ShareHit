@@ -23,12 +23,17 @@ import android.widget.Toast;
 
 import com.example.sharehit.Model.Comment;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageMetadata;
+import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
@@ -49,6 +54,7 @@ public class CommentPage extends AppCompatActivity {
     private DatabaseReference comRef, usersRef;
     private FirebaseAuth mAuth;
     private String current_user_id;
+    private StorageReference mStorageRef;
 
     private RecyclerView commentList;
 
@@ -79,6 +85,7 @@ public class CommentPage extends AppCompatActivity {
         current_user_id = mAuth.getCurrentUser().getUid();
         comRef = FirebaseDatabase.getInstance().getReference().child("recos").child(b.getString("key")).child("Coms");
         usersRef = FirebaseDatabase.getInstance().getReference().child("users");
+        mStorageRef = FirebaseStorage.getInstance().getReference();
 
         sendText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -86,7 +93,7 @@ public class CommentPage extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if(s.length()>0){
+                if(s.length()>0 && !s.toString().trim().equals("")){
                     sendButton.setEnabled(true);
                     sendButton.setTextColor(getResources().getColor(R.color.colorPrimary));
                 } else {
@@ -144,7 +151,19 @@ public class CommentPage extends AppCompatActivity {
                 Date date=new Date(comment.getTimestamp());
                 DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy"+" à "+"H-mm");
                 commentViewHolder.setTime("Le "+dateFormat.format(date));
-                Picasso.with(getApplicationContext()).load("https://firebasestorage.googleapis.com/v0/b/share-hit.appspot.com/o/"+comment.getUid()+"?alt=media&token=1d93f69f-a530-455a-83d2-929ce42c3667").fit().centerInside().into(commentViewHolder.getImgProfilComment());
+
+                final StorageReference filepath = mStorageRef;
+
+                filepath.child(comment.getUid()).getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
+                    @Override
+                    public void onSuccess(StorageMetadata storageMetadata) {
+                        Picasso.with(getApplicationContext()).load("https://firebasestorage.googleapis.com/v0/b/sharehit-37e93.appspot.com/o/"+comment.getUid()+"?alt=media").fit().centerInside().into(commentViewHolder.getImgProfilComment());
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                    }
+                });
 
                 usersRef.child(comment.getUid()).addValueEventListener(new ValueEventListener() {
                     @Override

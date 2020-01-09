@@ -65,9 +65,10 @@
         android:layout_marginBottom="10dp"
         android:layout_weight="1"
         android:background="@android:color/transparent"
-        android:text="Envoyer"
-        android:textSize="18sp"
+        android:paddingLeft="10dp"
         android:paddingTop="10dp"
-        android:paddingLeft="10dp"/>
+        android:text="Envoyer"
+        android:textColor="@color/grisStyle"
+        android:textSize="18sp" />
 
 </RelativeLayout>
