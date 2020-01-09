@@ -125,11 +125,6 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
         search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
 
                 mExampleList.clear();
                 Log.e("researchAPI", "+," +query);
@@ -156,7 +151,9 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
                 if(type == 6) {
                     parseJSONomdb(query,"game");
                     typeRecom="game";
-                }
+                }return false;
+            }
+
 
             @Override
             public boolean onQueryTextChange(String newText) { return false; }

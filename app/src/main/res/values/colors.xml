@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#f368e0</color>
-    <color name="colorPrimaryDark">#f368e0</color>
+    <color name="colorPrimary">#005EAA</color>
+    <color name="colorPrimaryDark">#005EAA</color>
     <color name="bleuShareHit">#005EAA</color>
     <color name="colorAccent">#005EAA</color>
     <color name="white">#FFFFFF</color>

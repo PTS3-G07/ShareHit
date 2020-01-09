@@ -16,7 +16,7 @@
         android:layout_marginTop="-8dp"
         android:fontFamily="@font/urania_medium"
         android:gravity="center"
-        android:text="Quel type de recommandantion voulez-vous faire ?"
+        android:text="Quel type de recommandation voulez-vous faire ?"
         android:textColor="@color/black"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
