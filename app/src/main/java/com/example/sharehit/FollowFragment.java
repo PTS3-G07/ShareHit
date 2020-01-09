@@ -347,19 +347,19 @@ public class FollowFragment extends Fragment implements RecommandationAdapter.Mu
                 if(isCharged){
                     for(DataSnapshot child : dataSnapshot.getChildren()){
                         if(userRecoIsFollow(child.child("userRecoUid").getValue().toString())){
-                        Recommandation recommandation = new Recommandation(
-                                child.child("album").getValue().toString(),
-                                child.child("artist").getValue().toString(),
-                                child.child("id").getValue().toString(),
-                                Double.parseDouble(child.child("timestamp").getValue().toString()),
-                                child.child("track").getValue().toString(),
-                                child.child("type").getValue().toString(),
-                                child.child("urlImage").getValue().toString(),
-                                child.child("urlPreview").getValue().toString(),
-                                child.child("userRecoUid").getValue().toString(),
-                                child.getKey());
-                        list.add(recommandation);
-                        Log.e("isFollow", "true");
+                            Recommandation recommandation = new Recommandation(
+                                    child.child("album").getValue().toString(),
+                                    child.child("artist").getValue().toString(),
+                                    child.child("id").getValue().toString(),
+                                    Double.parseDouble(child.child("timestamp").getValue().toString()),
+                                    child.child("track").getValue().toString(),
+                                    child.child("type").getValue().toString(),
+                                    child.child("urlImage").getValue().toString(),
+                                    child.child("urlPreview").getValue().toString(),
+                                    child.child("userRecoUid").getValue().toString(),
+                                    child.getKey());
+                            list.add(recommandation);
+                            Log.e("isFollow", "true");
                         }
                         Log.e("isFollow", "false");
 

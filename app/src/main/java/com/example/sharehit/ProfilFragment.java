@@ -144,7 +144,7 @@ public class ProfilFragment extends Fragment implements RecommandationAdapter.Mu
                 adapter.notifyDataSetChanged();
                 chargerRecyclerView(chargerListRecommandation());
                 swipeContainer.setRefreshing(false);
-                Picasso.with(getContext()).load("https://firebasestorage.googleapis.com/v0/b/sharehit-37e93.appspot.com/o/"+mAuth.getCurrentUser().getUid()+"?alt=media&token=07b519e5-19ae-4004-b75c-f610b8fb6285").fit().centerInside().into(pdp);
+                Picasso.with(getContext()).load("https://firebasestorage.googleapis.com/v0/b/share-hit.appspot.com/o/"+mAuth.getCurrentUser().getUid()+"?alt=media&token=07b519e5-19ae-4004-b75c-f610b8fb6285").fit().centerInside().into(pdp);
 
             }
         });
@@ -194,7 +194,7 @@ public class ProfilFragment extends Fragment implements RecommandationAdapter.Mu
         mStorageRef = FirebaseStorage.getInstance().getReference();
         pd = new ProgressDialog(getActivity());
 
-        Picasso.with(getContext()).load("https://firebasestorage.googleapis.com/v0/b/sharehit-37e93.appspot.com/o/"+mAuth.getCurrentUser().getUid()+"?alt=media&token=07b519e5-19ae-4004-b75c-f610b8fb6285").fit().centerInside().into(pdp);
+        Picasso.with(getContext()).load("https://firebasestorage.googleapis.com/v0/b/share-hit.appspot.com/o/"+mAuth.getCurrentUser().getUid()+"?alt=media&token=07b519e5-19ae-4004-b75c-f610b8fb6285").fit().centerInside().into(pdp);
 
         //Picasso.with(getContext()).load("https://firebasestorage.googleapis.com/v0/b/share-hit.appspot.com/o/"+mAuth.getCurrentUser().getUid()+"?alt=media&token=1d93f69f-a530-455a-83d2-929ce42c3667").into(pdp);
 

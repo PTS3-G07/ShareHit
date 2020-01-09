@@ -110,6 +110,7 @@ public class RecommandationAdapter extends
         final boolean[] CURRENT_BOOKMARK = new boolean[mRecommandation.size()];
         final String[] keyLike = new String[mRecommandation.size()];
         final boolean[] CURRENT_LIKE = new boolean[mRecommandation.size()];
+        final boolean[] COMPTE_EXIST = new boolean[mRecommandation.size()];
 
         final Bundle b = new Bundle();
 
@@ -128,7 +129,6 @@ public class RecommandationAdapter extends
         Picasso.with(context).load(recommandation.getUrlImage()).fit().centerInside().into(viewHolder.pictureRecommandation);
 
         recosRef.child(idReco).child("Coms").limitToLast(1).addValueEventListener(new ValueEventListener(){
-
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Log.e("letesta", ""+dataSnapshot );
@@ -148,7 +148,14 @@ public class RecommandationAdapter extends
                         usersRef.child(idUsr).child("pseudo").addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                viewHolder.setPseudoCom(dataSnapshot.getValue().toString() + " :");
+                                if(dataSnapshot.exists()){
+                                    viewHolder.setPseudoCom(dataSnapshot.getValue().toString() + " :");
+                                    COMPTE_EXIST[position] = true;
+                                } else {
+                                    viewHolder.setPseudoCom("Compte supprimé :");
+                                    COMPTE_EXIST[position] = false;
+                                }
+
                             }
 
                             @Override
@@ -198,7 +205,7 @@ public class RecommandationAdapter extends
         filepath.child(recommandation.getUserRecoUid()).getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
             @Override
             public void onSuccess(StorageMetadata storageMetadata) {
-                Picasso.with(context).load("https://firebasestorage.googleapis.com/v0/b/sharehit-37e93.appspot.com/o/"+recommandation.getUserRecoUid()+"?alt=media").fit().centerInside().into(viewHolder.getImgProfil());
+                Picasso.with(context).load("https://firebasestorage.googleapis.com/v0/b/share-hit.appspot.com/o/"+recommandation.getUserRecoUid()+"?alt=media").fit().centerInside().into(viewHolder.getImgProfil());
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -212,7 +219,13 @@ public class RecommandationAdapter extends
         usersRef.child(recommandation.getUserRecoUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                final String pseudo = dataSnapshot.child("pseudo").getValue().toString();
+                final String pseudo;
+                if(dataSnapshot.exists()){
+                     pseudo = dataSnapshot.child("pseudo").getValue().toString();
+                } else {
+                    pseudo = "Compte supprimé";
+                }
+
                 String typeReco="";
                 if (recommandation.getType().equals("track")) {
                     typeReco = "un morceau";
@@ -487,9 +500,11 @@ public class RecommandationAdapter extends
         viewHolder.getImgProfil().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                b.putString("key", recommandation.getUserRecoUid());
-                intent3.putExtras(b);
-                context.startActivity(intent3);
+                if(COMPTE_EXIST[position]){
+                    b.putString("key", recommandation.getUserRecoUid());
+                    intent3.putExtras(b);
+                    context.startActivity(intent3);
+                }
             }
         });
 

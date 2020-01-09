@@ -158,7 +158,7 @@ public class CommentPage extends AppCompatActivity {
                 filepath.child(comment.getUid()).getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
                     @Override
                     public void onSuccess(StorageMetadata storageMetadata) {
-                        Picasso.with(getApplicationContext()).load("https://firebasestorage.googleapis.com/v0/b/sharehit-37e93.appspot.com/o/"+comment.getUid()+"?alt=media").fit().centerInside().into(commentViewHolder.getImgProfilComment());
+                        Picasso.with(getApplicationContext()).load("https://firebasestorage.googleapis.com/v0/b/share-hit.appspot.com/o/"+comment.getUid()+"?alt=media").fit().centerInside().into(commentViewHolder.getImgProfilComment());
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -169,8 +169,13 @@ public class CommentPage extends AppCompatActivity {
                 usersRef.child(comment.getUid()).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if(dataSnapshot.exists()){
+                            commentViewHolder.setPseudoComment(dataSnapshot.child("pseudo").getValue().toString());
+                        } else {
+                            commentViewHolder.setPseudoComment("Compte supprimé");
+                        }
 
-                        commentViewHolder.setPseudoComment(dataSnapshot.child("pseudo").getValue().toString());
+
 
                     }
 
