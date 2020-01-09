@@ -125,6 +125,12 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
         search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+
                 mExampleList.clear();
                 Log.e("researchAPI", "+," +query);
                 if(type == 1){
@@ -150,8 +156,7 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
                 if(type == 6) {
                     parseJSONomdb(query,"game");
                     typeRecom="game";
-                }return false;
-            }
+                }
 
             @Override
             public boolean onQueryTextChange(String newText) { return false; }
@@ -536,7 +541,7 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
 
     public void lancerMusique(Type model){
         //if (model instanceof Morceau) {
-            Morceau son = (Morceau) model;
+            //Morceau son = (Morceau) model;
         /*}else if (model instanceof Artist) {
             Artist son = (Artist) model;
         }else if (model instanceof Album) {
@@ -552,7 +557,7 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
         }
         try{
             //Log.e("testest", ""+model.getName() );
-            mp.setDataSource(son.getSongUrl());
+            mp.setDataSource(model.getSongUrl());
         }
         catch (IOException ex){
             //Log.e("testest", "Can't found data:"+model.getSongUrl());

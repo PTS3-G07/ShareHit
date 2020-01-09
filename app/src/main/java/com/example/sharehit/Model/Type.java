@@ -7,12 +7,21 @@ public class Type {
     private String imgUrl;
     private String spec;
     private String id;
+    private String songUrl;
 
     public Type(String name, String imgUrl, String spec, String id){
         this.imgUrl=imgUrl;
         this.name=name;
         this.spec=spec;
         this.id=id;
+    }
+
+    public String getSongUrl() {
+        return songUrl;
+    }
+
+    public void setSongUrl(String songUrl) {
+        this.songUrl = songUrl;
     }
 
     public String getLink() {

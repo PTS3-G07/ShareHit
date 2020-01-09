@@ -203,6 +203,8 @@ public class RecommandationAdapter extends
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {
+                //Picasso.with(context).load("").fit().centerInside().into(viewHolder.getImgProfil());
+                viewHolder.getImgProfil().setImageResource(R.drawable.ic_baby);
             }
         });
         //Picasso.with(context).load("https://firebasestorage.googleapis.com/v0/b/share-hit.appspot.com/o/"+recommandation.getUserRecoUid()+"?alt=media&token=1d93f69f-a530-455a-83d2-929ce42c3667").fit().centerInside().into(viewHolder.getImgProfil());

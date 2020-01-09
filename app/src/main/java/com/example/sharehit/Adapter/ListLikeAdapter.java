@@ -12,7 +12,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.sharehit.Model.Bookmark;
 import com.example.sharehit.Model.User;
 import com.example.sharehit.R;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageMetadata;
+import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
 import org.w3c.dom.Text;
@@ -28,6 +33,7 @@ public class ListLikeAdapter extends
     private List<User> mUser;
 
     private FirebaseAuth mAuth;
+    private StorageReference mStorageRef;
 
     public ListLikeAdapter(List<User> users) {
         this.mUser = users;
@@ -38,7 +44,7 @@ public class ListLikeAdapter extends
     public ListLikeAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
-
+        mStorageRef = FirebaseStorage.getInstance().getReference();
         View userView = inflater.inflate(R.layout.like_user_profil_display, parent, false);
 
         ListLikeAdapter.ViewHolder viewHolder = new ListLikeAdapter.ViewHolder(userView);
@@ -47,15 +53,25 @@ public class ListLikeAdapter extends
     }
 
     @Override
-    public void onBindViewHolder(ListLikeAdapter.ViewHolder viewHolder, final int position) {
-        User user = mUser.get(position);
-
+    public void onBindViewHolder(final ListLikeAdapter.ViewHolder viewHolder, final int position) {
+        final User user = mUser.get(position);
         TextView textView = viewHolder.pseudoUser;
         textView.setText(user.getPseudo());
+        final StorageReference filepath = mStorageRef;
+        final CircleImageView circleImageView = viewHolder.pictureUser;
 
-        CircleImageView circleImageView = viewHolder.pictureUser;
-        Picasso.with(context).load("https://interactive-examples.mdn.mozilla.net/media/examples/grapefruit-slice-332-332.jpg").fit().centerInside().into(circleImageView);
-
+        filepath.child(user.userId).getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
+            @Override
+            public void onSuccess(StorageMetadata storageMetadata) {
+                Picasso.with(context).load("https://firebasestorage.googleapis.com/v0/b/sharehit-37e93.appspot.com/o/"+user.userId+"?alt=media").fit().centerInside().into(circleImageView);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                //Picasso.with(context).load("").fit().centerInside().into(viewHolder.getImgProfil());
+                circleImageView.setImageResource(R.drawable.ic_baby);
+            }
+        });
     }
 
     @Override

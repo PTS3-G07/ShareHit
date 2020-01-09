@@ -76,9 +76,13 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.TypeViewHolder
         String pre="";
         if (currentItem instanceof Album){
             pre="Artiste: ";
+            Album album = (Album) currentItem;
+            currentItem.setSongUrl(album.getSongUrl());
         }
         if (currentItem instanceof Artist){
             pre="Nombre de fans: ";
+            Artist album = (Artist) currentItem;
+            currentItem.setSongUrl(album.getSongUrl());
         }
         if (currentItem instanceof Film){
             holder.playButton.setVisibility(View.INVISIBLE);
@@ -98,6 +102,8 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.TypeViewHolder
         }
         if (currentItem instanceof Morceau){
             pre="Artiste: ";
+            Morceau album = (Morceau) currentItem;
+            currentItem.setSongUrl(album.getSongUrl());
         }
         if (currentItem instanceof Serie){
             holder.playButton.setVisibility(View.INVISIBLE);
