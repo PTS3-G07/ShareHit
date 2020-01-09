@@ -110,7 +110,7 @@ public class RecommandationAdapter extends
         final boolean[] CURRENT_BOOKMARK = new boolean[mRecommandation.size()];
         final String[] keyLike = new String[mRecommandation.size()];
         final boolean[] CURRENT_LIKE = new boolean[mRecommandation.size()];
-        final boolean[] COMPTE_EXIST = new boolean[mRecommandation.size()];
+
 
         final Bundle b = new Bundle();
 
@@ -150,10 +150,8 @@ public class RecommandationAdapter extends
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                 if(dataSnapshot.exists()){
                                     viewHolder.setPseudoCom(dataSnapshot.getValue().toString() + " :");
-                                    COMPTE_EXIST[position] = true;
                                 } else {
                                     viewHolder.setPseudoCom("Compte supprimé :");
-                                    COMPTE_EXIST[position] = false;
                                 }
 
                             }
@@ -262,11 +260,12 @@ public class RecommandationAdapter extends
             }
         });
 
-        recosRef.child(idReco).child("urlPreview").addValueEventListener(new ValueEventListener() {
+        recosRef.child(idReco).child("type").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists()){
-                    if (!dataSnapshot.getValue().toString().equals("") && viewHolder.playButton!=null) {
+                    if (heCanBePlayed(dataSnapshot.getValue().toString())
+                            && viewHolder.playButton!=null) {
                         viewHolder.playButton.setVisibility(View.VISIBLE);
                         viewHolder.circle.setVisibility(View.VISIBLE);
                     }
@@ -479,32 +478,34 @@ public class RecommandationAdapter extends
         });
 
 
-        if (viewHolder.playButton != null) {
-            try {
-                viewHolder.playButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        viewHolder.playButton.startAnimation(buttonClick);
-                        musicListener.lancerMusique(recommandation);
 
+        if(viewHolder.playButton != null){
+            viewHolder.playButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                        try {
+                            viewHolder.playButton.startAnimation(buttonClick);
+                            musicListener.lancerMusique(recommandation);
+                        } catch (NullPointerException e){
+                            e.getMessage();
+                            Toast.makeText(context, "Impossible de lire ce contenu", Toast.LENGTH_LONG).show();
+                        }
                     }
-                });
-            } catch (NullPointerException e){
-                e.getMessage();
-                Toast.makeText(context, "Impossible de lire ce contenu", Toast.LENGTH_LONG).show();
-            }
+
+            });
         }
+
+
+
 
 
 
         viewHolder.getImgProfil().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(COMPTE_EXIST[position]){
-                    b.putString("key", recommandation.getUserRecoUid());
-                    intent3.putExtras(b);
-                    context.startActivity(intent3);
-                }
+                b.putString("key", recommandation.getUserRecoUid());
+                intent3.putExtras(b);
+                context.startActivity(intent3);
             }
         });
 
@@ -571,6 +572,14 @@ public class RecommandationAdapter extends
     public void addAll(List<Recommandation> list) {
         mRecommandation.addAll(list);
         notifyDataSetChanged();
+    }
+
+    public boolean heCanBePlayed(String s){
+        if(s.equals("album") || s.equals("artist") || s.equals("track")){
+            return true;
+        } else {
+            return false;
+        }
     }
 
 

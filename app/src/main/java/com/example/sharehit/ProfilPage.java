@@ -35,6 +35,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.NetworkPolicy;
@@ -42,6 +43,7 @@ import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -209,7 +211,19 @@ public class ProfilPage extends AppCompatActivity implements RecommandationAdapt
         usersRef.child(b.getString("key")).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                pseudo.setText(dataSnapshot.child("pseudo").getValue().toString());
+                if(dataSnapshot.exists()){
+                    pseudo.setText(dataSnapshot.child("pseudo").getValue().toString());
+                } else {
+                    pseudo.setText("Compte supprimé");
+                    follow.setEnabled(false);
+                    follow.setVisibility(View.INVISIBLE);
+                    Log.e("Timestamp", String.valueOf(ServerValue.TIMESTAMP));
+                    Date d = new Date();
+
+
+                    Log.e("Timestamp", String.valueOf(d.getTime()));
+                }
+
 
             }
 
