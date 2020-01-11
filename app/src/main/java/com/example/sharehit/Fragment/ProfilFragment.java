@@ -1,4 +1,4 @@
-package com.example.sharehit;
+package com.example.sharehit.Fragment;
 
 import android.Manifest;
 import android.app.ActionBar;
@@ -11,14 +11,11 @@ import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -41,9 +38,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.sharehit.Adapter.RecommandationAdapter;
+import com.example.sharehit.Authentification.LoginPage;
 import com.example.sharehit.Model.Recommandation;
+import com.example.sharehit.R;
 import com.example.sharehit.Utilities.OnSwipeTouchListener;
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -59,19 +57,12 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.squareup.picasso.MemoryPolicy;
-import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 
 public class ProfilFragment extends Fragment implements RecommandationAdapter.MusicListener {

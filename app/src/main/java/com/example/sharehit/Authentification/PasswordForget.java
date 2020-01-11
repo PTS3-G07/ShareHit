@@ -1,4 +1,4 @@
-package com.example.sharehit;
+package com.example.sharehit.Authentification;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.sharehit.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;

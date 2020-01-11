@@ -29,7 +29,7 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".SplashScreen"
+        <activity android:name=".Utilities.SplashScreen"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -38,27 +38,27 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ProfilPage" />
-        <activity android:name=".CommentPage" />
-        <activity android:name=".ListLikePage" />
+        <activity android:name=".PageFixe.ProfilPage" />
+        <activity android:name=".PageFixe.CommentPage" />
+        <activity android:name=".PageFixe.ListLikePage" />
         <activity
             android:name=".ApiManager"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".FeedPage"
+            android:name=".PageFixe.FeedPage"
             android:screenOrientation="portrait"
             />
         <activity
-            android:name=".SignUp"
+            android:name=".Authentification.SignUp"
             android:screenOrientation="portrait" />
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".PasswordForget"
+            android:name=".Authentification.PasswordForget"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".LoginPage"
+            android:name=".Authentification.LoginPage"
             android:screenOrientation="portrait">
         </activity>
         <activity

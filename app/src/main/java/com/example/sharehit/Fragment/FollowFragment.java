@@ -1,4 +1,4 @@
-package com.example.sharehit;
+package com.example.sharehit.Fragment;
 
 import android.app.ActionBar;
 import android.content.Intent;
@@ -6,7 +6,6 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Html;
-import android.text.Spanned;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
@@ -20,18 +19,17 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.sharehit.Adapter.RecommandationAdapter;
 import com.example.sharehit.Model.Recommandation;
+import com.example.sharehit.R;
 import com.example.sharehit.Utilities.OnSwipeTouchListener;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
@@ -40,10 +38,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.squareup.picasso.MemoryPolicy;
-import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
-import com.taishi.library.Indicator;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -51,9 +46,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import de.hdodenhof.circleimageview.CircleImageView;
+public class FollowFragment extends Fragment implements RecommandationAdapter.MusicListener{
 
-public class FeedFragment extends Fragment implements RecommandationAdapter.MusicListener{
 
     RecyclerView recyclerView;
     private DatabaseReference recosRef, followRef, usersRef;
@@ -67,7 +61,7 @@ public class FeedFragment extends Fragment implements RecommandationAdapter.Musi
     private LinearLayout lecteur;
     private TextView nameLect;
     private ImageView musicImg;
-    private FollowFragment.MyListenerFollow callBack;
+    private MyListenerFollow callBack;
 
     private Animation buttonClick;
 
@@ -88,20 +82,20 @@ public class FeedFragment extends Fragment implements RecommandationAdapter.Musi
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        ViewGroup root = (ViewGroup) inflater.inflate(R.layout.fragement_feed, null);
-        recyclerView = root.findViewById(R.id.postRecyclerView);
-        swipeContainer = (SwipeRefreshLayout) root.findViewById(R.id.swipeContainerFeed);
+        ViewGroup root = (ViewGroup) inflater.inflate(R.layout.fragement_search, null);
+        recyclerView = root.findViewById(R.id.postFollowRecyclerView);
+        swipeContainer = (SwipeRefreshLayout) root.findViewById(R.id.swipeContainerFollow);
 
-        callBack = (FollowFragment.MyListenerFollow) getActivity();
+        callBack = (MyListenerFollow) getActivity();
 
         isCharged = true;
         userFollow = new ArrayList<>();
 
         // Création du swipe up pour refresh
-
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                chargerListFollow();
                 isCharged = true;
                 adapter.notifyDataSetChanged();
                 chargerRecyclerView(chargerListRecommandation());
@@ -112,11 +106,7 @@ public class FeedFragment extends Fragment implements RecommandationAdapter.Musi
         swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
-                android.R.color.holo_red_light,
-                android.R.color.holo_blue_bright,
-                android.R.color.holo_green_dark);
-
-
+                android.R.color.holo_red_light);
 
         root.setOnTouchListener(new OnSwipeTouchListener(getContext()) {
 
@@ -137,8 +127,6 @@ public class FeedFragment extends Fragment implements RecommandationAdapter.Musi
         followRef = FirebaseDatabase.getInstance().getReference().child("users").child(mAuth.getCurrentUser().getUid()).child("followed");
         usersRef = FirebaseDatabase.getInstance().getReference().child("users");
 
-
-
         lecteur = root.findViewById(R.id.lecteur);
         stop = root.findViewById(R.id.button1);
         btnPause = root.findViewById(R.id.button2);
@@ -152,6 +140,7 @@ public class FeedFragment extends Fragment implements RecommandationAdapter.Musi
         params.height=0;
         lecteur.setLayoutParams(params);
 
+        chargerListFollow();
 
         chargerRecyclerView(chargerListRecommandation());
 
@@ -353,23 +342,28 @@ public class FeedFragment extends Fragment implements RecommandationAdapter.Musi
 
     public List<Recommandation> chargerListRecommandation(){
         final List<Recommandation> list = new ArrayList<>();
-        recosRef.limitToLast(10).addValueEventListener(new ValueEventListener() {
+        recosRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(isCharged){
                     for(DataSnapshot child : dataSnapshot.getChildren()){
-                        Recommandation recommandation = new Recommandation(
-                                child.child("album").getValue().toString(),
-                                child.child("artist").getValue().toString(),
-                                child.child("id").getValue().toString(),
-                                Double.parseDouble(child.child("timestamp").getValue().toString()),
-                                child.child("track").getValue().toString(),
-                                child.child("type").getValue().toString(),
-                                child.child("urlImage").getValue().toString(),
-                                child.child("urlPreview").getValue().toString(),
-                                child.child("userRecoUid").getValue().toString(),
-                                child.getKey());
-                        list.add(recommandation);
+                        if(userRecoIsFollow(child.child("userRecoUid").getValue().toString())){
+                            Recommandation recommandation = new Recommandation(
+                                    child.child("album").getValue().toString(),
+                                    child.child("artist").getValue().toString(),
+                                    child.child("id").getValue().toString(),
+                                    Double.parseDouble(child.child("timestamp").getValue().toString()),
+                                    child.child("track").getValue().toString(),
+                                    child.child("type").getValue().toString(),
+                                    child.child("urlImage").getValue().toString(),
+                                    child.child("urlPreview").getValue().toString(),
+                                    child.child("userRecoUid").getValue().toString(),
+                                    child.getKey());
+                            list.add(recommandation);
+                            Log.e("isFollow", "true");
+                        }
+                        Log.e("isFollow", "false");
+
                         chargerRecyclerView(list);
 
 
@@ -402,10 +396,33 @@ public class FeedFragment extends Fragment implements RecommandationAdapter.Musi
 
     }
 
-    public interface MyListenerFeed {
-        public void onSwipeLeftFeed();
-        public void onProfilClicked();
+
+
+    private void chargerListFollow(){
+        userFollow.clear();
+        followRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot child : dataSnapshot.getChildren()){
+                    userFollow.add(child.getValue().toString());
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private boolean userRecoIsFollow(String userId){
+        isFollow = false;
+        for(String follow : userFollow){
+            if(userId.equals(follow)){
+                isFollow = true;
+            }
+        }
+        return isFollow;
     }
 
 }
-

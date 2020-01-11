@@ -1,4 +1,4 @@
-package com.example.sharehit;
+package com.example.sharehit.PageFixe;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -18,6 +18,7 @@ import com.example.sharehit.Adapter.BookmarkAdapter;
 import com.example.sharehit.Adapter.ListLikeAdapter;
 import com.example.sharehit.Model.Bookmark;
 import com.example.sharehit.Model.User;
+import com.example.sharehit.R;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;

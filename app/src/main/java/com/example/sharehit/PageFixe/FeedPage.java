@@ -1,4 +1,4 @@
-package com.example.sharehit;
+package com.example.sharehit.PageFixe;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
@@ -32,7 +32,15 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.sharehit.Adapter.RecommandationAdapter;
+import com.example.sharehit.ApiManager;
+import com.example.sharehit.Fragment.BookmarkFragment;
+import com.example.sharehit.Fragment.FeedFragment;
+import com.example.sharehit.Fragment.FollowFragment;
+import com.example.sharehit.Fragment.ProfilFragment;
+import com.example.sharehit.MainActivity;
 import com.example.sharehit.Model.Recommandation;
+import com.example.sharehit.MySingleton;
+import com.example.sharehit.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -41,7 +49,6 @@ import com.luseen.spacenavigation.SpaceItem;
 import com.luseen.spacenavigation.SpaceNavigationView;
 import com.luseen.spacenavigation.SpaceOnClickListener;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
