@@ -2,6 +2,8 @@
 <resources>
     <color name="colorPrimary">#005EAA</color>
     <color name="colorPrimaryDark">#005EAA</color>
+
+
     <color name="bleuShareHit">#005EAA</color>
     <color name="colorAccent">#005EAA</color>
     <color name="white">#FFFFFF</color>

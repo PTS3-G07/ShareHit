@@ -42,8 +42,11 @@ import com.squareup.picasso.Picasso;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.TimeZone;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -113,7 +116,7 @@ public class CommentPage extends AppCompatActivity {
                 if(!TextUtils.isEmpty(sendText.getText().toString())){
                     Comment comment = new Comment(
                             sendText.getText().toString(),
-                            new Timestamp(System.currentTimeMillis()).getTime(),
+                            currentTimeSecsUTC(),
                             mAuth.getCurrentUser().getUid()
                     );
                     String key = comRef.push().getKey();
@@ -134,6 +137,11 @@ public class CommentPage extends AppCompatActivity {
 
     }
 
+    public static long currentTimeSecsUTC() {
+        return Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+                .getTimeInMillis() / 1000;
+    }
+
     private void displayAllComment() {
         final Intent intent2 = new Intent(getApplicationContext(), FeedPage.class);
         final Intent intent3 = new Intent(getApplicationContext(), ProfilPage.class);
@@ -149,9 +157,10 @@ public class CommentPage extends AppCompatActivity {
             protected void populateViewHolder(final CommentViewHolder commentViewHolder, final Comment comment, int i) {
                 commentViewHolder.setMessage(comment.getCom());
 
-                Date date=new Date(comment.getTimestamp());
-                DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy"+" à "+"H-mm");
-                commentViewHolder.setTime("Le "+dateFormat.format(date));
+                Calendar cl = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+                cl.setTimeInMillis(comment.getTimestamp() * 1000);
+                DateFormat dateFormat = new SimpleDateFormat("dd"+"/"+"MM"+"/"+"yyyy"+" à "+"H"+":"+"mm");
+                commentViewHolder.setTime("Le "+dateFormat.format(cl.getTime()));
 
                 final StorageReference filepath = mStorageRef;
 
