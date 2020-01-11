@@ -1,4 +1,4 @@
-package com.example.sharehit;
+package com.example.sharehit.Fragment;
 
 import android.app.ActionBar;
 import android.content.Intent;
@@ -29,6 +29,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.sharehit.Adapter.RecommandationAdapter;
 import com.example.sharehit.Model.Recommandation;
+import com.example.sharehit.R;
 import com.example.sharehit.Utilities.OnSwipeTouchListener;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;

@@ -1,4 +1,4 @@
-package com.example.sharehit;
+package com.example.sharehit.Utilities;
 
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;

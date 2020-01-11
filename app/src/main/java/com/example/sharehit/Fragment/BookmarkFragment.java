@@ -1,4 +1,4 @@
-package com.example.sharehit;
+package com.example.sharehit.Fragment;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -17,6 +17,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.example.sharehit.Adapter.BookmarkAdapter;
 import com.example.sharehit.Model.Bookmark;
 import com.example.sharehit.Model.Recommandation;
+import com.example.sharehit.R;
 import com.example.sharehit.Utilities.OnSwipeTouchListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;

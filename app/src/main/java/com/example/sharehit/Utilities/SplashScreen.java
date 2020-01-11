@@ -1,16 +1,17 @@
-package com.example.sharehit;
+package com.example.sharehit.Utilities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.ImageView;
+
+import com.example.sharehit.Authentification.LoginPage;
+import com.example.sharehit.R;
 
 public class SplashScreen extends AppCompatActivity  {
 

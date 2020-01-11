@@ -23,10 +23,10 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.sharehit.CommentPage;
-import com.example.sharehit.ListLikePage;
+import com.example.sharehit.PageFixe.CommentPage;
+import com.example.sharehit.PageFixe.ListLikePage;
 import com.example.sharehit.Model.Recommandation;
-import com.example.sharehit.ProfilPage;
+import com.example.sharehit.PageFixe.ProfilPage;
 import com.example.sharehit.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -41,9 +41,6 @@ import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
-import java.net.URI;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;

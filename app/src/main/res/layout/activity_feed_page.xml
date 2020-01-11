@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".FeedPage"
+    tools:context=".PageFixe.FeedPage"
     android:background="@color/grey">
 
     <androidx.appcompat.widget.Toolbar
