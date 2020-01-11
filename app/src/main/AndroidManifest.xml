@@ -38,9 +38,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".PageFixe.ProfilPage" />
-        <activity android:name=".PageFixe.CommentPage" />
-        <activity android:name=".PageFixe.ListLikePage" />
+        <activity android:name=".PageFixe.ProfilPage"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".PageFixe.CommentPage"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".PageFixe.ListLikePage"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".ApiManager"
             android:screenOrientation="portrait" />
