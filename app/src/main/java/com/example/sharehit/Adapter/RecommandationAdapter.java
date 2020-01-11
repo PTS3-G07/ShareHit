@@ -260,6 +260,20 @@ public class RecommandationAdapter extends
             }
         });
 
+        viewHolder.playButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(heCanBePlayed(recommandation.getType())) {
+                    viewHolder.playButton.startAnimation(buttonClick);
+                    musicListener.lancerMusique(recommandation);
+                } else {
+                    Toast.makeText(context, "Impossible de lire ce contenu", Toast.LENGTH_LONG).show();
+                }
+            }
+
+        });
+
+        /*
         recosRef.child(idReco).child("type").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -268,6 +282,7 @@ public class RecommandationAdapter extends
                             && viewHolder.playButton!=null) {
                         viewHolder.playButton.setVisibility(View.VISIBLE);
                         viewHolder.circle.setVisibility(View.VISIBLE);
+
                     }
                     else {
                         viewHolder.playButton = null;
@@ -277,6 +292,8 @@ public class RecommandationAdapter extends
             }
             @Override public void onCancelled(@NonNull DatabaseError databaseError) { }
         });
+
+         */
 
         //INTREACTION AVEC LA RECOMMANDATION
 
@@ -477,29 +494,6 @@ public class RecommandationAdapter extends
             }
         });
 
-
-
-        if(viewHolder.playButton != null){
-            viewHolder.playButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                        try {
-                            viewHolder.playButton.startAnimation(buttonClick);
-                            musicListener.lancerMusique(recommandation);
-                        } catch (NullPointerException e){
-                            e.getMessage();
-                            Toast.makeText(context, "Impossible de lire ce contenu", Toast.LENGTH_LONG).show();
-                        }
-                    }
-
-            });
-        }
-
-
-
-
-
-
         viewHolder.getImgProfil().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -633,8 +627,8 @@ public class RecommandationAdapter extends
             circle = itemView.findViewById(R.id.circle);
 
 
-            playButton.setVisibility(View.INVISIBLE);
-            circle.setVisibility(View.INVISIBLE);
+            //playButton.setVisibility(View.INVISIBLE);
+            //circle.setVisibility(View.INVISIBLE);
             layout =itemView.findViewById(R.id.linearLayoutReco);
             params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT);

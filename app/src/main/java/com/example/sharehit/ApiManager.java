@@ -24,6 +24,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -151,7 +152,9 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
                 if(type == 6) {
                     parseJSONomdb(query,"game");
                     typeRecom="game";
-                }return false;
+                }
+
+                return false;
             }
 
 
@@ -182,6 +185,10 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
                         final Artist artiste = new Artist(name, nbFan, imgUrl, link);
                         parseJSONartistPreview(tracklist, artiste);
                         mExampleList.add(artiste);
+                    }
+
+                    if(mExampleList.size() == 0){
+                        Toast.makeText(getApplicationContext(), "Aucun résulat", Toast.LENGTH_LONG).show();
                     }
 
                     mExampleAdapter = new TypeAdapter(ApiManager.this, mExampleList);
@@ -276,6 +283,10 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
                         Album album = new Album(artistName, name, imgUrl, link);
                         parseJSONalbumPreview(tracklist, album);
                         mExampleList.add(album);
+                    }
+
+                    if(mExampleList.size() == 0){
+                        Toast.makeText(getApplicationContext(), "Aucun résulat", Toast.LENGTH_LONG).show();
                     }
 
                     mExampleAdapter = new TypeAdapter(ApiManager.this, mExampleList);
@@ -373,6 +384,9 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
                         mExampleList.add(m);
                     }
 
+                    if(mExampleList.size() == 0){
+                        Toast.makeText(getApplicationContext(), "Aucun résulat", Toast.LENGTH_LONG).show();
+                    }
 
                     mExampleAdapter = new TypeAdapter(ApiManager.this, mExampleList);
                     mRecyclerView.setAdapter(mExampleAdapter);
@@ -419,6 +433,10 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
                         String imgUrl = data.getString("Poster");
                         String imdbID = data.getString("imdbID");
                         mExampleList.add(new Video(title, year, imgUrl, imdbID));
+                    }
+
+                    if(mExampleList.size() == 0){
+                        Toast.makeText(getApplicationContext(), "Aucun résulat", Toast.LENGTH_LONG).show();
                     }
 
                     mExampleAdapter = new TypeAdapter(ApiManager.this, mExampleList);

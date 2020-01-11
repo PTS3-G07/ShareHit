@@ -353,7 +353,7 @@ public class FeedFragment extends Fragment implements RecommandationAdapter.Musi
 
     public List<Recommandation> chargerListRecommandation(){
         final List<Recommandation> list = new ArrayList<>();
-        recosRef.addValueEventListener(new ValueEventListener() {
+        recosRef.limitToLast(15).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(isCharged){

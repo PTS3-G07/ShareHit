@@ -35,6 +35,8 @@ import com.example.sharehit.Adapter.RecommandationAdapter;
 import com.example.sharehit.Model.Recommandation;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.luseen.spacenavigation.SpaceItem;
 import com.luseen.spacenavigation.SpaceNavigationView;
 import com.luseen.spacenavigation.SpaceOnClickListener;
@@ -68,6 +70,7 @@ public class FeedPage extends AppCompatActivity implements RecommandationAdapter
     ImageButton notification;
 
     private FirebaseAuth mAuth;
+    private DatabaseReference notifRef;
     CircleImageView profilePicture;
 
     private Bundle b;
@@ -205,7 +208,9 @@ public class FeedPage extends AppCompatActivity implements RecommandationAdapter
         navigationView.addSpaceItem(new SpaceItem("", drawable.profil));
         navigationView.showIconOnly();
 
-        notification = (ImageButton) findViewById(id.notification_button);
+        notification = (ImageButton) findViewById(id.notification_button);;
+
+        notifRef = FirebaseDatabase.getInstance().getReference().child("shouts");
         notification.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -218,6 +223,9 @@ public class FeedPage extends AppCompatActivity implements RecommandationAdapter
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 if(editText.getText().toString().trim().length() > 2){
+                                    notifRef.child(notifRef.push().getKey()).setValue(editText.getText().toString());
+
+                                    /*
                                     TOPIC = "/topics/userABC"; //topic must match with what the receiver subscribed to
                                     NOTIFICATION_TITLE = "ShareHit notification";
                                     NOTIFICATION_MESSAGE = editText.getText().toString();
@@ -234,6 +242,8 @@ public class FeedPage extends AppCompatActivity implements RecommandationAdapter
                                         Log.e(TAG, "onCreate: " + e.getMessage() );
                                     }
                                     sendNotification(notification);
+
+                                     */
 
                                 } else {
                                     Toast.makeText(getApplicationContext(), "Veuillez saisir une demande de plus de 3 caractères", Toast.LENGTH_LONG).show();

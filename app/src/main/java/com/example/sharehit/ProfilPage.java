@@ -43,9 +43,11 @@ import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -217,11 +219,13 @@ public class ProfilPage extends AppCompatActivity implements RecommandationAdapt
                     pseudo.setText("Compte supprimé");
                     follow.setEnabled(false);
                     follow.setVisibility(View.INVISIBLE);
+
+
+
                     Log.e("Timestamp", String.valueOf(ServerValue.TIMESTAMP));
                     Date d = new Date();
 
-
-                    Log.e("Timestamp", String.valueOf(d.getTime()));
+                    Log.e("Timestamp", String.valueOf(currentTimeSecsUTC()));
                 }
 
 
@@ -238,6 +242,11 @@ public class ProfilPage extends AppCompatActivity implements RecommandationAdapt
 
 
 
+    }
+
+    public static long currentTimeSecsUTC() {
+        return Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+                .getTimeInMillis() / 1000;
     }
 
     @Override
