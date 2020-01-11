@@ -63,8 +63,17 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.TypeViewHolder
     @NonNull
     @Override
     public TypeViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+
         View v = LayoutInflater.from(context).inflate(R.layout.research_item, parent, false);
         return new TypeViewHolder(v);
+        /*if (types.size()==0){
+            View v = LayoutInflater.from(context).inflate(R.layout.aucun_resultat, parent, false);
+            return new TypeViewHolder(v);
+        }else {
+            View v = LayoutInflater.from(context).inflate(R.layout.research_item, parent, false);
+            return new TypeViewHolder(v);
+        }*/
+
     }
 
     @Override

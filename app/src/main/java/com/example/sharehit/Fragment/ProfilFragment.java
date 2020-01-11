@@ -43,6 +43,8 @@ import com.example.sharehit.Model.Recommandation;
 import com.example.sharehit.R;
 import com.example.sharehit.Utilities.OnSwipeTouchListener;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -185,7 +187,19 @@ public class ProfilFragment extends Fragment implements RecommandationAdapter.Mu
         mStorageRef = FirebaseStorage.getInstance().getReference();
         pd = new ProgressDialog(getActivity());
 
-        Picasso.with(getContext()).load("https://firebasestorage.googleapis.com/v0/b/share-hit.appspot.com/o/"+mAuth.getCurrentUser().getUid()+"?alt=media&token=07b519e5-19ae-4004-b75c-f610b8fb6285").fit().centerInside().into(pdp);
+        final StorageReference filepath = mStorageRef;
+
+        filepath.child(mAuth.getCurrentUser().getUid()).getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
+            @Override
+            public void onSuccess(StorageMetadata storageMetadata) {
+                Picasso.with(getContext()).load("https://firebasestorage.googleapis.com/v0/b/share-hit.appspot.com/o/"+mAuth.getCurrentUser().getUid()+"?alt=media").fit().centerInside().into(pdp);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                pdp.setImageResource(R.drawable.ic_baby);
+            }
+        });
 
         //Picasso.with(getContext()).load("https://firebasestorage.googleapis.com/v0/b/share-hit.appspot.com/o/"+mAuth.getCurrentUser().getUid()+"?alt=media&token=1d93f69f-a530-455a-83d2-929ce42c3667").into(pdp);
 

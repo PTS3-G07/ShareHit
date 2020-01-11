@@ -1,5 +1,6 @@
 package com.example.sharehit;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -8,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Canvas;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,6 +21,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -73,6 +76,8 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
     private SearchView search;
     public int type;
     private String typeRecom;
+    private RelativeLayout aucun;
+
 
     private final static MediaPlayer mp = new MediaPlayer();
 
@@ -82,6 +87,8 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
     private ImageView musicImg;
     private ImageButton btnPause;
     private TextView nameLect;
+
+    private int ancienneHauteurAucun = 0;
 
     @Override
     public void onPause() {
@@ -116,6 +123,13 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
         ViewGroup.LayoutParams params = lecteur.getLayoutParams();
         params.height=0;
         lecteur.setLayoutParams(params);
+
+        aucun = findViewById(R.id.aucun);
+        aucun.setVisibility(View.INVISIBLE);
+        ViewGroup.LayoutParams params1=aucun.getLayoutParams();
+        ancienneHauteurAucun=params1.height;
+        params1.height=0;
+        aucun.setLayoutParams(params1);
 
         stop = lecteur.findViewById(R.id.button1);
         btnPause = lecteur.findViewById(R.id.button2);
@@ -164,8 +178,6 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
 
     }
 
-
-
     private Map<String, String> parseJSONartist(String artistName) {
 
         String url = "http://api.deezer.com/2.0/search/artist/?q="+artistName+"&index=0&nb_items=20&output=json";
@@ -187,7 +199,15 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
                     }
 
                     if(mExampleList.size() == 0){
-                        Toast.makeText(getApplicationContext(), "Aucun résulat", Toast.LENGTH_LONG).show();
+                        aucun.setVisibility(View.VISIBLE);
+                        ViewGroup.LayoutParams params1=aucun.getLayoutParams();
+                        params1.height=ancienneHauteurAucun;
+                        aucun.setLayoutParams(params1);
+                    }else {
+                        aucun.setVisibility(View.INVISIBLE);
+                        ViewGroup.LayoutParams params1 = aucun.getLayoutParams();
+                        params1.height = 0;
+                        aucun.setLayoutParams(params1);
                     }
 
                     mExampleAdapter = new TypeAdapter(ApiManager.this, mExampleList);
@@ -285,7 +305,15 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
                     }
 
                     if(mExampleList.size() == 0){
-                        Toast.makeText(getApplicationContext(), "Aucun résulat", Toast.LENGTH_LONG).show();
+                        aucun.setVisibility(View.VISIBLE);
+                        ViewGroup.LayoutParams params1=aucun.getLayoutParams();
+                        params1.height=ancienneHauteurAucun;
+                        aucun.setLayoutParams(params1);
+                    }else {
+                        aucun.setVisibility(View.INVISIBLE);
+                        ViewGroup.LayoutParams params1 = aucun.getLayoutParams();
+                        params1.height = 0;
+                        aucun.setLayoutParams(params1);
                     }
 
                     mExampleAdapter = new TypeAdapter(ApiManager.this, mExampleList);
@@ -384,7 +412,15 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
                     }
 
                     if(mExampleList.size() == 0){
-                        Toast.makeText(getApplicationContext(), "Aucun résulat", Toast.LENGTH_LONG).show();
+                        aucun.setVisibility(View.VISIBLE);
+                        ViewGroup.LayoutParams params1=aucun.getLayoutParams();
+                        params1.height=ancienneHauteurAucun;
+                        aucun.setLayoutParams(params1);
+                    }else {
+                        aucun.setVisibility(View.INVISIBLE);
+                        ViewGroup.LayoutParams params1 = aucun.getLayoutParams();
+                        params1.height = 0;
+                        aucun.setLayoutParams(params1);
                     }
 
                     mExampleAdapter = new TypeAdapter(ApiManager.this, mExampleList);
@@ -435,12 +471,21 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
                     }
 
                     if(mExampleList.size() == 0){
-                        Toast.makeText(getApplicationContext(), "Aucun résulat", Toast.LENGTH_LONG).show();
+                        aucun.setVisibility(View.VISIBLE);
+                        ViewGroup.LayoutParams params1=aucun.getLayoutParams();
+                        params1.height=ancienneHauteurAucun;
+                        aucun.setLayoutParams(params1);
+                    }else {
+                        aucun.setVisibility(View.INVISIBLE);
+                        ViewGroup.LayoutParams params1 = aucun.getLayoutParams();
+                        params1.height = 0;
+                        aucun.setLayoutParams(params1);
                     }
 
-                    mExampleAdapter = new TypeAdapter(ApiManager.this, mExampleList);
-                    mRecyclerView.setAdapter(mExampleAdapter);
-                    mExampleAdapter.setOnItemClickListener(ApiManager.this);
+                        mExampleAdapter = new TypeAdapter(ApiManager.this, mExampleList);
+                        mRecyclerView.setAdapter(mExampleAdapter);
+                        mExampleAdapter.setOnItemClickListener(ApiManager.this);
+
 
                 } catch (JSONException e) {
                     e.printStackTrace();

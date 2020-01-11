@@ -261,6 +261,12 @@ public class RecommandationAdapter extends
             }
         });
 
+
+        if(!recommandation.getPlayable()){
+            viewHolder.playButton.setVisibility(View.INVISIBLE);
+            viewHolder.circle.setVisibility(View.INVISIBLE);
+        }
+
         viewHolder.playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

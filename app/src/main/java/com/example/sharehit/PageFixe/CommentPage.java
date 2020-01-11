@@ -165,6 +165,8 @@ public class CommentPage extends AppCompatActivity {
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception exception) {
+
+                        commentViewHolder.getImgProfilComment().setImageResource(R.drawable.ic_baby);
                     }
                 });
 

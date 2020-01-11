@@ -53,7 +53,7 @@ public class FeedFragment extends Fragment implements RecommandationAdapter.Musi
     private LinearLayout lecteur;
     private TextView nameLect;
     private ImageView musicImg;
-    private FollowFragment.MyListenerFollow callBack;
+    private FeedFragment.MyListenerFeed callBack;
 
     private Animation buttonClick;
 
@@ -78,7 +78,7 @@ public class FeedFragment extends Fragment implements RecommandationAdapter.Musi
         recyclerView = root.findViewById(R.id.postRecyclerView);
         swipeContainer = (SwipeRefreshLayout) root.findViewById(R.id.swipeContainerFeed);
 
-        callBack = (FollowFragment.MyListenerFollow) getActivity();
+        callBack = (FeedFragment.MyListenerFeed) getActivity();
 
         isCharged = true;
         userFollow = new ArrayList<>();
@@ -107,11 +107,9 @@ public class FeedFragment extends Fragment implements RecommandationAdapter.Musi
         root.setOnTouchListener(new OnSwipeTouchListener(getContext()) {
 
             public void onSwipeLeft() {
-                callBack.onSwipeLeftFollow();
+                callBack.onSwipeLeftFeed();
             }
-            public void onSwipeRight() {
-                callBack.onSwipeRightFollow();
-            }
+
 
         });
 
@@ -355,6 +353,15 @@ public class FeedFragment extends Fragment implements RecommandationAdapter.Musi
                                 child.child("urlPreview").getValue().toString(),
                                 child.child("userRecoUid").getValue().toString(),
                                 child.getKey());
+                        if (recommandation.getType().equals("artist")){
+                            recommandation.setPlayable(true);
+                        }else if (recommandation.getType().equals("album")){
+                            recommandation.setPlayable(true);
+                        } else if (recommandation.getType().equals("track")){
+                            recommandation.setPlayable(true);
+                        }
+                        //recommandation.setPlayable(true);
+
                         list.add(recommandation);
                         chargerRecyclerView(list);
 
