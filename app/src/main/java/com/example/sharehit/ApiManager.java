@@ -53,8 +53,10 @@ import java.io.IOException;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TimeZone;
 
 
 public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemclickListener, TypeAdapter.MusicListener {
@@ -496,7 +498,7 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
                         "",
                         "",
                         clickedItem.getLink(),
-                        timestamp,
+                        (double) currentTimeSecsUTC(),
                         "",
                         typeRecom,
                         clickedItem.getImgUrl(),
@@ -658,6 +660,11 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
 
             }
         });
+    }
+
+    public static long currentTimeSecsUTC() {
+        return Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+                .getTimeInMillis() / 1000;
     }
 
     private Runnable onEverySecond = new Runnable() {

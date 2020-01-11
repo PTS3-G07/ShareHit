@@ -42,8 +42,12 @@ import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
 import java.net.URI;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -242,9 +246,9 @@ public class RecommandationAdapter extends
 
                 viewHolder.setTitre(Html.fromHtml(sourceString));
 
-                long currentTimestamp = System.currentTimeMillis();
+                long currentTimestamp = currentTimeSecsUTC();
                 double searchTimestampD = recommandation.getTimestamp();
-                long searchTimestamp = (long)searchTimestampD;
+                long searchTimestamp = (long) searchTimestampD;
                 long difference = Math.abs(currentTimestamp - searchTimestamp);
                 if(TimeUnit.MILLISECONDS.toSeconds(currentTimestamp)==TimeUnit.MILLISECONDS.toSeconds(searchTimestamp)) {
                     viewHolder.setTime("À l'instant");
@@ -700,10 +704,17 @@ public class RecommandationAdapter extends
 
     }
 
+    public static long currentTimeSecsUTC() {
+        return Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+                .getTimeInMillis() / 1000;
+    }
+
     private String convertTimeStampToHour(long millis) {
+        millis = millis * 1000;
         if(millis < 0) {
             throw new IllegalArgumentException("Duration must be greater than zero!");
         }
+
 
         long days = TimeUnit.MILLISECONDS.toDays(millis);
         millis -= TimeUnit.DAYS.toMillis(days);
