@@ -341,7 +341,7 @@ public class FollowFragment extends Fragment implements RecommandationAdapter.Mu
 
     public List<Recommandation> chargerListRecommandation(){
         final List<Recommandation> list = new ArrayList<>();
-        recosRef.addValueEventListener(new ValueEventListener() {
+        recosRef.limitToLast(15).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(isCharged){
@@ -358,6 +358,13 @@ public class FollowFragment extends Fragment implements RecommandationAdapter.Mu
                                     child.child("urlPreview").getValue().toString(),
                                     child.child("userRecoUid").getValue().toString(),
                                     child.getKey());
+                            if (recommandation.getType().equals("artist")){
+                                recommandation.setPlayable(true);
+                            }else if (recommandation.getType().equals("album")){
+                                recommandation.setPlayable(true);
+                            } else if (recommandation.getType().equals("track")){
+                                recommandation.setPlayable(true);
+                            }
                             list.add(recommandation);
                             Log.e("isFollow", "true");
                         }

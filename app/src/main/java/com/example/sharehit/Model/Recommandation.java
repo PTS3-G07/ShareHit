@@ -2,8 +2,9 @@ package com.example.sharehit.Model;
 
 public class Recommandation {
 
-    String album, artist, id, track, type, urlImage, urlPreview, userRecoUid, cleReco;
-    Double timestamp;
+    private String album, artist, id, track, type, urlImage, urlPreview, userRecoUid, cleReco;
+    private Double timestamp;
+    private Boolean isPlayable=false;
 
     public Recommandation(){
 
@@ -32,6 +33,14 @@ public class Recommandation {
         this.urlPreview = urlPreview;
         this.userRecoUid = userRecoUid;
         this.cleReco = cleReco;
+    }
+
+    public Boolean getPlayable() {
+        return isPlayable;
+    }
+
+    public void setPlayable(Boolean playable) {
+        isPlayable = playable;
     }
 
     public String getAlbum() {
