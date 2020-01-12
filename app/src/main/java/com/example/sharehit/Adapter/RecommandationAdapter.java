@@ -1,9 +1,14 @@
 package com.example.sharehit.Adapter;
 
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.PixelFormat;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.Log;
@@ -12,15 +17,21 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.sharehit.PageFixe.CommentPage;
@@ -59,6 +70,9 @@ public class RecommandationAdapter extends
     private Animation buttonClick;
     private MusicListener musicListener;
     private StorageReference mStorageRef;
+    private VideoListener videoListener;
+
+
 
     public RecommandationAdapter(List<Recommandation> recommandations) {
         this.mRecommandation = recommandations;
@@ -70,6 +84,7 @@ public class RecommandationAdapter extends
         LayoutInflater inflater = LayoutInflater.from(context);
 
         musicListener = (MusicListener) context;
+        videoListener = (VideoListener) context;
 
         mStorageRef = FirebaseStorage.getInstance().getReference();
         buttonClick = AnimationUtils.loadAnimation(context, R.anim.click);
@@ -274,6 +289,7 @@ public class RecommandationAdapter extends
                     viewHolder.playButton.startAnimation(buttonClick);
                     musicListener.lancerMusique(recommandation);
                 } else {
+                    videoListener.lancerVideo(recommandation);
                     Toast.makeText(context, "Impossible de lire ce contenu", Toast.LENGTH_LONG).show();
                 }
             }
@@ -584,6 +600,7 @@ public class RecommandationAdapter extends
     }
 
 
+
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView nbrlike;
@@ -764,6 +781,10 @@ public class RecommandationAdapter extends
 
     public interface MusicListener {
         void lancerMusique(Recommandation recommandation);
+    }
+
+    public interface VideoListener{
+        void lancerVideo(Recommandation recommandation);
     }
 
 }

@@ -1,6 +1,7 @@
 package com.example.sharehit.Fragment;
 
 import android.app.ActionBar;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -14,6 +15,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -46,7 +50,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class FollowFragment extends Fragment implements RecommandationAdapter.MusicListener{
+public class FollowFragment extends Fragment implements RecommandationAdapter.MusicListener, RecommandationAdapter.VideoListener{
 
 
     RecyclerView recyclerView;
@@ -332,6 +336,26 @@ public class FollowFragment extends Fragment implements RecommandationAdapter.Mu
 
             }
         });
+    }
+
+    public void lancerVideo(Recommandation recommandation) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_video,null);
+
+        final WebView webView = dialogView.findViewById(R.id.webview);
+
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.getSettings().setPluginState(WebSettings.PluginState.ON);
+        webView.loadUrl("https://www.youtube.com/embed/rrwycJ08PSA");
+        //webView.loadData("<iframe width=\"100%\" height=\"100%\" src=\"https://www.youtube.com/embed/rrwycJ08PSA\" frameborder=\"0\" allow=\"autoplay\" allowfullscreen></iframe>", "text/html", "utf-8");
+        webView.setWebChromeClient(new WebChromeClient());
+
+        builder.setView(dialogView);
+        final AlertDialog dialog = builder.create();
+        dialog.show();
+
     }
 
 

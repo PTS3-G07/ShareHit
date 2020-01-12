@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -14,11 +15,15 @@ import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -26,6 +31,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.androidnetworking.model.Progress;
 import com.example.sharehit.Adapter.RecommandationAdapter;
 import com.example.sharehit.Model.Recommandation;
 import com.example.sharehit.R;
@@ -58,7 +64,7 @@ import java.util.concurrent.TimeUnit;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class ProfilPage extends AppCompatActivity implements RecommandationAdapter.MusicListener {
+public class ProfilPage extends AppCompatActivity implements RecommandationAdapter.MusicListener, RecommandationAdapter.VideoListener {
 
     private CircleImageView pdp;
     private TextView pseudo, textView;
@@ -490,5 +496,23 @@ public class ProfilPage extends AppCompatActivity implements RecommandationAdapt
 
             }
         });
+    }
+
+    @Override
+    public void lancerVideo(Recommandation recommandation) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(ProfilPage.this);
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_video, null);
+        final WebView webView = dialogView.findViewById(R.id.webview);
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.getSettings().setPluginState(WebSettings.PluginState.ON);
+        webView.loadUrl("https://www.youtube.com/embed/rrwycJ08PSA");
+        //webView.loadData("<iframe width=\"100%\" height=\"100%\" src=\"https://www.youtube.com/embed/rrwycJ08PSA\" frameborder=\"0\" allow=\"autoplay\" allowfullscreen></iframe>", "text/html", "utf-8");
+        webView.setWebChromeClient(new WebChromeClient());
+
+        builder.setView(dialogView);
+        final AlertDialog dialog = builder.create();
+        dialog.show();
+
     }
 }
