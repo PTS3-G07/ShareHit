@@ -236,7 +236,7 @@ public class ProfilFragment extends Fragment implements RecommandationAdapter.Mu
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if(which == 0){
-                            pd.setMessage("Changer de photo de profil");
+                            pd.setMessage("Chargement...");
                             if(!checkStoragePermission()){
                                 requestStoragePermission();
                             }else {
@@ -244,7 +244,7 @@ public class ProfilFragment extends Fragment implements RecommandationAdapter.Mu
                             }
                         }
                         else if (which==1){
-                            pd.setMessage("Changer de pseudo");
+                            pd.setMessage("Chargement...");
                             showNameUpdateDialog();
                         } else if (which == 2){
                             pd.setMessage("Se déconnecter");
@@ -354,10 +354,10 @@ public class ProfilFragment extends Fragment implements RecommandationAdapter.Mu
                       DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid());
                       usersRef.updateChildren(reslt);
                   } else {
-                      editText.setError("Pseudo trop long");
+                      Toast.makeText(getContext(), "Le pseudo doit être inférieur à 16 caractères", Toast.LENGTH_LONG).show();
                   }
               }else {
-                  editText.setError("Entrer un pseudo");
+                  Toast.makeText(getContext(), "Veuillez entrer un pseudo", Toast.LENGTH_LONG).show();
               }
             }
         });
@@ -413,7 +413,9 @@ public class ProfilFragment extends Fragment implements RecommandationAdapter.Mu
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null && data.getData() != null) {
+            pd.show();
             imguri = data.getData();
             /*File compressedImageFile = new File(imguri.getPath());
             try {
@@ -441,12 +443,13 @@ public class ProfilFragment extends Fragment implements RecommandationAdapter.Mu
                     });
 
                      */
-                    Toast.makeText(getContext(),"Photo de profil changé", Toast.LENGTH_LONG).show();
+                    //Toast.makeText(getContext(),"Photo de profil changé", Toast.LENGTH_LONG).show();
                     Picasso.with(getContext()).load(imguri).fit().centerInside().into(pdp);
                     Log.e("testest", task.getResult().getUploadSessionUri().toString() );
                     Log.e("testest", task.getResult().getUploadSessionUri().getQuery() );
                     Log.e("testest", task.getResult().getMetadata().toString() );
                     Log.e("testest", task.getResult().getStorage().toString() );
+                    pd.dismiss();
 
 
                 }
