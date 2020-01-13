@@ -289,8 +289,10 @@ public class RecommandationAdapter extends
                     viewHolder.playButton.startAnimation(buttonClick);
                     musicListener.lancerMusique(recommandation);
                 } else {
+                    musicListener.stop();
                     videoListener.lancerVideo(recommandation);
-                    Toast.makeText(context, "Impossible de lire ce contenu", Toast.LENGTH_LONG).show();
+
+                    //Toast.makeText(context, "Impossible de lire ce contenu", Toast.LENGTH_LONG).show();
                 }
             }
 
@@ -781,6 +783,7 @@ public class RecommandationAdapter extends
 
     public interface MusicListener {
         void lancerMusique(Recommandation recommandation);
+        void stop();
     }
 
     public interface VideoListener{

@@ -338,6 +338,17 @@ public class FollowFragment extends Fragment implements RecommandationAdapter.Mu
         });
     }
 
+    @Override
+    public void stop() {
+        mp.stop();
+        mp.stop();
+        mp.reset();
+        lecteur.setVisibility(View.INVISIBLE);
+        ViewGroup.LayoutParams params = lecteur.getLayoutParams();
+        params.height=0;
+        lecteur.setLayoutParams(params);
+    }
+
     public void lancerVideo(Recommandation recommandation) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
 
@@ -366,7 +377,7 @@ public class FollowFragment extends Fragment implements RecommandationAdapter.Mu
 
     public List<Recommandation> chargerListRecommandation(){
         final List<Recommandation> list = new ArrayList<>();
-        recosRef.limitToLast(15).addValueEventListener(new ValueEventListener() {
+        recosRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(isCharged){

@@ -499,6 +499,17 @@ public class ProfilPage extends AppCompatActivity implements RecommandationAdapt
     }
 
     @Override
+    public void stop() {
+        mp.stop();
+        mp.stop();
+        mp.reset();
+        lecteur.setVisibility(View.INVISIBLE);
+        ViewGroup.LayoutParams params = lecteur.getLayoutParams();
+        params.height=0;
+        lecteur.setLayoutParams(params);
+    }
+
+    @Override
     public void lancerVideo(Recommandation recommandation) {
         AlertDialog.Builder builder = new AlertDialog.Builder(ProfilPage.this);
         LayoutInflater inflater = getLayoutInflater();

@@ -453,6 +453,22 @@ public class FeedPage extends AppCompatActivity implements RecommandationAdapter
     }
 
     @Override
+    public void stop() {
+        FragmentManager fm = getSupportFragmentManager();
+        if(fm.getFragments().get(0) instanceof FollowFragment){
+            FollowFragment fragment = (FollowFragment)fm.getFragments().get(0);
+            fragment.stop();
+        }
+        if(fm.getFragments().get(0) instanceof FeedFragment){
+            FeedFragment fragment = (FeedFragment)fm.getFragments().get(0);
+            fragment.stop();        }
+        if(fm.getFragments().get(0) instanceof ProfilFragment){
+            ProfilFragment fragment = (ProfilFragment)fm.getFragments().get(0);
+            fragment.stop();
+        }
+    }
+
+    @Override
     public void lancerVideo(Recommandation recommandation) {
         FragmentManager fm = getSupportFragmentManager();
         if(fm.getFragments().get(0) instanceof FeedFragment){

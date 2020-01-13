@@ -599,6 +599,17 @@ public class ProfilFragment extends Fragment implements RecommandationAdapter.Mu
         });
     }
 
+    @Override
+    public void stop() {
+        mp.stop();
+        mp.stop();
+        mp.reset();
+        lecteur.setVisibility(View.INVISIBLE);
+        ViewGroup.LayoutParams params = lecteur.getLayoutParams();
+        params.height=0;
+        lecteur.setLayoutParams(params);
+    }
+
     private Runnable onEverySecond = new Runnable() {
         @Override
         public void run(){
