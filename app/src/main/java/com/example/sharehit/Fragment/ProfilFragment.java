@@ -347,11 +347,13 @@ public class ProfilFragment extends Fragment implements RecommandationAdapter.Mu
             public void onClick(DialogInterface dialog, int which) {
               String value = editText.getText().toString().trim();
               if(!TextUtils.isEmpty(value)){
-                 //  pd.show();
-                 HashMap reslt = new HashMap();
-                  reslt.put("pseudo", value);
-                  DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid());
-                  usersRef.updateChildren(reslt);
+                  if(editText.getText().toString().trim().length() > 16){
+                      //pd.show();
+                      HashMap reslt = new HashMap();
+                      reslt.put("pseudo", value);
+                      DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid());
+                      usersRef.updateChildren(reslt);
+                  }
               }else {
                   editText.setError("Entrer un pseudo");
               }
