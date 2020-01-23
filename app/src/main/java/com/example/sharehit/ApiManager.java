@@ -155,7 +155,7 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
                     typeRecom="track";
                 }
                 if(type == 4) {
-                    parseJSONomdb(query, "movie");
+                    parseJSONfilm(query);
                     typeRecom="movie";
                 }
                 if(type == 5) {
@@ -467,7 +467,7 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
                         String year = data.getString("Year");
                         String imgUrl = data.getString("Poster");
                         String imdbID = data.getString("imdbID");
-                        mExampleList.add(new Video(title, year, imgUrl, imdbID));
+                        mExampleList.add(new Video(title, year, imgUrl, imdbID, null));
                     }
 
                     if(mExampleList.size() == 0){
@@ -485,6 +485,67 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
                         mExampleAdapter = new TypeAdapter(ApiManager.this, mExampleList);
                         mRecyclerView.setAdapter(mExampleAdapter);
                         mExampleAdapter.setOnItemClickListener(ApiManager.this);
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        },new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+            }
+        }
+
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("x-rapidapi-host", "deezerdevs-deezer.p.rapidapi.com");
+                params.put("x-rapidapi-key", "e057a6cddamshcf40c6b8e5a6046p1233eajsnf273df986993");
+
+                return params;
+            }
+        };
+
+        mRequestQueue.add(request);
+        return null;
+    }
+
+    private Map<String, String> parseJSONfilm(String search) {
+
+        String url = "https://api.betaseries.com/movies/search?key=0c0daac032e2&v=3.0&title="+search;
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    JSONArray jsonArray = response.getJSONArray("movies");
+                    for(int i = 0 ; jsonArray.length() > i; i++){
+                        JSONObject data = jsonArray.getJSONObject(i);
+                        String title = data.getString("title");
+                        String year = data.getString("release_date");
+                        String imgUrl = data.getString("poster");
+                        String imdbID = data.getString("imdb_id");
+                        String idYoutube = data.getString("trailer");
+                        mExampleList.add(new Video(title, year, imgUrl, imdbID, idYoutube));
+                    }
+
+                    if(mExampleList.size() == 0){
+                        aucun.setVisibility(View.VISIBLE);
+                        ViewGroup.LayoutParams params1=aucun.getLayoutParams();
+                        params1.height=ancienneHauteurAucun;
+                        aucun.setLayoutParams(params1);
+                    }else {
+                        aucun.setVisibility(View.INVISIBLE);
+                        ViewGroup.LayoutParams params1 = aucun.getLayoutParams();
+                        params1.height = 0;
+                        aucun.setLayoutParams(params1);
+                    }
+
+                    mExampleAdapter = new TypeAdapter(ApiManager.this, mExampleList);
+                    mRecyclerView.setAdapter(mExampleAdapter);
+                    mExampleAdapter.setOnItemClickListener(ApiManager.this);
 
 
                 } catch (JSONException e) {
@@ -556,6 +617,10 @@ public class ApiManager extends AppCompatActivity implements TypeAdapter.OnItemc
                 else if(clickedItem instanceof Artist){
                     recommandation.setArtist(clickedItem.getName());
                     recommandation.setUrlPreview(((Artist)clickedItem).getSongUrl());
+                }
+                else if(clickedItem instanceof Video){
+                    recommandation.setUrlPreview(((Video) clickedItem).getIdYoutube());
+                    recommandation.setArtist(clickedItem.getName());
                 }
                 else if(clickedItem instanceof Album){
                     recommandation.setAlbum(clickedItem.getName());

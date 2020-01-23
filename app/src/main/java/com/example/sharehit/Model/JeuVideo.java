@@ -2,8 +2,8 @@ package com.example.sharehit.Model;
 
 public class JeuVideo extends Video {
 
-    public JeuVideo(String titre, String year, String imgUrl, String link) {
-        super(titre, year, imgUrl, link);
+    public JeuVideo(String titre, String year, String imgUrl, String link, String id) {
+        super(titre, year, imgUrl, link, id);
         setCONST_NOMMAGE("Année de sortie: ");
     }
 

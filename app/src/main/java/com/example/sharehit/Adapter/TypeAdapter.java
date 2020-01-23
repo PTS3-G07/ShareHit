@@ -139,7 +139,9 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.TypeViewHolder
         //holder.mediaPlayer  = this.mediaPlayer;
         holder.name_ar.setText(name);
         holder.spec.setText(pre + spec);
-        Picasso.with(context).load(imageUrl).fit().centerInside().into(holder.img_ar);
+        if(!imageUrl.isEmpty()) {
+            Picasso.with(context).load(imageUrl).fit().centerInside().into(holder.img_ar);
+        }
     }
 
     @Override

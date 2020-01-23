@@ -2,9 +2,9 @@ package com.example.sharehit.Model;
 
 public class Film extends Video {
 
-    public Film(String titre, String year, String imgUrl, String link) {
+    public Film(String titre, String year, String imgUrl, String link, String id) {
 
-        super(titre, year, imgUrl, link);
+        super(titre, year, imgUrl, link, id);
     }
 
     public String toString(){
