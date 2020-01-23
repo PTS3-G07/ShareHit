@@ -361,7 +361,11 @@ public class FeedFragment extends Fragment implements RecommandationAdapter.Musi
 
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setPluginState(WebSettings.PluginState.ON);
-        webView.loadUrl("https://www.youtube.com/embed/rrwycJ08PSA");
+        if(!recommandation.getUrlPreview().equals("")){
+            webView.loadUrl("https://www.youtube.com/embed/"+recommandation.getUrlPreview());
+        } else {
+            webView.loadUrl("https://www.youtube.com/embed/rrwycJ08PSA");
+        }
         //webView.loadData("<iframe width=\"100%\" height=\"100%\" src=\"https://www.youtube.com/embed/rrwycJ08PSA\" frameborder=\"0\" allow=\"autoplay\" allowfullscreen></iframe>", "text/html", "utf-8");
         webView.setWebChromeClient(new WebChromeClient());
 

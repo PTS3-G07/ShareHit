@@ -9,12 +9,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.SearchView;
+import android.widget.TextView;
 
 import com.example.sharehit.Adapter.RecommandationAdapter;
 import com.example.sharehit.Adapter.SearchUserAdapter;
 import com.example.sharehit.Model.Recommandation;
 import com.example.sharehit.Model.User;
 import com.example.sharehit.R;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -26,6 +28,8 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.EventListener;
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class SearchProfilPage extends AppCompatActivity {
 
@@ -54,7 +58,12 @@ public class SearchProfilPage extends AppCompatActivity {
         searchProfilBar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                chargerRecyclerView(chargerListUser(query));
+                searchFriends(query);
+                /*
+                List list = chargerListUser(query);
+                chargerRecyclerView(list);
+
+                 */
                 return false;
             }
 
@@ -63,6 +72,25 @@ public class SearchProfilPage extends AppCompatActivity {
                 return false;
             }
         });
+
+    }
+
+    private void searchFriends(String text) {
+        Query query = usersRef.orderByChild("pseudo").startAt(text).endAt(text + "\uf8ff");
+
+        FirebaseRecyclerAdapter<User, SearchProfilHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<User, SearchProfilHolder>
+                (
+                        User.class,
+                        R.layout.search_user_display,
+                        SearchProfilHolder.class,
+                        query
+                ) {
+            @Override
+            protected void populateViewHolder(SearchProfilHolder searchProfilHolder, User user, int i) {
+                searchProfilHolder.pseudo.setText(user.getPseudo());
+            }
+        };
+        recyclerViewSearchProfil.setAdapter(firebaseRecyclerAdapter);
 
     }
 
@@ -97,5 +125,19 @@ public class SearchProfilPage extends AppCompatActivity {
             }
         });
         return mUser;
+    }
+
+    public class SearchProfilHolder extends RecyclerView.ViewHolder {
+
+        TextView pseudo;
+        CircleImageView image;
+
+        public SearchProfilHolder(View itemView) {
+            super(itemView);
+            pseudo = (TextView) itemView.findViewById(R.id.pseudoSearchUser);
+            image = (CircleImageView) itemView.findViewById(R.id.imageSearchUser);
+        }
+
+
     }
 }
