@@ -74,7 +74,7 @@ public class FeedPage extends AppCompatActivity implements RecommandationAdapter
     ImageButton film;
     FrameLayout container;
     int currentItem=0;
-    ImageButton notification;
+    ImageButton notification, search;
 
     private FirebaseAuth mAuth;
     private DatabaseReference notifRef;
@@ -215,7 +215,16 @@ public class FeedPage extends AppCompatActivity implements RecommandationAdapter
         navigationView.addSpaceItem(new SpaceItem("", drawable.profil));
         navigationView.showIconOnly();
 
-        notification = (ImageButton) findViewById(id.notification_button);;
+        notification = (ImageButton) findViewById(id.notification_button);
+        search = (ImageButton) findViewById(id.search_button);
+
+        search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(FeedPage.this, SearchProfilPage.class));
+                finish();
+            }
+        });
 
         notifRef = FirebaseDatabase.getInstance().getReference().child("shouts");
         notification.setOnClickListener(new View.OnClickListener() {

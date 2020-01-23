@@ -430,27 +430,8 @@ public class ProfilFragment extends Fragment implements RecommandationAdapter.Mu
             filepath.putFile(imguri, metadata).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                    //Picasso.with(getContext()).load(imguri).resize(180, 180).into(pdp);
-                    /*
-                    filepath.getDownloadUrl().addOnSuccessListener(    new OnSuccessListener<Uri>() {
-                        @Override
-                        public void onSuccess(Uri uri) {
-                            HashMap usersMap = new HashMap();
-                            DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid());
-                            usersMap.put("pdpUrl", String.valueOf(uri));
-                            usersRef.updateChildren(usersMap);
-                        }
-                    });
-
-                     */
-                    //Toast.makeText(getContext(),"Photo de profil changé", Toast.LENGTH_LONG).show();
                     Picasso.with(getContext()).load(imguri).fit().centerInside().into(pdp);
-                    Log.e("testest", task.getResult().getUploadSessionUri().toString() );
-                    Log.e("testest", task.getResult().getUploadSessionUri().getQuery() );
-                    Log.e("testest", task.getResult().getMetadata().toString() );
-                    Log.e("testest", task.getResult().getStorage().toString() );
                     pd.dismiss();
-
 
                 }
 
