@@ -30,6 +30,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.androidnetworking.model.Progress;
 import com.example.sharehit.Adapter.RecommandationAdapter;
@@ -511,23 +512,25 @@ public class ProfilPage extends AppCompatActivity implements RecommandationAdapt
 
     @Override
     public void lancerVideo(Recommandation recommandation) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(ProfilPage.this);
-        LayoutInflater inflater = getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.dialog_video, null);
-        final WebView webView = dialogView.findViewById(R.id.webview);
-        webView.getSettings().setJavaScriptEnabled(true);
-        webView.getSettings().setPluginState(WebSettings.PluginState.ON);
         if(!recommandation.getUrlPreview().equals("")){
+            AlertDialog.Builder builder = new AlertDialog.Builder(ProfilPage.this);
+            LayoutInflater inflater = getLayoutInflater();
+            View dialogView = inflater.inflate(R.layout.dialog_video, null);
+            final WebView webView = dialogView.findViewById(R.id.webview);
+            webView.getSettings().setJavaScriptEnabled(true);
+            webView.getSettings().setPluginState(WebSettings.PluginState.ON);
             webView.loadUrl("https://www.youtube.com/embed/"+recommandation.getUrlPreview());
+            //webView.loadData("<iframe width=\"100%\" height=\"100%\" src=\"https://www.youtube.com/embed/rrwycJ08PSA\" frameborder=\"0\" allow=\"autoplay\" allowfullscreen></iframe>", "text/html", "utf-8");
+            webView.setWebChromeClient(new WebChromeClient());
+            builder.setView(dialogView);
+            final AlertDialog dialog = builder.create();
+            dialog.show();
+        } else if(recommandation.getType().equals("game")){
+            Toast.makeText(getApplicationContext(), "Les bandes annonces pour les jeux vidéos arrivent prochainement", Toast.LENGTH_LONG).show();
         } else {
-            webView.loadUrl("https://www.youtube.com/embed/rrwycJ08PSA");
+            Toast.makeText(getApplicationContext(), "Aucune bande annonce pour cette recommandation", Toast.LENGTH_LONG).show();
         }
-        //webView.loadData("<iframe width=\"100%\" height=\"100%\" src=\"https://www.youtube.com/embed/rrwycJ08PSA\" frameborder=\"0\" allow=\"autoplay\" allowfullscreen></iframe>", "text/html", "utf-8");
-        webView.setWebChromeClient(new WebChromeClient());
 
-        builder.setView(dialogView);
-        final AlertDialog dialog = builder.create();
-        dialog.show();
 
     }
 }

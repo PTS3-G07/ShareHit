@@ -23,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -33,6 +34,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.sharehit.Adapter.RecommandationAdapter;
 import com.example.sharehit.Model.Recommandation;
+import com.example.sharehit.PageFixe.ProfilPage;
 import com.example.sharehit.R;
 import com.example.sharehit.Utilities.OnSwipeTouchListener;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -350,27 +352,24 @@ public class FollowFragment extends Fragment implements RecommandationAdapter.Mu
     }
 
     public void lancerVideo(Recommandation recommandation) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-
-        LayoutInflater inflater = getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.dialog_video,null);
-
-        final WebView webView = dialogView.findViewById(R.id.webview);
-
-        webView.getSettings().setJavaScriptEnabled(true);
-        webView.getSettings().setPluginState(WebSettings.PluginState.ON);
         if(!recommandation.getUrlPreview().equals("")){
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            LayoutInflater inflater = getLayoutInflater();
+            View dialogView = inflater.inflate(R.layout.dialog_video, null);
+            final WebView webView = dialogView.findViewById(R.id.webview);
+            webView.getSettings().setJavaScriptEnabled(true);
+            webView.getSettings().setPluginState(WebSettings.PluginState.ON);
             webView.loadUrl("https://www.youtube.com/embed/"+recommandation.getUrlPreview());
+            //webView.loadData("<iframe width=\"100%\" height=\"100%\" src=\"https://www.youtube.com/embed/rrwycJ08PSA\" frameborder=\"0\" allow=\"autoplay\" allowfullscreen></iframe>", "text/html", "utf-8");
+            webView.setWebChromeClient(new WebChromeClient());
+            builder.setView(dialogView);
+            final AlertDialog dialog = builder.create();
+            dialog.show();
+        } else if(recommandation.getType().equals("game")){
+            Toast.makeText(getContext(), "Les bandes annonces pour les jeux vidéos arrivent prochainement", Toast.LENGTH_LONG).show();
         } else {
-            webView.loadUrl("https://www.youtube.com/embed/rrwycJ08PSA");
+            Toast.makeText(getContext(), "Aucune bande annonce pour cette recommandation", Toast.LENGTH_LONG).show();
         }
-        //webView.loadData("<iframe width=\"100%\" height=\"100%\" src=\"https://www.youtube.com/embed/rrwycJ08PSA\" frameborder=\"0\" allow=\"autoplay\" allowfullscreen></iframe>", "text/html", "utf-8");
-        webView.setWebChromeClient(new WebChromeClient());
-
-        builder.setView(dialogView);
-        final AlertDialog dialog = builder.create();
-        dialog.show();
-
     }
 
 
